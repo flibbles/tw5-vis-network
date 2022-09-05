@@ -1,6 +1,8 @@
 # tw5-vis-network
 
-A tiddlywiki plugin for the vis-network library.
+This is a TiddlyWiki5 plugin which wraps the vis-network library. It's intended to be a modern replacement for the [TW5-Vis.js](https://github.com/felixhayashi/TW5-Vis.js/) when used with [TW5-TiddlyMap](https://github.com/felixhayashi/TW5-TiddlyMap).
+
+It includes a legacy tiddler which allows it to swap out TW5-Vis, even with older versions of TiddlyMap, although some features may be disabled.
 
 To update the version of vis-network used, fetch the latest .min.js file from [here](https://unpkg.com/vis-network/standalone/umd/vis-network.min.js).
 
