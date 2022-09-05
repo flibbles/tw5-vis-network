@@ -1,0 +1,16 @@
+{
+	"tiddlers": [
+		{
+			"file": "./vis-network.min.js",
+			"isTiddlerFile": false,
+			"fields": {
+				"title": {
+					"source": "filename",
+					"prefix": "$:/plugins/flibbles/vis-network/"
+				},
+				"type": "application/javascript",
+				"module-type": "library"
+			}
+		}
+	]
+}
