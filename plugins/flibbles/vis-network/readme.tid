@@ -1,5 +1,6 @@
 title: $:/plugins/flibbles/vis-network/readme
 
+\rules except wikilink
 ! tw5-vis-network
 
 A tiddlywiki plugin for the vis-network library.
