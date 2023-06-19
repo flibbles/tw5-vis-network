@@ -32,12 +32,18 @@ if($tw.boot.tasks.trapErrors) {
   
 }
 
-module.exports = require("$:/plugins/flibbles/vis-network/vis-network.min.js");
+if ($tw.browser) {
 
-if ($tw.browser && CanvasRenderingContext2D.prototype.circle === undefined) {
-	// For some reason, vis-network thinks this method exists. It don't.
-	// We've got to add it ourselves if it's not there.
-	CanvasRenderingContext2D.prototype.circle = function(x, y, radius) {
-		return this.arc(x, y, radius, 0, 2 * Math.PI);
-	};
+  module.exports = require("$:/plugins/flibbles/vis-network/vis-network.min.js");
+
+  if (CanvasRenderingContext2D.prototype.circle === undefined) {
+
+    // For some reason, vis-network thinks this method exists. It don't.
+    // We've got to add it ourselves if it's not there.
+    CanvasRenderingContext2D.prototype.circle = function(x, y, radius) {
+      return this.arc(x, y, radius, 0, 2 * Math.PI);
+    };
+
+  }
+
 }
