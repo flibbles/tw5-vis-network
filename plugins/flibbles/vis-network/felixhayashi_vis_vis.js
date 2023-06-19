@@ -12,6 +12,12 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+// vis.js to vis-network changed the expected locale from en-EN to just en.
+// This is the only thing preventing this library from being completely
+// swappable with vis.js. But because this is here, plugins like TiddlyMap
+// can recognize which locale to use by seeing this.
+exports.default.locale = "en";
+
 // This is a backup version of vis.keycharm, which was removed between
 // Vis.js and vis-network
 exports.default.keycharm = function(options) {
