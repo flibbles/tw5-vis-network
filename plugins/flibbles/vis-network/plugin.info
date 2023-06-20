@@ -2,7 +2,7 @@
   "title": "$:/plugins/flibbles/vis-network",
   "description": "TiddlyWiki5 plugin for the vis-network library",
   "author": "Cameron Fischer",
-  "version": "9.1.2",
+  "version": "9.1.3",
   "core-version": ">=5.0.0",
   "source": "https://github.com/flibbles/tw5-vis-network",
   "type": "application/json",
