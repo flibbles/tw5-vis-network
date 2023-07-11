@@ -6,6 +6,8 @@ module-type: library
 *** TO AVOID STRANGE LIB ERRORS FROM BUBBLING UP *****************
 \*/
 
+"use strict";
+
 if($tw.boot.tasks.trapErrors) {
 
   var defaultHandler = window.onerror;
