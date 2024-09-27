@@ -6,6 +6,8 @@ module-type: library
 This tiddler exists for backward compatibility to plugins which used ~$:/plugins/felixhayashi/vis. This plugin can be used in place of that one without any migration, although some buttons will have mismatched colors.
 \*/
 
+"use strict";
+
 exports.default = require("$:/plugins/flibbles/vis-network/vis.js");
 
 Object.defineProperty(exports, "__esModule", {
