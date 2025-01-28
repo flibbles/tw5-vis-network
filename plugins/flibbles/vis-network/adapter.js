@@ -21,8 +21,8 @@ function VisAdapter(element, nodes, edges) { };
 
 VisAdapter.prototype.initialize = function(element, nodes, edges) {
 	this.element = element;
-	this.nodes = new Vis.DataSet(nodes);
-	this.edges = new Vis.DataSet(edges);
+	this.nodes = convertToDataSet(nodes);
+	this.edges = convertToDataSet(edges);
 	var data = {
 		nodes: this.nodes,
 		edges: this.edges
@@ -38,12 +38,34 @@ VisAdapter.prototype.setPhysics = function(value) {
 VisAdapter.prototype.render = function() {
 };
 
-VisAdapter.prototype.modify = function(nodes, edges) {
-	var self = this;
-	$tw.utils.each(nodes, function(node) {
-		self.nodes.add(node);
-	});
-	$tw.utils.each(edges, function(edge) {
-		self.edges.add(edge);
-	});
+VisAdapter.prototype.update = function(nodes, edges) {
+	modifyDataSet(this.nodes, nodes);
+	modifyDataSet(this.edges, edges);
+};
+
+function modifyDataSet(dataSet, objects) {
+	var changed = false;
+	for (var id in objects) {
+		var object = objects[id];
+		if (object === null) {
+			dataSet.remove({id: id});
+		} else {
+			object.id = id;
+			dataSet.update(object);
+		}
+		changed = true;
+	}
+	if (changed) {
+		dataSet.flush();
+	}
+};
+
+function convertToDataSet(object) {
+	var array = [];
+	for(var id in object) {
+		var entry = object[id];
+		entry.id = id;
+		array.push(entry);
+	}
+	return new Vis.DataSet(array, {queue: true});
 };
