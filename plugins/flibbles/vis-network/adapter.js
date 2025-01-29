@@ -28,8 +28,20 @@ VisAdapter.prototype.initialize = function(element, nodes, edges) {
 		edges: this.edges
 	};
 	var options = {};
+	var self = this;
 	// First `Orb` is just a namespace of the JS package 
-	this.orb = new Vis.Network(element, data, options);
+	this.vis = new Vis.Network(element, data, options);
+
+	//this.vis.on("click", function(params) {
+	//});
+	this.vis.on("doubleClick", function(params) {
+		// TODO: Meta keys
+		if (params.nodes.length >= 1) {
+			self.onevent({target: "node", id: params.nodes[0]});
+		} else if (params.edges.length >= 1) {
+			self.onevent({target: "edge", id: params.edges[0]});
+		}
+	});
 };
 
 VisAdapter.prototype.setPhysics = function(value) {
