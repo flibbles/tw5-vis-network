@@ -29,8 +29,15 @@ VisAdapter.prototype.initialize = function(element, nodes, edges) {
 	};
 	var options = {};
 	var self = this;
+	// We remember what children were already attached to the element, because they MUST remain. The TW widget stack requires the DOM to be what it made it.
+	var children = Array.prototype.slice.call(element.children);
 	// First `Orb` is just a namespace of the JS package 
 	this.vis = new Vis.Network(element, data, options);
+
+	// We MUST preserve any elements already attached to the passed element.
+	for (var i = children.length-1; i>=0; i--) {
+		element.insertBefore(children[i], element.firstChild);
+	}
 
 	//this.vis.on("click", function(params) {
 	//});
