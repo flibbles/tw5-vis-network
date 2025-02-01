@@ -17,17 +17,24 @@ if ($tw.browser) {
 	exports.Vis = VisAdapter;
 }
 
-function VisAdapter(element, nodes, edges) { };
+function VisAdapter(wiki) { };
 
-VisAdapter.prototype.initialize = function(element, nodes, edges) {
+VisAdapter.prototype.initialize = function(element, objects) {
 	this.element = element;
-	this.nodes = convertToDataSet(nodes);
-	this.edges = convertToDataSet(edges);
+	this.nodes = convertToDataSet(objects.nodes);
+	this.edges = convertToDataSet(objects.edges);
 	var data = {
 		nodes: this.nodes,
 		edges: this.edges
 	};
-	var options = {};
+	var options = {
+		physics: {
+			enabled: false
+		},
+		interaction: {
+			hover: true
+		}
+	};
 	var self = this;
 	// We remember what children were already attached to the element, because they MUST remain. The TW widget stack requires the DOM to be what it made it.
 	var children = Array.prototype.slice.call(element.children);
@@ -57,9 +64,9 @@ VisAdapter.prototype.setPhysics = function(value) {
 VisAdapter.prototype.render = function() {
 };
 
-VisAdapter.prototype.update = function(nodes, edges) {
-	modifyDataSet(this.nodes, nodes);
-	modifyDataSet(this.edges, edges);
+VisAdapter.prototype.update = function(objects) {
+	modifyDataSet(this.nodes, objects.nodes);
+	modifyDataSet(this.edges, objects.edges);
 };
 
 function modifyDataSet(dataSet, objects) {
