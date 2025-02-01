@@ -49,12 +49,52 @@ VisAdapter.prototype.initialize = function(element, objects) {
 	//this.vis.on("click", function(params) {
 	//});
 	this.vis.on("doubleClick", function(params) {
+		var data = {
+			type: "doubleclick",
+			event: params.event,
+			point: params.pointer.canvas
+		};
 		// TODO: Meta keys
 		if (params.nodes.length >= 1) {
-			self.onevent({target: "node", id: params.nodes[0]});
+			data.id = params.nodes[0];
+			data.target = "node";
 		} else if (params.edges.length >= 1) {
-			self.onevent({target: "edge", id: params.edges[0]});
+			data.id = params.edges[0];
+			data.target = "edge";
+		} else {
+			data.target = "graph";
 		}
+		self.onevent(data);
+	});
+
+	this.vis.on("dragEnd", function(params) {
+		if (params.nodes.length > 0) {
+			var data = {
+				type: "drag",
+				target: "node",
+				id: params.nodes[0],
+				event: params.event,
+				point: params.pointer.canvas
+			};
+			self.onevent(data);
+		}
+	});
+
+	this.vis.on("hoverNode", function(params) {
+		self.onevent({
+			type: "hover",
+			target: "node",
+			id: params.node,
+			event: params.event,
+			point: params.pointer.canvas});
+	});
+	this.vis.on("blurNode", function(params) {
+		self.onevent({
+			type: "blur",
+			target: "node",
+			id: params.node,
+			event: params.event,
+			point: params.pointer.canvas});
 	});
 };
 
