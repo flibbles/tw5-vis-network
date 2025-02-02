@@ -52,7 +52,8 @@ VisAdapter.prototype.initialize = function(element, objects) {
 		var data = {
 			type: "doubleclick",
 			event: params.event,
-			point: params.pointer.canvas
+			point: params.pointer.canvas,
+			viewPoint: params.pointer.DOM
 		};
 		// TODO: Meta keys
 		if (params.nodes.length >= 1) {
@@ -72,19 +73,20 @@ VisAdapter.prototype.initialize = function(element, objects) {
 				objectType: "nodes",
 				id: params.nodes[0],
 				event: params.event,
-				point: params.pointer.canvas
+				point: params.pointer.canvas,
+				viewPoint: params.pointer.DOM
 			};
 			self.onevent(data);
 		}
 	});
-
 	this.vis.on("hoverNode", function(params) {
 		self.onevent({
 			type: "hover",
 			objectType: "nodes",
 			id: params.node,
 			event: params.event,
-			point: params.pointer.canvas});
+			point: params.pointer.canvas,
+			viewPoint: params.pointer.DOM});
 	});
 	this.vis.on("blurNode", function(params) {
 		self.onevent({
@@ -92,7 +94,8 @@ VisAdapter.prototype.initialize = function(element, objects) {
 			objectType: "nodes",
 			id: params.node,
 			event: params.event,
-			point: params.pointer.canvas});
+			point: params.pointer.canvas,
+			viewPoint: params.pointer.DOM});
 	});
 };
 
