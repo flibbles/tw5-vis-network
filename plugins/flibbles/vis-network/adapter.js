@@ -57,12 +57,10 @@ VisAdapter.prototype.initialize = function(element, objects) {
 		// TODO: Meta keys
 		if (params.nodes.length >= 1) {
 			data.id = params.nodes[0];
-			data.target = "node";
+			data.objectType = "nodes";
 		} else if (params.edges.length >= 1) {
 			data.id = params.edges[0];
-			data.target = "edge";
-		} else {
-			data.target = "graph";
+			data.objectType = "edges";
 		}
 		self.onevent(data);
 	});
@@ -71,7 +69,7 @@ VisAdapter.prototype.initialize = function(element, objects) {
 		if (params.nodes.length > 0) {
 			var data = {
 				type: "drag",
-				target: "node",
+				objectType: "nodes",
 				id: params.nodes[0],
 				event: params.event,
 				point: params.pointer.canvas
@@ -83,7 +81,7 @@ VisAdapter.prototype.initialize = function(element, objects) {
 	this.vis.on("hoverNode", function(params) {
 		self.onevent({
 			type: "hover",
-			target: "node",
+			objectType: "nodes",
 			id: params.node,
 			event: params.event,
 			point: params.pointer.canvas});
@@ -91,7 +89,7 @@ VisAdapter.prototype.initialize = function(element, objects) {
 	this.vis.on("blurNode", function(params) {
 		self.onevent({
 			type: "blur",
-			target: "node",
+			objectType: "nodes",
 			id: params.node,
 			event: params.event,
 			point: params.pointer.canvas});
@@ -110,28 +108,32 @@ VisAdapter.prototype.update = function(objects) {
 };
 
 function modifyDataSet(dataSet, objects) {
-	var changed = false;
-	for (var id in objects) {
-		var object = objects[id];
-		if (object === null) {
-			dataSet.remove({id: id});
-		} else {
-			object.id = id;
-			dataSet.update(object);
+	if (objects) {
+		var changed = false;
+		for (var id in objects) {
+			var object = objects[id];
+			if (object === null) {
+				dataSet.remove({id: id});
+			} else {
+				object.id = id;
+				dataSet.update(object);
+			}
+			changed = true;
 		}
-		changed = true;
-	}
-	if (changed) {
-		dataSet.flush();
+		if (changed) {
+			dataSet.flush();
+		}
 	}
 };
 
 function convertToDataSet(object) {
 	var array = [];
-	for(var id in object) {
-		var entry = object[id];
-		entry.id = id;
-		array.push(entry);
+	if (object) {
+		for(var id in object) {
+			var entry = object[id];
+			entry.id = id;
+			array.push(entry);
+		}
 	}
 	return new Vis.DataSet(array, {queue: true});
 };
