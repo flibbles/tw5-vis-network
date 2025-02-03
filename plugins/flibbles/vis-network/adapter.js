@@ -19,7 +19,7 @@ if ($tw.browser) {
 
 function VisAdapter(wiki) { };
 
-VisAdapter.prototype.initialize = function(element, objects) {
+VisAdapter.prototype.initialize = function(element, objects, style) {
 	this.element = element;
 	this.nodes = convertToDataSet(objects.nodes);
 	this.edges = convertToDataSet(objects.edges);
@@ -33,6 +33,13 @@ VisAdapter.prototype.initialize = function(element, objects) {
 		},
 		interaction: {
 			hover: true
+		},
+		nodes: {
+			shape: "dot",
+			color: style.node.background,
+			font: {
+				color: style.node.foreground
+			}
 		}
 	};
 	var self = this;
