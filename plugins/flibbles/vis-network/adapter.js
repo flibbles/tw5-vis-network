@@ -19,15 +19,8 @@ if ($tw.browser) {
 
 function VisAdapter(wiki) { };
 
-VisAdapter.prototype.initialize = function(element, objects, style) {
-	this.element = element;
-	this.nodes = convertToDataSet(objects.nodes);
-	this.edges = convertToDataSet(objects.edges);
-	var data = {
-		nodes: this.nodes,
-		edges: this.edges
-	};
-	var options = {
+function generateOptions(style) {
+	return {
 		physics: {
 			enabled: false
 		},
@@ -36,17 +29,27 @@ VisAdapter.prototype.initialize = function(element, objects, style) {
 		},
 		nodes: {
 			shape: "dot",
-			color: style.node.background,
+			color: style.nodeBackground,
 			font: {
-				color: style.node.foreground
+				color: style.nodeForeground
 			}
 		}
+	};
+};
+
+VisAdapter.prototype.initialize = function(element, objects) {
+	this.element = element;
+	this.nodes = convertToDataSet(objects.nodes);
+	this.edges = convertToDataSet(objects.edges);
+	var data = {
+		nodes: this.nodes,
+		edges: this.edges
 	};
 	var self = this;
 	// We remember what children were already attached to the element, because they MUST remain. The TW widget stack requires the DOM to be what it made it.
 	var children = Array.prototype.slice.call(element.children);
 	// First `Orb` is just a namespace of the JS package 
-	this.vis = new Vis.Network(element, data, options);
+	this.vis = new Vis.Network(element, data, generateOptions(objects.style));
 
 	// We MUST preserve any elements already attached to the passed element.
 	for (var i = children.length-1; i>=0; i--) {
@@ -115,6 +118,9 @@ VisAdapter.prototype.render = function() {
 VisAdapter.prototype.update = function(objects) {
 	modifyDataSet(this.nodes, objects.nodes);
 	modifyDataSet(this.edges, objects.edges);
+	if (objects.style) {
+		this.vis.setOptions(generateOptions(objects.style));
+	}
 };
 
 function modifyDataSet(dataSet, objects) {
