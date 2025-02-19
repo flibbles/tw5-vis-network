@@ -11,13 +11,13 @@ This allows flibbles/graph to alternatively use this library.
 "use strict";
 
 
+// Only install this adapter if we're on the browser. Doesn't work in Node.
 if ($tw.browser) {
-	// Only install this adapter if we're on the browser. Doesn't work in Node.
 	var Vis = require("./vis.js");
-	exports.Vis = VisAdapter;
 }
 
-function VisAdapter(wiki) { };
+exports.name = "Vis";
+//exports.platforms = ["browser"];
 
 function generateOptions(style) {
 	return {
@@ -37,7 +37,7 @@ function generateOptions(style) {
 	};
 };
 
-VisAdapter.prototype.initialize = function(element, objects) {
+exports.initialize = function(element, objects) {
 	this.element = element;
 	this.nodes = convertToDataSet(objects.nodes);
 	this.edges = convertToDataSet(objects.edges);
@@ -109,13 +109,10 @@ VisAdapter.prototype.initialize = function(element, objects) {
 	});
 };
 
-VisAdapter.prototype.setPhysics = function(value) {
+exports.render = function() {
 };
 
-VisAdapter.prototype.render = function() {
-};
-
-VisAdapter.prototype.update = function(objects) {
+exports.update = function(objects) {
 	modifyDataSet(this.nodes, objects.nodes);
 	modifyDataSet(this.edges, objects.edges);
 	if (objects.style) {
