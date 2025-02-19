@@ -47,7 +47,8 @@ exports.initialize = function(element, objects) {
 	};
 	var self = this;
 	// We remember what children were already attached to the element, because they MUST remain. The TW widget stack requires the DOM to be what it made it.
-	var children = Array.prototype.slice.call(element.children);
+	// Also, use .childNodes, not .children. The latter misses text nodes
+	var children = Array.prototype.slice.call(element.childNodes);
 	// First `Orb` is just a namespace of the JS package 
 	this.vis = new Vis.Network(element, data, generateOptions(objects.style));
 
