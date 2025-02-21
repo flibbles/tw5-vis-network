@@ -16,7 +16,7 @@ if ($tw.browser) {
 	var Vis = require("./vis.js");
 }
 
-exports.name = "Vis";
+exports.name = "Vis-Network";
 //exports.platforms = ["browser"];
 
 function generateOptions(style) {

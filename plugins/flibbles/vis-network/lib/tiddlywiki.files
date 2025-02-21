@@ -11,6 +11,17 @@
 				"type": "application/javascript",
 				"module-type": "library"
 			}
+		},
+		{
+			"file": "./icon.png",
+			"isTiddlerFile": false,
+			"fields": {
+				"title": {
+					"source": "basename",
+					"prefix": "$:/plugins/flibbles/vis-network/"
+				},
+				"type": "image/png"
+			}
 		}
 	]
 }
