@@ -1,7 +1,7 @@
 /*\
 title: $:/plugins/flibbles/vis-network/adapter.js
 type: application/javascript
-module-type: graphengineadapter
+module-type: graphengine
 
 This is an adapter that the graph plugin uses to interface with vis-network.
 This allows flibbles/graph to alternatively use this library.
@@ -37,7 +37,7 @@ function generateOptions(style) {
 	};
 };
 
-exports.initialize = function(element, objects) {
+exports.init = function(element, objects) {
 	this.element = element;
 	this.nodes = convertToDataSet(objects.nodes);
 	this.edges = convertToDataSet(objects.edges);
@@ -108,9 +108,6 @@ exports.initialize = function(element, objects) {
 			point: params.pointer.canvas,
 			viewPoint: params.pointer.DOM});
 	});
-};
-
-exports.render = function() {
 };
 
 exports.update = function(objects) {
