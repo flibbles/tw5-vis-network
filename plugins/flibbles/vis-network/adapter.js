@@ -10,6 +10,7 @@ This allows flibbles/graph to alternatively use this library.
 
 "use strict";
 
+var Properties = require("./properties.js");
 
 // Only install this adapter if we're on the browser. Doesn't work in Node.
 if ($tw.browser) {
@@ -18,6 +19,8 @@ if ($tw.browser) {
 
 exports.name = "Vis-Network";
 //exports.platforms = ["browser"];
+
+exports.properties = Properties.dictionary;
 
 function generateOptions(style) {
 	return {
