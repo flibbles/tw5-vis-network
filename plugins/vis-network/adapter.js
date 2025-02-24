@@ -10,8 +10,6 @@ This allows flibbles/graph to alternatively use this library.
 
 "use strict";
 
-var Properties = require("./properties.js");
-
 // Only install this adapter if we're on the browser. Doesn't work in Node.
 if ($tw.browser) {
 	var Vis = require("./vis.js");
@@ -20,7 +18,8 @@ if ($tw.browser) {
 exports.name = "Vis-Network";
 //exports.platforms = ["browser"];
 
-exports.properties = Properties.dictionary;
+// Copy over all the features of the Dictionary
+$tw.utils.extend(exports, require("./dictionary.js"));
 
 function generateOptions(style) {
 	return {
@@ -42,8 +41,9 @@ function generateOptions(style) {
 
 exports.init = function(element, objects) {
 	this.element = element;
-	this.nodes = convertToDataSet(objects.nodes);
-	this.edges = convertToDataSet(objects.edges);
+	var arrays = this.translate(objects);
+	this.nodes = new Vis.DataSet(arrays.nodes || [], {queue: true});
+	this.edges = new Vis.DataSet(arrays.edges || [], {queue: true});
 	var data = {
 		nodes: this.nodes,
 		edges: this.edges
@@ -114,6 +114,7 @@ exports.init = function(element, objects) {
 };
 
 exports.update = function(objects) {
+	var arrays = exports.translate(objects);
 	modifyDataSet(this.nodes, objects.nodes);
 	modifyDataSet(this.edges, objects.edges);
 	if (objects.style) {
@@ -126,10 +127,9 @@ function modifyDataSet(dataSet, objects) {
 		var changed = false;
 		for (var id in objects) {
 			var object = objects[id];
-			if (object === null) {
-				dataSet.remove({id: id});
+			if (typeof object === "string") {
+				dataSet.remove({id: object});
 			} else {
-				object.id = id;
 				dataSet.update(object);
 			}
 			changed = true;
@@ -138,16 +138,4 @@ function modifyDataSet(dataSet, objects) {
 			dataSet.flush();
 		}
 	}
-};
-
-function convertToDataSet(object) {
-	var array = [];
-	if (object) {
-		for(var id in object) {
-			var entry = object[id];
-			entry.id = id;
-			array.push(entry);
-		}
-	}
-	return new Vis.DataSet(array, {queue: true});
 };

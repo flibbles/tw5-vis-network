@@ -1,5 +1,5 @@
 /*\
-title: $:/plugins/flibbles/vis-network/properties.js
+title: $:/plugins/flibbles/vis-network/dictionary.js
 type: application/javascript
 module-type: library
 
@@ -10,7 +10,7 @@ between TW5-graph's flat properties to  the hierarchy Vis-network uses.
 
 "use strict";
 
-exports.dictionary = {
+exports.properties = {
 	nodes: {
 		color: {type: "color"},
 		colorSelected: {type: "color"},
@@ -39,6 +39,20 @@ var propertyMap = {
 };
 
 exports.translate = function(objects) {
+	var output = {};
 	for (var type in objects) {
+		var array = [];
+		var set = objects[type];
+		for (var id in set) {
+			var object = set[id];
+			if (object !== null) {
+				object.id = id;
+				array.push(object);
+			} else {
+				array.push(id);
+			}
+		}
+		output[type] = array;
 	}
+	return output;
 };
