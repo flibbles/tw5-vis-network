@@ -38,7 +38,7 @@ var propertyMap = {
 	}
 };
 
-exports.translate(objects) {
+exports.translate = function(objects) {
 	for (var type in objects) {
 	}
 };
