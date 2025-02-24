@@ -1,0 +1,15 @@
+{
+	"description": "Testing documentation, and demo framework for tw5-relink",
+	"plugins": [
+		"tiddlywiki/jasmine"
+	],
+	"themes": [
+		"tiddlywiki/vanilla",
+		"tiddlywiki/snowwhite"
+	],
+	"build": {
+		"test": [
+			"--test"
+		]
+	}
+}

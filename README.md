@@ -29,3 +29,9 @@ Published under the following licenses:
 
 1. Apache License Version 2.0, http://www.apache.org/licenses/LICENSE-2.0
 2. MIT License (MIT)
+
+# How to run tests
+
+Make sure you have `tiddlywiki` available on your PATH. Then from the project root directory, type:
+
+`tiddlywiki --build test`
