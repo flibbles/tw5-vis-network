@@ -58,9 +58,10 @@ function generateOptions(style) {
 		}
 	};
 	if (style) {
-		style.nodes.color = style.nodeBackground;
-		style.nodes.font.color = style.nodeForeground;
+		options.nodes.color = style.nodeBackground;
+		options.nodes.font.color = style.nodeForeground;
 	}
+	return options;
 };
 
 exports.init = function(element, objects) {

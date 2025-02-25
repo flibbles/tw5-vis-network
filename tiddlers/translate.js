@@ -5,9 +5,6 @@ Tests the Vis-Network adapter's ability to translate incoming properties.
 \*/
 
 var Adapter = $tw.modules.getModulesByTypeAsHashmap("graphengine")["Vis-Network"];
-var translate = Adapter.translate;
-
-var network;
 var MockVis = require("./mock/vis");
 
 describe("Adapter", function() {
@@ -51,6 +48,16 @@ it("can update nodes", function() {
 	}});
 	expect(MockVis.network.objects.nodes.entries).toEqual({A: {id: "A"}, B: {id: "B", label: "new"}, D: {id: "D"}});
 	expect(flush).toHaveBeenCalled();
+});
+
+it("initializes with global style", function() {
+	var adapter = Object.create(Adapter);
+	adapter.init({childNodes: []}, {style: {
+		nodeBackground: "#ffffff",
+		nodeForeground: "#000000"}});
+	var options = MockVis.network.options;
+	expect(options.nodes.color).toBe("#ffffff");
+	expect(options.nodes.font.color).toBe("#000000");
 });
 
 });

@@ -8,6 +8,7 @@ var Network = function(element, objects, options) {
 	this.invoke = {};
 	exports.network = this;
 	this.objects = objects;
+	this.options = options
 };
 
 Network.prototype.on = function(name, method) {
