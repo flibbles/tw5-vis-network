@@ -21,6 +21,7 @@ afterAll(function() {
 it("initializes with starting data", function() {
 	var adapter = Object.create(Adapter);
 	var update = spyOn(MockVis.DataSet.prototype, "update");
+	var add = spyOn(MockVis.DataSet.prototype, "add");
 	var flush = spyOn(MockVis.DataSet.prototype, "flush");
 	adapter.init({childNodes: []}, {
 		nodes: {A: {label: "A"}},
@@ -33,6 +34,7 @@ it("initializes with starting data", function() {
 	// These shouldn't be called during initialization. It'll result in
 	// unnecessary rendering. I think.
 	expect(update).not.toHaveBeenCalled();
+	expect(add).not.toHaveBeenCalled();
 	expect(flush).not.toHaveBeenCalled();
 });
 
@@ -50,6 +52,16 @@ it("can update nodes", function() {
 	expect(flush).toHaveBeenCalled();
 });
 
+it("does not retain lingering properties", function() {
+	var adapter = Object.create(Adapter);
+	adapter.init({childNodes: []}, {nodes: {A: {label: "old", size: 2, physics: true}}});
+	// Setting physics to false makes sure the falsy value doesn't get picked
+	// up as having been removed.
+	adapter.update({nodes: {A: {size: 5, physics: false}}});
+	var objects = MockVis.network.objects;
+	expect(objects.nodes.entries).toEqual({A: {id: "A", size: 5, label: null, physics: false}});
+});
+
 it("initializes with global style", function() {
 	var adapter = Object.create(Adapter);
 	adapter.init({childNodes: []}, {style: {
@@ -58,6 +70,19 @@ it("initializes with global style", function() {
 	var options = MockVis.network.options;
 	expect(options.nodes.color).toBe("#ffffff");
 	expect(options.nodes.font.color).toBe("#000000");
+});
+
+/*** Property translation ***/
+
+function testNode(input, expected) {
+	var adapter = Object.create(Adapter);
+	adapter.init({childNodes: []}, {nodes: input});
+	expect(MockVis.network.objects.nodes.entries).toEqual(expected);
+};
+
+it("borderColor", function() {
+	testNode({A: {color: "#ff0000"}}, {A: {id: "A", color: "#ff0000"}});
+	testNode({A: {borderColor: "#ff0000"}}, {A: {id: "A", color: {border: "#ff0000"}}});
 });
 
 });

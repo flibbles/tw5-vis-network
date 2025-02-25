@@ -20,10 +20,11 @@ exports.properties = {
 		color: {type: "color"},
 		colorSelected: {type: "color"},
 		borderColor: {type: "color"},
-		borderWidth: {type: "number", default: 1},
+		borderWidth: {type: "number", min: 0, default: 1},
 		label: {type: "string"},
 		shape: {type: "enum", values: ["box", "circle", "circularImage", "diamond", "database", "dot", "ellipse", "hexagon", "icon", "image", "square", "star", "text", "triangle", "triangleDown"]},
-		size: {type: "number", min: 0, default: 25}
+		size: {type: "number", min: 0, default: 25},
+		physics: {type: "boolean"}
 	},
 	edges: {
 		arrows: {type: "enum", values: ["to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
@@ -32,17 +33,17 @@ exports.properties = {
 		hidden: {type: "boolean", default: false},
 		label: {type: "string"},
 		physics: {type: "boolean", default: true},
-		width: {type: "number", default: 1}
+		width: {type: "number", min: 0, default: 1, increment: 0.1}
 	}
 };
 
 var propertyMap = {
-	color: {
-		border: "borderColor",
-		highlight: "colorSelected"
-	}
+	nodes: {
+		borderColor: ["color", "border"],
+		colorSelected: ["color", "highlight"]
+	},
+	edges: {}
 };
-
 
 function generateOptions(style) {
 	var options = {
@@ -66,9 +67,8 @@ function generateOptions(style) {
 
 exports.init = function(element, objects) {
 	this.element = element;
-	var arrays = translate(objects);
-	this.nodes = makeDataSet(objects.nodes)
-	this.edges = makeDataSet(objects.edges)
+	this.nodes = makeDataSet(objects.nodes, propertyMap.nodes)
+	this.edges = makeDataSet(objects.edges, propertyMap.edges)
 	var data = {
 		nodes: this.nodes,
 		edges: this.edges
@@ -139,18 +139,18 @@ exports.init = function(element, objects) {
 };
 
 exports.update = function(objects) {
-	modifyDataSet(this.nodes, objects.nodes, this.properties.nodes);
-	modifyDataSet(this.edges, objects.edges, this.properties.edges);
+	modifyDataSet(this.nodes, objects.nodes, propertyMap.nodes);
+	modifyDataSet(this.edges, objects.edges, propertyMap.edges);
 	if (objects.style) {
 		this.vis.setOptions(generateOptions(objects.style));
 	}
 };
 
-function makeDataSet(objects) {
+function makeDataSet(objects, rules) {
 	var array = [];
 	if (objects) {
 		for (var id in objects) {
-			array.push(translate(objects[id], id));
+			array.push(translate(objects[id], id, rules));
 		}
 	}
 	return new exports.Vis.DataSet(array, {queue: true});
@@ -158,8 +158,23 @@ function makeDataSet(objects) {
 
 function translate(object, id, rules) {
 	if (object !== null) {
+		var rtn = {id: id};
+		for (var property in object) {
+			var mapping = rules[property];
+			var dest = rtn;
+			if (mapping) {
+				var i = 0;
+				for (; i < mapping.length-1; i++) {
+					dest[mapping[i]] = dest[mapping[i]] || {};
+					dest = dest[mapping[i]];
+				}
+				dest[mapping[i]] = object[property];
+			} else {
+				rtn[property] = object[property];
+			}
+		}
 		object.id = id;
-		return object;
+		return rtn;
 	}
 	return null
 };
@@ -172,12 +187,30 @@ function modifyDataSet(dataSet, objects, rules) {
 			if (object === null) {
 				dataSet.remove({id: id});
 			} else {
-				dataSet.update(translate(object, id));
+				var newObj = translate(object, id, rules)
+				var oldObj = dataSet.get(id);
+				if (oldObj) {
+					// We need to explicitly turn off any lingering properties
+					// that aren't supposed to be there anymore.
+					scrubLingering(oldObj, newObj);
+				}
+				dataSet.update(newObj);
 			}
 			changed = true;
 		}
 		if (changed) {
 			dataSet.flush();
+		}
+	}
+};
+
+function scrubLingering(oldObject, newObject) {
+	for (var property in oldObject) {
+		var newValue = newObject[property];
+		if (newValue === undefined) {
+			newObject[property] = null;
+		} else if (typeof oldObject[property] === "object" && typeof newValue === "object") {
+			scrubLingering(oldObject[property], newValue);
 		}
 	}
 };
