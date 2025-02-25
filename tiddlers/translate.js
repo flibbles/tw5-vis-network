@@ -23,6 +23,8 @@ afterAll(function() {
 
 it("initializes with starting data", function() {
 	var adapter = Object.create(Adapter);
+	var update = spyOn(MockVis.DataSet.prototype, "update");
+	var flush = spyOn(MockVis.DataSet.prototype, "flush");
 	adapter.init({childNodes: []}, {
 		nodes: {A: {label: "A"}},
 		edges: {1: {label: "1"}}});
@@ -31,10 +33,15 @@ it("initializes with starting data", function() {
 	expect(objects.edges.entries).toEqual({1: {id: "1", label: "1"}});
 	expect(objects.nodes.options).toEqual({queue: true});
 	expect(objects.edges.options).toEqual({queue: true});
+	// These shouldn't be called during initialization. It'll result in
+	// unnecessary rendering. I think.
+	expect(update).not.toHaveBeenCalled();
+	expect(flush).not.toHaveBeenCalled();
 });
 
 it("can update nodes", function() {
 	var adapter = Object.create(Adapter);
+	var flush = spyOn(MockVis.DataSet.prototype, "flush").and.callThrough();
 	adapter.init({childNodes: []}, {
 		nodes: {A: {}, B: {}, C: {}}});
 	adapter.update({nodes: {
@@ -43,6 +50,7 @@ it("can update nodes", function() {
 		D: {}
 	}});
 	expect(MockVis.network.objects.nodes.entries).toEqual({A: {id: "A"}, B: {id: "B", label: "new"}, D: {id: "D"}});
+	expect(flush).toHaveBeenCalled();
 });
 
 });
