@@ -10,19 +10,42 @@ This allows flibbles/graph to alternatively use this library.
 
 "use strict";
 
-// Only install this adapter if we're on the browser. Doesn't work in Node.
-if ($tw.browser) {
-	var Vis = require("./vis.js");
-}
+exports.Vis = require("./vis.js");
 
 exports.name = "Vis-Network";
 //exports.platforms = ["browser"];
 
-// Copy over all the features of the Dictionary
-$tw.utils.extend(exports, require("./dictionary.js"));
+exports.properties = {
+	nodes: {
+		color: {type: "color"},
+		colorSelected: {type: "color"},
+		borderColor: {type: "color"},
+		borderWidth: {type: "number", default: 1},
+		label: {type: "string"},
+		shape: {type: "enum", values: ["box", "circle", "circularImage", "diamond", "database", "dot", "ellipse", "hexagon", "icon", "image", "square", "star", "text", "triangle", "triangleDown"]},
+		size: {type: "number", min: 0, default: 25}
+	},
+	edges: {
+		arrows: {type: "enum", values: ["to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
+		color: {type: "color"},
+		dashes: {type: "boolean", default: false},
+		hidden: {type: "boolean", default: false},
+		label: {type: "string"},
+		physics: {type: "boolean", default: true},
+		width: {type: "number", default: 1}
+	}
+};
+
+var propertyMap = {
+	color: {
+		border: "borderColor",
+		highlight: "colorSelected"
+	}
+};
+
 
 function generateOptions(style) {
-	return {
+	var options = {
 		physics: {
 			enabled: false
 		},
@@ -31,19 +54,20 @@ function generateOptions(style) {
 		},
 		nodes: {
 			shape: "dot",
-			color: style.nodeBackground,
-			font: {
-				color: style.nodeForeground
-			}
+			font: {}
 		}
 	};
+	if (style) {
+		style.nodes.color = style.nodeBackground;
+		style.nodes.font.color = style.nodeForeground;
+	}
 };
 
 exports.init = function(element, objects) {
 	this.element = element;
-	var arrays = this.translate(objects);
-	this.nodes = new Vis.DataSet(arrays.nodes || [], {queue: true});
-	this.edges = new Vis.DataSet(arrays.edges || [], {queue: true});
+	var arrays = translate(objects);
+	this.nodes = makeDataSet(objects.nodes)
+	this.edges = makeDataSet(objects.edges)
 	var data = {
 		nodes: this.nodes,
 		edges: this.edges
@@ -53,7 +77,7 @@ exports.init = function(element, objects) {
 	// Also, use .childNodes, not .children. The latter misses text nodes
 	var children = Array.prototype.slice.call(element.childNodes);
 	// First `Orb` is just a namespace of the JS package 
-	this.vis = new Vis.Network(element, data, generateOptions(objects.style));
+	this.vis = new exports.Vis.Network(element, data, generateOptions(objects.style));
 
 	// We MUST preserve any elements already attached to the passed element.
 	for (var i = children.length-1; i>=0; i--) {
@@ -114,23 +138,40 @@ exports.init = function(element, objects) {
 };
 
 exports.update = function(objects) {
-	var arrays = exports.translate(objects);
-	modifyDataSet(this.nodes, objects.nodes);
-	modifyDataSet(this.edges, objects.edges);
+	modifyDataSet(this.nodes, objects.nodes, this.properties.nodes);
+	modifyDataSet(this.edges, objects.edges, this.properties.edges);
 	if (objects.style) {
 		this.vis.setOptions(generateOptions(objects.style));
 	}
 };
 
-function modifyDataSet(dataSet, objects) {
+function makeDataSet(objects) {
+	var array = [];
+	if (objects) {
+		for (var id in objects) {
+			array.push(translate(objects[id], id));
+		}
+	}
+	return new exports.Vis.DataSet(array, {queue: true});
+};
+
+function translate(object, id, rules) {
+	if (object !== null) {
+		object.id = id;
+		return object;
+	}
+	return null
+};
+
+function modifyDataSet(dataSet, objects, rules) {
 	if (objects) {
 		var changed = false;
 		for (var id in objects) {
 			var object = objects[id];
-			if (typeof object === "string") {
-				dataSet.remove({id: object});
+			if (object === null) {
+				dataSet.remove({id: id});
 			} else {
-				dataSet.update(object);
+				dataSet.update(translate(object, id));
 			}
 			changed = true;
 		}

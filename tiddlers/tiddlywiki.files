@@ -12,6 +12,19 @@
 				},
 				"type": "application/javascript"
 			}
+		},
+		{
+			"path": "./mock",
+			"filesRegExp": "^.*\\.js$",
+			"isTiddlerFile": true,
+			"fields": {
+				"title": {
+					"source": "filename",
+					"prefix": "$:/test/mock/"
+				},
+				"type": "application/javascript",
+				"module-type": "library"
+			}
 		}
 	]
 }
