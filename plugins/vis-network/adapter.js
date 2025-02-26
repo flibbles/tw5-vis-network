@@ -18,9 +18,7 @@ exports.name = "Vis-Network";
 exports.properties = {
 	nodes: {
 		color: {type: "color"},
-		colorSelected: {type: "color"},
-		borderColor: {type: "color"},
-		borderWidth: {type: "number", min: 0, default: 1},
+		borderWidth: {type: "number", min: 0, default: 1, increment: 0.1},
 		label: {type: "string"},
 		shape: {type: "enum", values: ["box", "circle", "circularImage", "diamond", "database", "dot", "ellipse", "hexagon", "icon", "image", "square", "star", "text", "triangle", "triangleDown"]},
 		size: {type: "number", min: 0, default: 25},
@@ -39,8 +37,6 @@ exports.properties = {
 
 var propertyMap = {
 	nodes: {
-		borderColor: ["color", "border"],
-		colorSelected: ["color", "highlight"]
 	},
 	edges: {}
 };
