@@ -25,7 +25,7 @@ exports.properties = {
 		label: {type: "string"},
 		shape: {type: "enum", values: ["box", "circle", "circularImage", "diamond", "database", "dot", "ellipse", "hexagon", "icon", "image", "square", "star", "text", "triangle", "triangleDown"]},
 		size: {type: "number", min: 0, default: 25},
-		physics: {type: "boolean"}
+		physics: {type: "boolean", default: true}
 	},
 	edges: {
 		arrows: {type: "enum", values: ["to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
@@ -41,6 +41,7 @@ exports.properties = {
 
 var propertyMap = {
 	graph: {
+		hierarchical: {path: ["layout", "hierarchical"]},
 		physics: {path: ["physics", "enabled"]},
 		nodeBackground: {path: ["nodes", "color"]},
 		nodeForeground: {path: ["nodes", "font", "color"]}
