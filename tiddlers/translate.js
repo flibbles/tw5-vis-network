@@ -64,7 +64,7 @@ it("does not retain lingering properties", function() {
 
 it("initializes with global style", function() {
 	var adapter = Object.create(Adapter);
-	adapter.init({childNodes: []}, {style: {
+	adapter.init({childNodes: []}, {graph: {
 		nodeBackground: "#ffffff",
 		nodeForeground: "#000000"}});
 	var options = MockVis.network.options;
@@ -72,17 +72,31 @@ it("initializes with global style", function() {
 	expect(options.nodes.font.color).toBe("#000000");
 });
 
+it("can update graph properties", function() {
+	var adapter = Object.create(Adapter);
+	adapter.init({childNodes: []}, {});
+	adapter.update({graph: {physics: false}});
+	var options = MockVis.network.options;
+	expect(options.physics.enabled).toBe(false);
+});
+
 /*** Property translation ***/
 
-function testNode(input, expected) {
+it("translates graph properties", function() {
 	var adapter = Object.create(Adapter);
-	adapter.init({childNodes: []}, {nodes: input});
-	expect(MockVis.network.objects.nodes.entries).toEqual(expected);
-};
+	adapter.init({childNodes: []}, {graph: {physics: true}});
+	var options = MockVis.network.options;
+	expect(options.physics.enabled).toBe(true);
+});
 
-it("borderColor", function() {
+it("translate ", function() {
+	function testNode(input, expected) {
+		var adapter = Object.create(Adapter);
+		adapter.init({childNodes: []}, {nodes: input});
+		expect(MockVis.network.objects.nodes.entries).toEqual(expected);
+	};
+	// This is the only one currently
 	testNode({A: {color: "#ff0000"}}, {A: {id: "A", color: "#ff0000"}});
-	testNode({A: {borderColor: "#ff0000"}}, {A: {id: "A", color: {border: "#ff0000"}}});
 });
 
 });

@@ -15,6 +15,10 @@ Network.prototype.on = function(name, method) {
 	this.invoke[name] = method;
 };
 
+Network.prototype.setOptions = function(options) {
+	this.options = options;
+};
+
 exports.Network = Network;
 
 var DataSet = function(array, options) {

@@ -16,6 +16,9 @@ exports.name = "Vis-Network";
 //exports.platforms = ["browser"];
 
 exports.properties = {
+	graph: {
+		physics: {type: "boolean", default: true}
+	},
 	nodes: {
 		color: {type: "color"},
 		borderWidth: {type: "number", min: 0, default: 1, increment: 0.1},
@@ -31,21 +34,23 @@ exports.properties = {
 		hidden: {type: "boolean", default: false},
 		label: {type: "string"},
 		physics: {type: "boolean", default: true},
+		smooth: {type: "boolean", default: true},
 		width: {type: "number", min: 0, default: 1, increment: 0.1}
 	}
 };
 
 var propertyMap = {
-	nodes: {
+	graph: {
+		physics: ["physics", "enabled"],
+		nodeBackground: ["nodes", "color"],
+		nodeForeground: ["nodes", "font", "color"]
 	},
+	nodes: {},
 	edges: {}
 };
 
 function generateOptions(style) {
 	var options = {
-		physics: {
-			enabled: false
-		},
 		interaction: {
 			hover: true
 		},
@@ -55,8 +60,7 @@ function generateOptions(style) {
 		}
 	};
 	if (style) {
-		options.nodes.color = style.nodeBackground;
-		options.nodes.font.color = style.nodeForeground;
+		translate(options, style, propertyMap.graph);
 	}
 	return options;
 };
@@ -74,7 +78,7 @@ exports.init = function(element, objects) {
 	// Also, use .childNodes, not .children. The latter misses text nodes
 	var children = Array.prototype.slice.call(element.childNodes);
 	// First `Orb` is just a namespace of the JS package 
-	this.vis = new exports.Vis.Network(element, data, generateOptions(objects.style));
+	this.vis = new exports.Vis.Network(element, data, generateOptions(objects.graph));
 
 	// We MUST preserve any elements already attached to the passed element.
 	for (var i = children.length-1; i>=0; i--) {
@@ -137,8 +141,8 @@ exports.init = function(element, objects) {
 exports.update = function(objects) {
 	modifyDataSet(this.nodes, objects.nodes, propertyMap.nodes);
 	modifyDataSet(this.edges, objects.edges, propertyMap.edges);
-	if (objects.style) {
-		this.vis.setOptions(generateOptions(objects.style));
+	if (objects.graph) {
+		this.vis.setOptions(generateOptions(objects.graph));
 	}
 };
 
@@ -146,33 +150,28 @@ function makeDataSet(objects, rules) {
 	var array = [];
 	if (objects) {
 		for (var id in objects) {
-			array.push(translate(objects[id], id, rules));
+			array.push(translate({id: id}, objects[id], rules));
 		}
 	}
 	return new exports.Vis.DataSet(array, {queue: true});
 };
 
-function translate(object, id, rules) {
-	if (object !== null) {
-		var rtn = {id: id};
-		for (var property in object) {
-			var mapping = rules[property];
-			var dest = rtn;
-			if (mapping) {
-				var i = 0;
-				for (; i < mapping.length-1; i++) {
-					dest[mapping[i]] = dest[mapping[i]] || {};
-					dest = dest[mapping[i]];
-				}
-				dest[mapping[i]] = object[property];
-			} else {
-				rtn[property] = object[property];
+function translate(output, properties, rules) {
+	for (var property in properties) {
+		var mapping = rules[property];
+		var dest = output;
+		if (mapping) {
+			var i = 0;
+			for (; i < mapping.length-1; i++) {
+				dest[mapping[i]] = dest[mapping[i]] || {};
+				dest = dest[mapping[i]];
 			}
+			dest[mapping[i]] = properties[property];
+		} else {
+			output[property] = properties[property];
 		}
-		object.id = id;
-		return rtn;
 	}
-	return null
+	return output;
 };
 
 function modifyDataSet(dataSet, objects, rules) {
@@ -183,7 +182,7 @@ function modifyDataSet(dataSet, objects, rules) {
 			if (object === null) {
 				dataSet.remove({id: id});
 			} else {
-				var newObj = translate(object, id, rules)
+				var newObj = translate({id: id}, object, rules)
 				var oldObj = dataSet.get(id);
 				if (oldObj) {
 					// We need to explicitly turn off any lingering properties
