@@ -41,12 +41,14 @@ exports.properties = {
 
 var propertyMap = {
 	graph: {
-		physics: ["physics", "enabled"],
-		nodeBackground: ["nodes", "color"],
-		nodeForeground: ["nodes", "font", "color"]
+		physics: {path: ["physics", "enabled"]},
+		nodeBackground: {path: ["nodes", "color"]},
+		nodeForeground: {path: ["nodes", "font", "color"]}
 	},
 	nodes: {},
-	edges: {}
+	edges: {
+		label: {eraser: "\0"}
+	}
 };
 
 function generateOptions(style) {
@@ -160,13 +162,14 @@ function translate(output, properties, rules) {
 	for (var property in properties) {
 		var mapping = rules[property];
 		var dest = output;
-		if (mapping) {
+		if (mapping && mapping.path) {
 			var i = 0;
-			for (; i < mapping.length-1; i++) {
-				dest[mapping[i]] = dest[mapping[i]] || {};
-				dest = dest[mapping[i]];
+			for (; i < mapping.path.length-1; i++) {
+				var dir = mapping.path[i];
+				dest[dir] = dest[dir] || {};
+				dest = dest[dir];
 			}
-			dest[mapping[i]] = properties[property];
+			dest[mapping.path[i]] = properties[property];
 		} else {
 			output[property] = properties[property];
 		}
@@ -188,6 +191,9 @@ function modifyDataSet(dataSet, objects, rules) {
 					// We need to explicitly turn off any lingering properties
 					// that aren't supposed to be there anymore.
 					scrubLingering(oldObj, newObj);
+				}
+				if (rules.label && rules.label.eraser && newObj.label == null) {
+					newObj.label = '\0';
 				}
 				dataSet.update(newObj);
 			}

@@ -99,4 +99,13 @@ it("translate ", function() {
 	testNode({A: {color: "#ff0000"}}, {A: {id: "A", color: "#ff0000"}});
 });
 
+// This is to cope with a bug vis-network has where edge labels can't be removed from existing edges.
+it("can remove labels from edges", function() {
+	var adapter = Object.create(Adapter);
+	adapter.init({childNodes: []}, {nodes: {A: {label: "anything"}, B: {}}, edges: {1: {from: "A", to: "B", label: "anything"}}});
+	adapter.update({nodes: {A: {}}, edges: {1: {from: "A", to: "B"}}});
+	expect(MockVis.network.objects.nodes.entries).toEqual({A: {id: "A", label: null}, B: {id: "B"}});
+	expect(MockVis.network.objects.edges.entries).toEqual({1: {id: "1", from: "A", to: "B", label: "\0"}});
+});
+
 });
