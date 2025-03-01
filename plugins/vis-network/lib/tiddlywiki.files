@@ -13,14 +13,14 @@
 			}
 		},
 		{
-			"file": "./icon.png",
+			"file": "./icon.svg",
 			"isTiddlerFile": false,
 			"fields": {
 				"title": {
 					"source": "basename",
 					"prefix": "$:/plugins/flibbles/vis-network/"
 				},
-				"type": "image/png"
+				"type": "image/svg+xml"
 			}
 		}
 	]
