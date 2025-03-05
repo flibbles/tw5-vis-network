@@ -1,0 +1,35 @@
+title: $:/plugins/flibbles/vis-network/Stylesheet
+tags: $:/tags/Stylesheet
+
+\rules only macrocallinline
+
+div.vis-network div.vis-edit-mode button.vis-button.vis-edit.vis-edit-mode {
+	background-color: <<colour vis-button-background>> !important;
+	border-color: <<colour vis-button-border>> !important;
+	color: <<colour vis-button-foreground>>;
+	fill: <<colour vis-button-foreground>>;
+}
+
+div.vis-network div.vis-manipulation button.vis-button {
+	background-color: <<colour vis-button-background>>;
+	color: <<colour vis-button-foreground>>;
+	fill: <<colour vis-button-foreground>>;
+}
+
+div.vis-network div.vis-manipulation {
+	--color: <<colour vis-manipulation-banner-background>>;
+	background: color-mix(in srgb, var(--color) 70%, transparent) !important;
+	border-color: <<colour vis-manipulation-banner-border>> !important;
+}
+
+/*
+div.vis-network div.vis-edit-mode button.vis-button.vis-edit.vis-edit-mode:hover {
+	background-color: <<colour tiddler-controls-foreground-selected>>;
+	color: <<colour background>>;
+	fill: <<colour background>>;
+}
+*/
+
+div.vis-network div.vis-edit-mode button.vis-button.vis-edit.vis-edit-mode.tc-selected {
+	background-color: <<colour primary>>;
+}

@@ -1,0 +1,7 @@
+title: $:/config/DefaultColourMappings/
+
+vis-button-background: <<colour dropdown-background>>
+vis-button-border: <<colour dropdown-border>>
+vis-button-foreground: <<colour foreground>>
+vis-manipulation-banner-background: <<colour dropdown-background>>
+vis-manipulation-banner-border: <<colour dropdown-border>>
