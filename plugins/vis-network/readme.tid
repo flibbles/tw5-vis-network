@@ -3,7 +3,7 @@ title: $:/plugins/flibbles/vis-network/readme
 \rules except wikilink
 ! tw5-vis-network
 
-A tiddlywiki plugin for the vis-network library.
+A tiddlywiki plugin for the [[vis-network library|https://visjs.github.io/vis-network/docs/network/]].
 
 ---
 

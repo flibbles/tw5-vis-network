@@ -1,5 +1,5 @@
 {
-	"description": "Testing documentation, and demo framework for tw5-relink",
+	"description": "Testing framework for vis-network",
 	"plugins": [
 		"tiddlywiki/jasmine"
 	],

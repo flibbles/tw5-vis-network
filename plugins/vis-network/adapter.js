@@ -17,9 +17,12 @@ exports.name = "Vis-Network";
 
 exports.properties = {
 	graph: {
-		physics: {type: "boolean", default: true}
+		physics: {type: "boolean", default: true},
+		manipulation: {type: "boolean", default: false}
 	},
 	nodes: {
+		x: {type: "number", hidden: true},
+		y: {type: "number", hidden: true},
 		color: {type: "color"},
 		borderWidth: {type: "number", min: 0, default: 1, increment: 0.1},
 		label: {type: "string"},
@@ -43,8 +46,8 @@ var propertyMap = {
 	graph: {
 		hierarchical: {path: ["layout", "hierarchical"]},
 		physics: {path: ["physics", "enabled"]},
-		nodeBackground: {path: ["nodes", "color"]},
-		nodeForeground: {path: ["nodes", "font", "color"]}
+		nodeColor: {path: ["nodes", "color"]},
+		fontColor: {path: ["nodes", "font", "color"]}
 	},
 	nodes: {},
 	edges: {
