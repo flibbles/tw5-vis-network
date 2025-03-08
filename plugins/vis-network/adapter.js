@@ -152,6 +152,10 @@ exports.update = function(objects) {
 	}
 };
 
+exports.destroy = function() {
+	this.vis.destroy();
+};
+
 function makeDataSet(objects, rules) {
 	var array = [];
 	if (objects) {
