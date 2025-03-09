@@ -23,12 +23,13 @@ exports.properties = {
 	nodes: {
 		x: {type: "number", hidden: true},
 		y: {type: "number", hidden: true},
-		color: {type: "color"},
+		color: {type: "color", default: "#D2E5FF"},
 		borderWidth: {type: "number", min: 0, default: 1, increment: 0.1},
 		label: {type: "string"},
 		shape: {type: "enum", values: ["box", "circle", "circularImage", "diamond", "database", "dot", "ellipse", "hexagon", "icon", "image", "square", "star", "text", "triangle", "triangleDown"]},
 		size: {type: "number", min: 0, default: 25},
-		physics: {type: "boolean", default: true}
+		physics: {type: "boolean", default: true},
+		fontColor: {type: "color", default: "#343434"}
 	},
 	edges: {
 		arrows: {type: "enum", values: ["to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
@@ -49,13 +50,33 @@ var propertyMap = {
 		nodeColor: {path: ["nodes", "color"]},
 		fontColor: {path: ["nodes", "font", "color"]}
 	},
-	nodes: {},
+	nodes: {
+		fontColor: {path: ["font", "color"]},
+		tweaks: function (node, objects) {
+			var globalColor = objects.graph && objects.graph.nodeColor;
+			if (shapesWithInternalText[node.shape] === true
+			&& node.label
+			&& (node.color || globalColor)
+			&& (!node.font || !node.font.color)) {
+				node.font = node.font || {};
+				var fontColor = $tw.macros.contrastcolour.run(
+					node.color || "",
+					globalColor || "#D2E5FF",
+					"#000000", "#ffffff");
+				node.font.color = fontColor;
+			}
+		}
+	},
 	edges: {
-		label: {eraser: "\0"}
+		tweaks: function(edge) {
+			if (edge.label == null) {
+				edge.label = "\0";
+			}
+		}
 	}
 };
 
-function generateOptions(style) {
+function generateOptions(graph) {
 	var options = {
 		interaction: {
 			hover: true
@@ -65,16 +86,16 @@ function generateOptions(style) {
 			font: {}
 		}
 	};
-	if (style) {
-		translate(options, style, propertyMap.graph);
+	if (graph) {
+		translate(options, graph, propertyMap.graph);
 	}
 	return options;
 };
 
 exports.init = function(element, objects) {
 	this.element = element;
-	this.nodes = makeDataSet(objects.nodes, propertyMap.nodes)
-	this.edges = makeDataSet(objects.edges, propertyMap.edges)
+	this.nodes = makeDataSet(objects.nodes, propertyMap.nodes, objects)
+	this.edges = makeDataSet(objects.edges, propertyMap.edges, objects)
 	var data = {
 		nodes: this.nodes,
 		edges: this.edges
@@ -145,8 +166,8 @@ exports.init = function(element, objects) {
 };
 
 exports.update = function(objects) {
-	modifyDataSet(this.nodes, objects.nodes, propertyMap.nodes);
-	modifyDataSet(this.edges, objects.edges, propertyMap.edges);
+	modifyDataSet(this.nodes, objects.nodes, propertyMap.nodes, objects);
+	modifyDataSet(this.edges, objects.edges, propertyMap.edges, objects);
 	if (objects.graph) {
 		this.vis.setOptions(generateOptions(objects.graph));
 	}
@@ -156,11 +177,15 @@ exports.destroy = function() {
 	this.vis.destroy();
 };
 
-function makeDataSet(objects, rules) {
+function makeDataSet(objects, rules, allObjects) {
 	var array = [];
 	if (objects) {
 		for (var id in objects) {
-			array.push(translate({id: id}, objects[id], rules));
+			var object = translate({id: id}, objects[id], rules);
+			if (rules.tweaks) {
+				rules.tweaks(object, allObjects);
+			}
+			array.push(object);
 		}
 	}
 	return new exports.Vis.DataSet(array, {queue: true});
@@ -185,7 +210,7 @@ function translate(output, properties, rules) {
 	return output;
 };
 
-function modifyDataSet(dataSet, objects, rules) {
+function modifyDataSet(dataSet, objects, rules, allObjects) {
 	if (objects) {
 		var changed = false;
 		for (var id in objects) {
@@ -200,8 +225,8 @@ function modifyDataSet(dataSet, objects, rules) {
 					// that aren't supposed to be there anymore.
 					scrubLingering(oldObj, newObj);
 				}
-				if (rules.label && rules.label.eraser && newObj.label == null) {
-					newObj.label = '\0';
+				if (rules.tweaks) {
+					rules.tweaks(newObj, allObjects);
 				}
 				dataSet.update(newObj);
 			}
@@ -222,4 +247,12 @@ function scrubLingering(oldObject, newObject) {
 			scrubLingering(oldObject[property], newValue);
 		}
 	}
+};
+
+
+var shapesWithInternalText = {
+	ellipse: true,
+	circle: true,
+	database: true,
+	box: true
 };

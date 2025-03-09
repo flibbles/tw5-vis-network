@@ -6,6 +6,7 @@ Tests the Vis-Network adapter's ability to translate incoming properties.
 
 var Adapter = $tw.modules.getModulesByTypeAsHashmap("graphengine")["Vis-Network"];
 var MockVis = require("./mock/vis");
+var adapter;
 
 describe("Adapter", function() {
 
@@ -18,12 +19,19 @@ afterAll(function() {
 	Adapter.Vis = Adapter.oldVis;
 });
 
+beforeEach(function() {
+	adapter = Object.create(Adapter);
+});
+
+function element() {
+	return {childNodes: []};
+};
+
 it("initializes with starting data", function() {
-	var adapter = Object.create(Adapter);
 	var update = spyOn(MockVis.DataSet.prototype, "update");
 	var add = spyOn(MockVis.DataSet.prototype, "add");
 	var flush = spyOn(MockVis.DataSet.prototype, "flush");
-	adapter.init({childNodes: []}, {
+	adapter.init(element(), {
 		nodes: {A: {label: "A"}},
 		edges: {1: {label: "1"}}});
 	var objects = MockVis.network.objects;
@@ -39,9 +47,8 @@ it("initializes with starting data", function() {
 });
 
 it("can update nodes", function() {
-	var adapter = Object.create(Adapter);
 	var flush = spyOn(MockVis.DataSet.prototype, "flush").and.callThrough();
-	adapter.init({childNodes: []}, {
+	adapter.init(element(), {
 		nodes: {A: {}, B: {}, C: {}}});
 	adapter.update({nodes: {
 		B: {label: "new"},
@@ -53,8 +60,7 @@ it("can update nodes", function() {
 });
 
 it("does not retain lingering properties", function() {
-	var adapter = Object.create(Adapter);
-	adapter.init({childNodes: []}, {nodes: {A: {label: "old", size: 2, physics: true}}});
+	adapter.init(element(), {nodes: {A: {label: "old", size: 2, physics: true}}});
 	// Setting physics to false makes sure the falsy value doesn't get picked
 	// up as having been removed.
 	adapter.update({nodes: {A: {size: 5, physics: false}}});
@@ -63,18 +69,16 @@ it("does not retain lingering properties", function() {
 });
 
 it("initializes with global style", function() {
-	var adapter = Object.create(Adapter);
-	adapter.init({childNodes: []}, {graph: {
-		nodeBackground: "#ffffff",
-		nodeForeground: "#000000"}});
+	adapter.init(element(), {graph: {
+		nodeColor: "#ffffff",
+		fontColor: "#000000"}});
 	var options = MockVis.network.options;
 	expect(options.nodes.color).toBe("#ffffff");
 	expect(options.nodes.font.color).toBe("#000000");
 });
 
 it("can update graph properties", function() {
-	var adapter = Object.create(Adapter);
-	adapter.init({childNodes: []}, {});
+	adapter.init(element(), {});
 	adapter.update({graph: {physics: false}});
 	var options = MockVis.network.options;
 	expect(options.physics.enabled).toBe(false);
@@ -83,16 +87,14 @@ it("can update graph properties", function() {
 /*** Property translation ***/
 
 it("translates graph properties", function() {
-	var adapter = Object.create(Adapter);
-	adapter.init({childNodes: []}, {graph: {physics: true}});
+	adapter.init(element(), {graph: {physics: true}});
 	var options = MockVis.network.options;
 	expect(options.physics.enabled).toBe(true);
 });
 
 it("translate ", function() {
 	function testNode(input, expected) {
-		var adapter = Object.create(Adapter);
-		adapter.init({childNodes: []}, {nodes: input});
+		adapter.init(element(), {nodes: input});
 		expect(MockVis.network.objects.nodes.entries).toEqual(expected);
 	};
 	// This is the only one currently
@@ -101,11 +103,66 @@ it("translate ", function() {
 
 // This is to cope with a bug vis-network has where edge labels can't be removed from existing edges.
 it("can remove labels from edges", function() {
-	var adapter = Object.create(Adapter);
-	adapter.init({childNodes: []}, {nodes: {A: {label: "anything"}, B: {}}, edges: {1: {from: "A", to: "B", label: "anything"}}});
+	adapter.init(element(), {nodes: {A: {label: "anything"}, B: {}}, edges: {1: {from: "A", to: "B", label: "anything"}}});
 	adapter.update({nodes: {A: {}}, edges: {1: {from: "A", to: "B"}}});
 	expect(MockVis.network.objects.nodes.entries).toEqual({A: {id: "A", label: null}, B: {id: "B"}});
 	expect(MockVis.network.objects.edges.entries).toEqual({1: {id: "1", from: "A", to: "B", label: "\0"}});
+});
+
+/*** Auto fontColor contrast ***/
+
+it("will assign contrasting colors when labels are inside node", function() {
+	var darkFont = {color: "#000000"};
+	var lightFont = {color: "#ffffff"};
+	adapter.init(element(), {graph: {nodeColor: "#111111", fontColor: "#eeeeee"}, nodes: {
+		dot1: {label: "label", shape: "dot", color: "#000000"},
+		dot2: {label: "label", shape: "dot", color: "#ffffff"},
+		dot3: {label: "label", shape: "dot"},
+		box1: {label: "label", shape: "box", color: "#000000"},
+		box2: {label: "label", shape: "box", color: "#ffffff"},
+		box3: {label: "label", shape: "box"},
+		// emp as in empty. No label
+		emp1: {shape: "box", color: "#000000"},
+		emp2: {shape: "box", color: "#ffffff"},
+		emp3: {shape: "box"},
+		font1: {label: "label", shape: "box", fontColor: "#333333", color: "#000000"},
+		font2: {label: "label", shape: "box", fontColor: "#333333", color: "#ffffff"},
+		font3: {label: "label", shape: "box", fontColor: "#333333"}
+	}});
+	expect(MockVis.network.objects.nodes.entries).toEqual({
+		dot1: {id: "dot1", label: "label", shape: "dot", color: "#000000"},
+		dot2: {id: "dot2", label: "label", shape: "dot", color: "#ffffff"},
+		dot3: {id: "dot3", label: "label", shape: "dot"},
+		box1: {id: "box1", label: "label", shape: "box", color: "#000000", font: lightFont},
+		box2: {id: "box2", label: "label", shape: "box", color: "#ffffff", font: darkFont},
+		box3: {id: "box3", label: "label", shape: "box", font: lightFont},
+		emp1: {id: "emp1", shape: "box", color: "#000000"},
+		emp2: {id: "emp2", shape: "box", color: "#ffffff"},
+		emp3: {id: "emp3", shape: "box"},
+		font1: {id: "font1", label: "label", shape: "box", color: "#000000", font: {color: "#333333"}},
+		font2: {id: "font2", label: "label", shape: "box", color: "#ffffff", font: {color: "#333333"}},
+		font3: {id: "font3", label: "label", shape: "box", font: {color: "#333333"}}
+	});
+});
+
+it("will not assign contrasting font colors with no background", function() {
+	adapter.init(element(), {nodes: {
+		blank: {label: "label", shape: "box"},
+		dark: {label: "label", shape: "box", color: "#000000"}
+	}});
+	expect(MockVis.network.objects.nodes.entries).toEqual({
+		blank: {id: "blank", label: "label", shape: "box"},
+		dark: {id: "dark", label: "label", shape: "box", color: "#000000", font: {color: "#ffffff"}}
+	});
+});
+
+it("can remove default contrasting font colors", function() {
+	adapter.init(element(), {nodes: {
+		A: {shape: "box", color: "#000000", label: "label"}}});
+	adapter.update({nodes: {
+		A: {shape: "box", color: "#000000"}}});
+	var objects = MockVis.network.objects;
+	expect(objects.nodes.entries).toEqual({A: {id: "A", label: null, shape: "box", color: "#000000", font: null}});
 });
 
 });
