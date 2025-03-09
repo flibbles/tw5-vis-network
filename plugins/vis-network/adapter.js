@@ -18,7 +18,8 @@ exports.name = "Vis-Network";
 exports.properties = {
 	graph: {
 		physics: {type: "boolean", default: true},
-		manipulation: {type: "boolean", default: false}
+		manipulation: {type: "boolean", default: false},
+		addNode: {type: "actions"}
 	},
 	nodes: {
 		x: {type: "number", hidden: true},
@@ -48,7 +49,20 @@ var propertyMap = {
 		hierarchical: {path: ["layout", "hierarchical"]},
 		physics: {path: ["physics", "enabled"]},
 		nodeColor: {path: ["nodes", "color"]},
-		fontColor: {path: ["nodes", "font", "color"]}
+		fontColor: {path: ["nodes", "font", "color"]},
+		manipulation: {path: ["manipulation", "enabled"]},
+		addNode: {path: ["manipulation", "addNode"]},
+		tweaks: function(graph, objects) {
+			if (graph.manipulation) {
+				if (objects.graph.onAddNode) {
+					graph.manipulation.addNode = function(nodeData, callback) {
+						console.log("Node added");
+					}
+				} else {
+					graph.manipulation.addNode = false;
+				}
+			}
+		}
 	},
 	nodes: {
 		fontColor: {path: ["font", "color"]},
@@ -76,7 +90,7 @@ var propertyMap = {
 	}
 };
 
-function generateOptions(graph) {
+function generateOptions(graph, objects) {
 	var options = {
 		interaction: {
 			hover: true
@@ -88,6 +102,9 @@ function generateOptions(graph) {
 	};
 	if (graph) {
 		translate(options, graph, propertyMap.graph);
+		if (propertyMap.graph.tweaks) {
+			propertyMap.graph.tweaks(options, objects);
+		}
 	}
 	return options;
 };
@@ -105,7 +122,7 @@ exports.init = function(element, objects) {
 	// Also, use .childNodes, not .children. The latter misses text nodes
 	var children = Array.prototype.slice.call(element.childNodes);
 	// First `Orb` is just a namespace of the JS package 
-	this.vis = new exports.Vis.Network(element, data, generateOptions(objects.graph));
+	this.vis = new exports.Vis.Network(element, data, generateOptions(objects.graph, objects));
 
 	// We MUST preserve any elements already attached to the passed element.
 	for (var i = children.length-1; i>=0; i--) {
@@ -169,7 +186,7 @@ exports.update = function(objects) {
 	modifyDataSet(this.nodes, objects.nodes, propertyMap.nodes, objects);
 	modifyDataSet(this.edges, objects.edges, propertyMap.edges, objects);
 	if (objects.graph) {
-		this.vis.setOptions(generateOptions(objects.graph));
+		this.vis.setOptions(generateOptions(objects.graph, objects));
 	}
 };
 

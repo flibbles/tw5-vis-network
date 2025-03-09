@@ -165,4 +165,23 @@ it("can remove default contrasting font colors", function() {
 	expect(objects.nodes.entries).toEqual({A: {id: "A", label: null, shape: "box", color: "#000000", font: null}});
 });
 
+/*** Manipulation ***/
+
+it("can have no manipulation", function() {
+	adapter.init(element(), {graph: {}});
+	expect(MockVis.network.options.manipulation).toBeUndefined();
+});
+
+it("can have empty manipulation", function() {
+	adapter.init(element(), {graph: {manipulation: true}});
+	expect(MockVis.network.options.manipulation).toEqual({enabled: true, addNode: false});
+});
+
+it("can have addNode manipulation", function() {
+	adapter.init(element(), {graph: {manipulation: true, addNode: true}});
+	var manipulation = MockVis.network.options.manipulation;
+	expect(manipulation.enabled).toBe(true);
+	expect(typeof manipulation.addNode).toBe("function");
+});
+
 });
