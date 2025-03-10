@@ -53,10 +53,15 @@ var propertyMap = {
 		manipulation: {path: ["manipulation", "enabled"]},
 		addNode: {path: ["manipulation", "addNode"]},
 		tweaks: function(graph, objects) {
+			var self = this;
 			if (graph.manipulation) {
-				if (objects.graph.onAddNode) {
+				if (objects.graph.addNode) {
 					graph.manipulation.addNode = function(nodeData, callback) {
-						console.log("Node added");
+						self.onevent({
+							type: "addNode",
+							objectType: "graph",
+							point: {x: 0, y: 0},
+							viewPoint: {x: 0, y: 0}});
 					}
 				} else {
 					graph.manipulation.addNode = false;
@@ -90,7 +95,7 @@ var propertyMap = {
 	}
 };
 
-function generateOptions(graph, objects) {
+function generateOptions(adapter, graph, objects) {
 	var options = {
 		interaction: {
 			hover: true
@@ -103,7 +108,7 @@ function generateOptions(graph, objects) {
 	if (graph) {
 		translate(options, graph, propertyMap.graph);
 		if (propertyMap.graph.tweaks) {
-			propertyMap.graph.tweaks(options, objects);
+			propertyMap.graph.tweaks.call(adapter, options, objects);
 		}
 	}
 	return options;
@@ -122,7 +127,7 @@ exports.init = function(element, objects) {
 	// Also, use .childNodes, not .children. The latter misses text nodes
 	var children = Array.prototype.slice.call(element.childNodes);
 	// First `Orb` is just a namespace of the JS package 
-	this.vis = new exports.Vis.Network(element, data, generateOptions(objects.graph, objects));
+	this.vis = new exports.Vis.Network(element, data, generateOptions(this, objects.graph, objects));
 
 	// We MUST preserve any elements already attached to the passed element.
 	for (var i = children.length-1; i>=0; i--) {
@@ -186,7 +191,7 @@ exports.update = function(objects) {
 	modifyDataSet(this.nodes, objects.nodes, propertyMap.nodes, objects);
 	modifyDataSet(this.edges, objects.edges, propertyMap.edges, objects);
 	if (objects.graph) {
-		this.vis.setOptions(generateOptions(objects.graph, objects));
+		this.vis.setOptions(generateOptions(this, objects.graph, objects));
 	}
 };
 
@@ -200,7 +205,7 @@ function makeDataSet(objects, rules, allObjects) {
 		for (var id in objects) {
 			var object = translate({id: id}, objects[id], rules);
 			if (rules.tweaks) {
-				rules.tweaks(object, allObjects);
+				rules.tweaks.call(this, object, allObjects);
 			}
 			array.push(object);
 		}
@@ -243,7 +248,7 @@ function modifyDataSet(dataSet, objects, rules, allObjects) {
 					scrubLingering(oldObj, newObj);
 				}
 				if (rules.tweaks) {
-					rules.tweaks(newObj, allObjects);
+					rules.tweaks.call(this, newObj, allObjects);
 				}
 				dataSet.update(newObj);
 			}

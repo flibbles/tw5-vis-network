@@ -21,6 +21,9 @@ afterAll(function() {
 
 beforeEach(function() {
 	adapter = Object.create(Adapter);
+	adapter.onevent = function() {
+		fail("Event called without spy.");
+	};
 });
 
 function element() {
@@ -178,10 +181,18 @@ it("can have empty manipulation", function() {
 });
 
 it("can have addNode manipulation", function() {
-	adapter.init(element(), {graph: {manipulation: true, addNode: true}});
+	adapter.init(element(), {graph: {manipulation: true, addNode: true}, nodes: {A: {}}});
 	var manipulation = MockVis.network.options.manipulation;
 	expect(manipulation.enabled).toBe(true);
 	expect(typeof manipulation.addNode).toBe("function");
+	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent) {
+		expect(graphEvent.type).toBe("addNode");
+		expect(graphEvent.objectType).toBe("graph");
+	});
+	manipulation.addNode({id: "A"}, function(nodeData) {
+		fail("Using the addNode callback.");
+	});
+	expect(onevent).toHaveBeenCalled();
 });
 
 });
