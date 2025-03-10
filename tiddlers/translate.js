@@ -188,8 +188,11 @@ it("can have addNode manipulation", function() {
 	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent) {
 		expect(graphEvent.type).toBe("addNode");
 		expect(graphEvent.objectType).toBe("graph");
+		expect(graphEvent.point).toEqual({x: 34, y: 17});
 	});
-	manipulation.addNode({id: "A"}, function(nodeData) {
+	// A mock of the kind of data vis will output to the adapter. GUID and all.
+	var visNodeData = {id: "12345678-abcd-123456", x: 34, y: 17, label: "new"};
+	manipulation.addNode(visNodeData, function(nodeData) {
 		fail("Using the addNode callback.");
 	});
 	expect(onevent).toHaveBeenCalled();

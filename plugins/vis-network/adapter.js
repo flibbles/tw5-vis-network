@@ -11,6 +11,11 @@ This allows flibbles/graph to alternatively use this library.
 "use strict";
 
 exports.Vis = require("./vis.js");
+// Tweaks are to perform very specific operations to the incoming data before
+// passing it along to vis.
+// Partly to account for differences in API.
+// Partly to account for all the bugs in vis-network.
+var tweaks = $tw.modules.applyMethods("vis-tweak");
 
 exports.name = "Vis-Network";
 //exports.platforms = ["browser"];
@@ -51,23 +56,7 @@ var propertyMap = {
 		nodeColor: {path: ["nodes", "color"]},
 		fontColor: {path: ["nodes", "font", "color"]},
 		manipulation: {path: ["manipulation", "enabled"]},
-		addNode: {path: ["manipulation", "addNode"]},
-		tweaks: function(graph, objects) {
-			var self = this;
-			if (graph.manipulation) {
-				if (objects.graph.addNode) {
-					graph.manipulation.addNode = function(nodeData, callback) {
-						self.onevent({
-							type: "addNode",
-							objectType: "graph",
-							point: {x: 0, y: 0},
-							viewPoint: {x: 0, y: 0}});
-					}
-				} else {
-					graph.manipulation.addNode = false;
-				}
-			}
-		}
+		addNode: {path: ["manipulation", "addNode"]}
 	},
 	nodes: {
 		fontColor: {path: ["font", "color"]},
@@ -95,7 +84,7 @@ var propertyMap = {
 	}
 };
 
-function generateOptions(adapter, graph, objects) {
+function generateOptions(adapter, graph) {
 	var options = {
 		interaction: {
 			hover: true
@@ -107,8 +96,8 @@ function generateOptions(adapter, graph, objects) {
 	};
 	if (graph) {
 		translate(options, graph, propertyMap.graph);
-		if (propertyMap.graph.tweaks) {
-			propertyMap.graph.tweaks.call(adapter, options, objects);
+		for (var name in tweaks) {
+			tweaks[name].call(adapter, {graph: options});
 		}
 	}
 	return options;
@@ -127,7 +116,7 @@ exports.init = function(element, objects) {
 	// Also, use .childNodes, not .children. The latter misses text nodes
 	var children = Array.prototype.slice.call(element.childNodes);
 	// First `Orb` is just a namespace of the JS package 
-	this.vis = new exports.Vis.Network(element, data, generateOptions(this, objects.graph, objects));
+	this.vis = new exports.Vis.Network(element, data, generateOptions(this, objects.graph));
 
 	// We MUST preserve any elements already attached to the passed element.
 	for (var i = children.length-1; i>=0; i--) {
@@ -191,7 +180,7 @@ exports.update = function(objects) {
 	modifyDataSet(this.nodes, objects.nodes, propertyMap.nodes, objects);
 	modifyDataSet(this.edges, objects.edges, propertyMap.edges, objects);
 	if (objects.graph) {
-		this.vis.setOptions(generateOptions(this, objects.graph, objects));
+		this.vis.setOptions(generateOptions(this, objects.graph));
 	}
 };
 
