@@ -15,7 +15,7 @@ exports.Vis = require("./vis.js");
 // passing it along to vis.
 // Partly to account for differences in API.
 // Partly to account for all the bugs in vis-network.
-var tweaks = $tw.modules.applyMethods("vis-tweak");
+var graphTweaks = $tw.modules.applyMethods("vis-tweak");
 
 exports.name = "Vis-Network";
 //exports.platforms = ["browser"];
@@ -96,8 +96,8 @@ function generateOptions(adapter, graph) {
 	};
 	if (graph) {
 		translate(options, graph, propertyMap.graph);
-		for (var name in tweaks) {
-			tweaks[name].call(adapter, {graph: options});
+		for (var name in graphTweaks) {
+			graphTweaks[name].call(adapter, {graph: options});
 		}
 	}
 	return options;
