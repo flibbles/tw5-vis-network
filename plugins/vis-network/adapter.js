@@ -23,7 +23,6 @@ exports.name = "Vis-Network";
 exports.properties = {
 	graph: {
 		physics: {type: "boolean", default: true},
-		manipulation: {type: "boolean", default: false},
 		addNode: {type: "actions", variables: ["x", "y"]},
 		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]}
 	},

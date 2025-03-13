@@ -8,9 +8,11 @@ Manages all the structure for graph manipulation.
 
 exports.manipulation = function(objects) {
 	var self = this,
-		graph = objects.graph;
+		graph = objects.graph,
+		manipulate = false;
 	if (graph && graph.manipulation) {
 		if (graph.manipulation.addNode) {
+			manipulate = true;
 			graph.manipulation.addNode = function(nodeData, callback) {
 				self.onevent({
 					type: "addNode",
@@ -23,6 +25,7 @@ exports.manipulation = function(objects) {
 			graph.manipulation.addNode = false;
 		}
 		if (graph.manipulation.addEdge) {
+			manipulate = true;
 			graph.manipulation.addEdge = function(edgeData, callback) {
 				self.onevent({
 					type: "addEdge",
@@ -34,5 +37,10 @@ exports.manipulation = function(objects) {
 		} else {
 			graph.manipulation.addEdge = false;
 		}
+	}
+	if (!manipulate) {
+		// No manipulation was enabled.
+		// Scrap what we have and set it all to false.
+		graph.manipulation = false;
 	}
 };

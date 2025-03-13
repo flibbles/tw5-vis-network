@@ -172,12 +172,7 @@ it("can remove default contrasting font colors", function() {
 
 it("can have no manipulation", function() {
 	adapter.init(element(), {graph: {}});
-	expect(MockVis.network.options.manipulation).toBeUndefined();
-});
-
-it("can have empty manipulation", function() {
-	adapter.init(element(), {graph: {manipulation: true}});
-	expect(MockVis.network.options.manipulation).toEqual({enabled: true, addNode: false, addEdge: false});
+	expect(MockVis.network.options.manipulation).toBe(false);
 });
 
 it("can have addNode manipulation", function() {
@@ -211,11 +206,27 @@ it("can have addEdge manipulation", function() {
 		expect(variables.toTiddler).toBe("B");
 	});
 	// A mock of the kind of data vis will output to the adapter. GUID and all.
-	var visNodeData = {from: "A", to: "B"};
-	manipulation.addEdge(visNodeData, function(edgeData) {
+	var visEdgeData = {from: "A", to: "B"};
+	manipulation.addEdge(visEdgeData, function(edgeData) {
 		fail("Using the addEdge callback.");
 	});
 	expect(onevent).toHaveBeenCalled();
+});
+
+it("can disable existing manipulation", function() {
+	adapter.init(element(), {graph: {addEdge: true, addNode: true}});
+	var manipulation = MockVis.network.options.manipulation;
+	expect(typeof manipulation.addNode).toBe("function");
+	expect(typeof manipulation.addEdge).toBe("function");
+	// Partially disable it
+	adapter.update({graph: {addEdge: true}});
+	manipulation = MockVis.network.options.manipulation;
+	expect(manipulation.addNode).toBe(false);
+	expect(typeof manipulation.addEdge).toBe("function");
+	// Fully disable it
+	adapter.update({graph: {}});
+	manipulation = MockVis.network.options.manipulation;
+	expect(manipulation).toBe(false);
 });
 
 /*** Handling of non-graph DOM nodes ***/
