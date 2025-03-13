@@ -27,7 +27,7 @@ beforeEach(function() {
 });
 
 function element() {
-	return {childNodes: []};
+	return $tw.fakeDocument.createElement("div");
 };
 
 it("initializes with starting data", function() {
@@ -197,6 +197,23 @@ it("can have addNode manipulation", function() {
 		fail("Using the addNode callback.");
 	});
 	expect(onevent).toHaveBeenCalled();
+});
+
+/*** Handling of non-graph DOM nodes ***/
+
+it("puts pre-existing DOM nodes after canvas", function() {
+	var outer = element();
+	var inner1 = $tw.fakeDocument.createElement("span");
+	var inner2 = $tw.fakeDocument.createElement("span");
+	inner1.attributes.id = "inner1";
+	inner2.attributes.id = "inner2";
+	outer.appendChild(inner1);
+	outer.appendChild(inner2);
+	adapter.init(outer, {});
+	var length = outer.childNodes.length;
+	expect(length).toBe(3);
+	expect(outer.childNodes[1].attributes.id).toBe("inner1");
+	expect(outer.childNodes[2].attributes.id).toBe("inner2");
 });
 
 });

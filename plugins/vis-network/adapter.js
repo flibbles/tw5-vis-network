@@ -119,8 +119,8 @@ exports.init = function(element, objects) {
 	this.vis = new exports.Vis.Network(element, data, generateOptions(this, objects.graph));
 
 	// We MUST preserve any elements already attached to the passed element.
-	for (var i = children.length-1; i>=0; i--) {
-		element.insertBefore(children[i], element.firstChild);
+	for (var i = 0; i < children.length; i++) {
+		element.appendChild(children[i]);
 	}
 
 	//this.vis.on("click", function(params) {

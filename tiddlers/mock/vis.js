@@ -9,6 +9,15 @@ var Network = function(element, objects, options) {
 	exports.network = this;
 	this.objects = objects;
 	this.options = options
+	this.element = element;
+	// create a pretend canvas to insert
+	this.wrapper = $tw.fakeDocument.createElement("div");
+	this.wrapper.className = "vis-network";
+	this.canvas = $tw.fakeDocument.createElement("canvas");
+	this.wrapper.appendChild(this.canvas);
+	// Vis-Network always blasts whatever already existed in the passed element
+	element.children = [];
+	element.appendChild(this.wrapper);
 };
 
 Network.prototype.on = function(name, method) {
