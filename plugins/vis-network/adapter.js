@@ -24,7 +24,8 @@ exports.properties = {
 	graph: {
 		physics: {type: "boolean", default: true},
 		manipulation: {type: "boolean", default: false},
-		addNode: {type: "actions", variables: ["x", "y"]}
+		addNode: {type: "actions", variables: ["x", "y"]},
+		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]}
 	},
 	nodes: {
 		x: {type: "number", hidden: true},
@@ -56,7 +57,8 @@ var propertyMap = {
 		nodeColor: {path: ["nodes", "color"]},
 		fontColor: {path: ["nodes", "font", "color"]},
 		manipulation: {path: ["manipulation", "enabled"]},
-		addNode: {path: ["manipulation", "addNode"]}
+		addNode: {path: ["manipulation", "addNode"]},
+		addEdge: {path: ["manipulation", "addEdge"]}
 	},
 	nodes: {
 		fontColor: {path: ["font", "color"]},

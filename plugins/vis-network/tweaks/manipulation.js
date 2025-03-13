@@ -22,5 +22,17 @@ exports.manipulation = function(objects) {
 		} else {
 			graph.manipulation.addNode = false;
 		}
+		if (graph.manipulation.addEdge) {
+			graph.manipulation.addEdge = function(edgeData, callback) {
+				self.onevent({
+					type: "addEdge",
+					objectType: "graph"
+				},{
+					fromTiddler: edgeData.from,
+					toTiddler: edgeData.to});
+			}
+		} else {
+			graph.manipulation.addEdge = false;
+		}
 	}
 };
