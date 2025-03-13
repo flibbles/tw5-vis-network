@@ -24,7 +24,7 @@ exports.properties = {
 	graph: {
 		physics: {type: "boolean", default: true},
 		manipulation: {type: "boolean", default: false},
-		addNode: {type: "actions"}
+		addNode: {type: "actions", variables: ["x", "y"]}
 	},
 	nodes: {
 		x: {type: "number", hidden: true},
@@ -129,8 +129,6 @@ exports.init = function(element, objects) {
 		var data = {
 			type: "doubleclick",
 			event: params.event,
-			point: params.pointer.canvas,
-			viewPoint: params.pointer.DOM
 		};
 		// TODO: Meta keys
 		if (params.nodes.length >= 1) {
@@ -140,7 +138,7 @@ exports.init = function(element, objects) {
 			data.id = params.edges[0];
 			data.objectType = "edges";
 		}
-		self.onevent(data);
+		self.onevent(data, variablesFromInputParams(params));
 	});
 
 	this.vis.on("dragEnd", function(params) {
@@ -149,11 +147,9 @@ exports.init = function(element, objects) {
 				type: "drag",
 				objectType: "nodes",
 				id: params.nodes[0],
-				event: params.event,
-				point: params.pointer.canvas,
-				viewPoint: params.pointer.DOM
+				event: params.event
 			};
-			self.onevent(data);
+			self.onevent(data, variablesFromInputParams(params));
 		}
 	});
 	this.vis.on("hoverNode", function(params) {
@@ -162,18 +158,24 @@ exports.init = function(element, objects) {
 			objectType: "nodes",
 			id: params.node,
 			event: params.event,
-			point: params.pointer.canvas,
-			viewPoint: params.pointer.DOM});
+		}, variablesFromInputParams(params));
 	});
 	this.vis.on("blurNode", function(params) {
 		self.onevent({
 			type: "blur",
 			objectType: "nodes",
 			id: params.node,
-			event: params.event,
-			point: params.pointer.canvas,
-			viewPoint: params.pointer.DOM});
+			event: params.event
+		}, variablesFromInputParams(params));
 	});
+};
+
+function variablesFromInputParams(params) {
+	return {
+		x: params.pointer.canvas.x,
+		y: params.pointer.canvas.y,
+		xView: params.pointer.DOM.x,
+		yView: params.pointer.DOM.y};
 };
 
 exports.update = function(objects) {

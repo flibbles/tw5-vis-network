@@ -185,10 +185,11 @@ it("can have addNode manipulation", function() {
 	var manipulation = MockVis.network.options.manipulation;
 	expect(manipulation.enabled).toBe(true);
 	expect(typeof manipulation.addNode).toBe("function");
-	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent) {
+	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("addNode");
 		expect(graphEvent.objectType).toBe("graph");
-		expect(graphEvent.point).toEqual({x: 34, y: 17});
+		expect(variables.x).toBe(34);
+		expect(variables.y).toBe(17);
 	});
 	// A mock of the kind of data vis will output to the adapter. GUID and all.
 	var visNodeData = {id: "12345678-abcd-123456", x: 34, y: 17, label: "new"};

@@ -14,8 +14,10 @@ exports.manipulation = function(objects) {
 			graph.manipulation.addNode = function(nodeData, callback) {
 				self.onevent({
 					type: "addNode",
-					objectType: "graph",
-					point: {x: nodeData.x, y: nodeData.y}});
+					objectType: "graph"
+				},{
+					x: nodeData.x,
+					y: nodeData.y});
 			}
 		} else {
 			graph.manipulation.addNode = false;
