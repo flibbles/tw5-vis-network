@@ -45,7 +45,8 @@ exports.properties = {
 		label: {type: "string"},
 		physics: {type: "boolean", default: true},
 		smooth: {type: "boolean", default: true},
-		width: {type: "number", min: 0, default: 1, increment: 0.1}
+		width: {type: "number", min: 0, default: 1, increment: 0.1},
+		delete: {type: "actions", variables: ["edgeId"]}
 	}
 };
 
@@ -59,32 +60,14 @@ var propertyMap = {
 		addEdge: {path: ["manipulation", "addEdge"]}
 	},
 	nodes: {
-		fontColor: {path: ["font", "color"]},
-		tweaks: function (node, objects) {
-			var globalColor = objects.graph && objects.graph.nodeColor;
-			if (shapesWithInternalText[node.shape] === true
-			&& node.label
-			&& (node.color || globalColor)
-			&& (!node.font || !node.font.color)) {
-				node.font = node.font || {};
-				var fontColor = $tw.macros.contrastcolour.run(
-					node.color || "",
-					globalColor || "#D2E5FF",
-					"#000000", "#ffffff");
-				node.font.color = fontColor;
-			}
-		}
+		fontColor: {path: ["font", "color"]}
 	},
 	edges: {
-		tweaks: function(edge) {
-			if (edge.label == null) {
-				edge.label = "\0";
-			}
-		}
+		delete: {path: ["manipulation", "delete"]}
 	}
 };
 
-function generateOptions(adapter, graph) {
+function generateOptions(adapter, graph, objects) {
 	var options = {
 		interaction: {
 			hover: true
@@ -97,7 +80,7 @@ function generateOptions(adapter, graph) {
 	if (graph) {
 		translate(options, graph, propertyMap.graph);
 		for (var name in graphTweaks) {
-			graphTweaks[name].call(adapter, {graph: options});
+			graphTweaks[name].call(adapter, options, objects);
 		}
 	}
 	return options;
@@ -105,18 +88,18 @@ function generateOptions(adapter, graph) {
 
 exports.init = function(element, objects) {
 	this.element = element;
-	this.nodes = makeDataSet(objects.nodes, propertyMap.nodes, objects)
-	this.edges = makeDataSet(objects.edges, propertyMap.edges, objects)
-	var data = {
-		nodes: this.nodes,
-		edges: this.edges
+	this.objects = {};
+	var newObjects = this.processObjects(objects);
+	this.dataSets = {
+		nodes: new exports.Vis.DataSet(Object.values(newObjects.nodes || {}), {queue: true}),
+		edges: new exports.Vis.DataSet(Object.values(newObjects.edges || {}), {queue: true})
 	};
 	var self = this;
 	// We remember what children were already attached to the element, because they MUST remain. The TW widget stack requires the DOM to be what it made it.
 	// Also, use .childNodes, not .children. The latter misses text nodes
 	var children = Array.prototype.slice.call(element.childNodes);
 	// First `Orb` is just a namespace of the JS package 
-	this.vis = new exports.Vis.Network(element, data, generateOptions(this, objects.graph));
+	this.vis = new exports.Vis.Network(element, this.dataSets, newObjects.graph);
 
 	// We MUST preserve any elements already attached to the passed element.
 	for (var i = 0; i < children.length; i++) {
@@ -179,15 +162,69 @@ function variablesFromInputParams(params) {
 };
 
 exports.update = function(objects) {
-	modifyDataSet(this.nodes, objects.nodes, propertyMap.nodes, objects);
-	modifyDataSet(this.edges, objects.edges, propertyMap.edges, objects);
-	if (objects.graph) {
-		this.vis.setOptions(generateOptions(this, objects.graph));
+	var changes = this.processObjects(objects);
+	for (var type in changes) {
+		if (type === "graph") {
+			this.vis.setOptions(changes.graph);
+		} else {
+			var dataSet = this.dataSets[type];
+			for (var id in changes[type]) {
+				var object = changes[type][id];
+				if (object === null) {
+					dataSet.remove({id: id});
+				} else {
+					var oldObj = dataSet.get(id);
+					if (oldObj) {
+						scrubLingering(oldObj, object);
+					}
+					dataSet.update(object);
+				}
+			}
+			dataSet.flush();
+		}
 	}
 };
 
 exports.destroy = function() {
 	this.vis.destroy();
+};
+
+exports.processObjects = function(objects) {
+	var changes = {};
+	for (var type in objects) {
+		var rules = propertyMap[type];
+		changes[type] = Object.create(null);
+		if (type === "graph") {
+			translate(changes.graph, objects.graph, rules);
+		} else {
+			var set = objects[type];
+			for (var id in set) {
+				var object = set[id];
+				var newObj;
+				if (object === null) {
+					newObj = null;
+				} else {
+					newObj = translate({id: id}, object, rules);
+				}
+				changes[type][id] = newObj;
+			}
+		}
+	}
+	for (var name in graphTweaks) {
+		graphTweaks[name].call(this, this.objects, changes);
+	}
+	// Apply those changes to our own record.
+	for (var type in changes) {
+		if (type === "graph") {
+			this.objects.graph = changes.graph;
+		} else {
+			this.objects[type] = this.objects[type] || Object.create(null);
+			for (var id in changes[type]) {
+				this.objects[type][id] = changes[type][id];
+			}
+		}
+	}
+	return changes;
 };
 
 function makeDataSet(objects, rules, allObjects) {
@@ -202,25 +239,6 @@ function makeDataSet(objects, rules, allObjects) {
 		}
 	}
 	return new exports.Vis.DataSet(array, {queue: true});
-};
-
-function translate(output, properties, rules) {
-	for (var property in properties) {
-		var mapping = rules[property];
-		var dest = output;
-		if (mapping && mapping.path) {
-			var i = 0;
-			for (; i < mapping.path.length-1; i++) {
-				var dir = mapping.path[i];
-				dest[dir] = dest[dir] || {};
-				dest = dest[dir];
-			}
-			dest[mapping.path[i]] = properties[property];
-		} else {
-			output[property] = properties[property];
-		}
-	}
-	return output;
 };
 
 function modifyDataSet(dataSet, objects, rules, allObjects) {
@@ -251,6 +269,25 @@ function modifyDataSet(dataSet, objects, rules, allObjects) {
 	}
 };
 
+function translate(output, properties, rules) {
+	for (var property in properties) {
+		var mapping = rules[property];
+		var dest = output;
+		if (mapping && mapping.path) {
+			var i = 0;
+			for (; i < mapping.path.length-1; i++) {
+				var dir = mapping.path[i];
+				dest[dir] = dest[dir] || {};
+				dest = dest[dir];
+			}
+			dest[mapping.path[i]] = properties[property];
+		} else {
+			output[property] = properties[property];
+		}
+	}
+	return output;
+};
+
 function scrubLingering(oldObject, newObject) {
 	for (var property in oldObject) {
 		var newValue = newObject[property];
@@ -260,12 +297,4 @@ function scrubLingering(oldObject, newObject) {
 			scrubLingering(oldObject[property], newValue);
 		}
 	}
-};
-
-
-var shapesWithInternalText = {
-	ellipse: true,
-	circle: true,
-	database: true,
-	box: true
 };

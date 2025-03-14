@@ -6,10 +6,10 @@ Manages all the structure for graph manipulation.
 
 "use strict";
 
-exports.manipulation = function(objects) {
+exports.manipulation = function(objects, changes) {
 	var self = this,
-		graph = objects.graph,
-		manipulate = false;
+		manipulate = false,
+		graph = changes.graph && changes.graph;
 	if (graph && graph.manipulation) {
 		if (graph.manipulation.addNode) {
 			manipulate = true;
@@ -38,7 +38,26 @@ exports.manipulation = function(objects) {
 			graph.manipulation.addEdge = false;
 		}
 	}
-	if (!manipulate) {
+	if (changes.edges) {
+		for (var id in changes.edges) {
+			var edge = changes.edges[id];
+			if (edge.manipulation && edge.manipulation.delete) {
+				manipulate = true;
+				if (!graph) {
+					graph = objects.graph;
+					changes.graph = graph;
+				}
+				graph.manipulation = graph.manipulation || {};
+				graph.manipulation.deleteEdge = function(selected, callback) {
+					self.onevent({
+						type: "delete",
+						objectType: "edges",
+						id: selected.edges[0]}, {});
+				}
+			}
+		}
+	}
+	if (!manipulate && graph) {
 		// No manipulation was enabled.
 		// Scrap what we have and set it all to false.
 		graph.manipulation = false;

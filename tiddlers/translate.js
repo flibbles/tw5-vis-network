@@ -214,6 +214,29 @@ it("can have addEdge manipulation", function() {
 	expect(onevent).toHaveBeenCalled();
 });
 
+it("can have deleteEdge manipulation", function() {
+	adapter.init(element(), {graph: {}, nodes: {A: {}, B: {}}});
+	var manipulation = MockVis.network.options.manipulation;
+	expect(manipulation).toBe(false);
+	adapter.update({edges: {AB: {from: "A", to: "B", delete: true}}});
+	// Now we update it. Even though graph isn't touched, the edge change
+	// needs to update the graph.
+	manipulation = MockVis.network.options.manipulation;
+	expect(typeof manipulation.deleteEdge).toBe("function");
+	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
+		expect(graphEvent.type).toBe("delete");
+		expect(graphEvent.objectType).toBe("edges");
+		expect(graphEvent.id).toBe("AB");
+	});
+	// A mock of the kind of data vis will output to the adapter. GUID and all.
+	var visEdgeData = {edges: ["AB"], nodes: []};
+	manipulation.deleteEdge(visEdgeData, function(edgeData) {
+		fail("Using the addEdge callback.");
+	});
+	expect(onevent).toHaveBeenCalled();
+});
+
+
 it("can disable existing manipulation", function() {
 	adapter.init(element(), {graph: {addEdge: true, addNode: true}});
 	var manipulation = MockVis.network.options.manipulation;
