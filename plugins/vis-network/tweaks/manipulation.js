@@ -9,7 +9,7 @@ Manages all the structure for graph manipulation.
 exports.manipulation = function(objects, changes) {
 	var self = this,
 		manipulate = false,
-		graph = changes.graph && changes.graph;
+		graph = changes.graph;
 	if (graph && graph.manipulation) {
 		if (graph.manipulation.addNode) {
 			manipulate = true;
@@ -57,7 +57,7 @@ exports.manipulation = function(objects, changes) {
 			}
 		}
 	}
-	if (!manipulate && graph) {
+	if (!manipulate && graph && (objects.graph && objects.graph.manipulation)) {
 		// No manipulation was enabled.
 		// Scrap what we have and set it all to false.
 		graph.manipulation = false;

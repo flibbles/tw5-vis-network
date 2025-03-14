@@ -112,6 +112,25 @@ it("can remove labels from edges", function() {
 	expect(MockVis.network.objects.edges.entries).toEqual({1: {id: "1", from: "A", to: "B", label: "\0"}});
 });
 
+/*** Default graph values ***/
+
+it("will set defaults with other graph input", function() {
+	adapter.init(element(), {graph: {something: "irrelevant"}});
+	var options = MockVis.network.options;
+	expect(options).toEqual({
+		interaction: {hover: true},
+		nodes: {shape: "dot", font: {}},
+		something: "irrelevant"});
+});
+
+it("will set defaults with no graph input", function() {
+	adapter.init(element(), {});
+	var options = MockVis.network.options;
+	expect(options).toEqual({
+		interaction: {hover: true},
+		nodes: {shape: "dot", font: {}}});
+});
+
 /*** Auto fontColor contrast ***/
 
 it("will assign contrasting colors when labels are inside node", function() {
@@ -172,7 +191,7 @@ it("can remove default contrasting font colors", function() {
 
 it("can have no manipulation", function() {
 	adapter.init(element(), {graph: {}});
-	expect(MockVis.network.options.manipulation).toBe(false);
+	expect(MockVis.network.options.manipulation).toBeUndefined();
 });
 
 it("can have addNode manipulation", function() {
@@ -217,7 +236,7 @@ it("can have addEdge manipulation", function() {
 it("can have deleteEdge manipulation", function() {
 	adapter.init(element(), {graph: {}, nodes: {A: {}, B: {}}});
 	var manipulation = MockVis.network.options.manipulation;
-	expect(manipulation).toBe(false);
+	expect(manipulation).toBeUndefined();
 	adapter.update({edges: {AB: {from: "A", to: "B", delete: true}}});
 	// Now we update it. Even though graph isn't touched, the edge change
 	// needs to update the graph.

@@ -67,25 +67,6 @@ var propertyMap = {
 	}
 };
 
-function generateOptions(adapter, graph, objects) {
-	var options = {
-		interaction: {
-			hover: true
-		},
-		nodes: {
-			shape: "dot",
-			font: {}
-		}
-	};
-	if (graph) {
-		translate(options, graph, propertyMap.graph);
-		for (var name in graphTweaks) {
-			graphTweaks[name].call(adapter, options, objects);
-		}
-	}
-	return options;
-};
-
 exports.init = function(element, objects) {
 	this.element = element;
 	this.objects = {};
@@ -225,48 +206,6 @@ exports.processObjects = function(objects) {
 		}
 	}
 	return changes;
-};
-
-function makeDataSet(objects, rules, allObjects) {
-	var array = [];
-	if (objects) {
-		for (var id in objects) {
-			var object = translate({id: id}, objects[id], rules);
-			if (rules.tweaks) {
-				rules.tweaks.call(this, object, allObjects);
-			}
-			array.push(object);
-		}
-	}
-	return new exports.Vis.DataSet(array, {queue: true});
-};
-
-function modifyDataSet(dataSet, objects, rules, allObjects) {
-	if (objects) {
-		var changed = false;
-		for (var id in objects) {
-			var object = objects[id];
-			if (object === null) {
-				dataSet.remove({id: id});
-			} else {
-				var newObj = translate({id: id}, object, rules)
-				var oldObj = dataSet.get(id);
-				if (oldObj) {
-					// We need to explicitly turn off any lingering properties
-					// that aren't supposed to be there anymore.
-					scrubLingering(oldObj, newObj);
-				}
-				if (rules.tweaks) {
-					rules.tweaks.call(this, newObj, allObjects);
-				}
-				dataSet.update(newObj);
-			}
-			changed = true;
-		}
-		if (changed) {
-			dataSet.flush();
-		}
-	}
 };
 
 function translate(output, properties, rules) {
