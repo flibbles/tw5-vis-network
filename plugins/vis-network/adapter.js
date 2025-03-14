@@ -55,7 +55,6 @@ var propertyMap = {
 		physics: {path: ["physics", "enabled"]},
 		nodeColor: {path: ["nodes", "color"]},
 		fontColor: {path: ["nodes", "font", "color"]},
-		manipulation: {path: ["manipulation", "enabled"]},
 		addNode: {path: ["manipulation", "addNode"]},
 		addEdge: {path: ["manipulation", "addEdge"]}
 	},

@@ -176,9 +176,8 @@ it("can have no manipulation", function() {
 });
 
 it("can have addNode manipulation", function() {
-	adapter.init(element(), {graph: {manipulation: true, addNode: true}, nodes: {A: {}}});
+	adapter.init(element(), {graph: {addNode: true}, nodes: {A: {}}});
 	var manipulation = MockVis.network.options.manipulation;
-	expect(manipulation.enabled).toBe(true);
 	expect(typeof manipulation.addNode).toBe("function");
 	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("addNode");
@@ -195,9 +194,8 @@ it("can have addNode manipulation", function() {
 });
 
 it("can have addEdge manipulation", function() {
-	adapter.init(element(), {graph: {manipulation: true, addEdge: true}, nodes: {A: {}, B: {}}});
+	adapter.init(element(), {graph: {addEdge: true}, nodes: {A: {}, B: {}}});
 	var manipulation = MockVis.network.options.manipulation;
-	expect(manipulation.enabled).toBe(true);
 	expect(typeof manipulation.addEdge).toBe("function");
 	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("addEdge");
