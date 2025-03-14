@@ -18,8 +18,8 @@ exports.manipulation = function(objects) {
 					type: "addNode",
 					objectType: "graph"
 				},{
-					x: nodeData.x,
-					y: nodeData.y});
+					x: round(nodeData.x),
+					y: round(nodeData.y)});
 			}
 		} else {
 			graph.manipulation.addNode = false;
@@ -43,4 +43,8 @@ exports.manipulation = function(objects) {
 		// Scrap what we have and set it all to false.
 		graph.manipulation = false;
 	}
+};
+
+function round(number) {
+	return Math.round(number * 10) / 10;
 };
