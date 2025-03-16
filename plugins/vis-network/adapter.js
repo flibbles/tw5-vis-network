@@ -43,7 +43,8 @@ exports.properties = {
 		shape: {type: "enum", values: ["box", "circle", "circularImage", "diamond", "database", "dot", "ellipse", "hexagon", "icon", "image", "square", "star", "text", "triangle", "triangleDown"]},
 		size: {type: "number", min: 0, default: 25},
 		physics: {type: "boolean", default: true},
-		fontColor: {type: "color", default: "#343434"}
+		fontColor: {type: "color", default: "#343434"},
+		delete: {type: "actions", variables: []}
 	},
 	edges: {
 		arrows: {type: "enum", values: ["to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
@@ -70,9 +71,7 @@ var propertyMap = {
 	nodes: {
 		fontColor: {path: ["font", "color"]}
 	},
-	edges: {
-		delete: {path: ["manipulation", "delete"]}
-	}
+	edges: {}
 };
 
 exports.init = function(element, objects) {

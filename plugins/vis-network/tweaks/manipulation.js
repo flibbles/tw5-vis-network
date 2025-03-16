@@ -18,6 +18,16 @@ exports.manipulation = function(objects, changes) {
 			deleteNode: false
 		},
 		graph = changes.graph;
+	if (!this.manipulation) {
+		// We keep track of how many of these we have so we can know when to
+		// keep these behaviors.
+		this.manipulation = {
+			deleteEdge: 0,
+			deleteNode: 0,
+			editEdge: 0,
+			editNode: 0
+		}
+	}
 	if (graph && graph.manipulation) {
 		if (graph.manipulation.addNode) {
 			manipulate = true;
@@ -42,28 +52,64 @@ exports.manipulation = function(objects, changes) {
 			}
 		}
 	}
+	// Get an accurate count of object-specific manipulations
 	if (changes.edges) {
 		for (var id in changes.edges) {
 			var edge = changes.edges[id];
-			// TODO: If manipulation is passed as a property, it can trip stuff up.
-			if (edge.manipulation) {
-				manipulate = true;
-				if (!graph) {
-					graph = objects.graph;
-					changes.graph = graph;
+			if (edge == null) {
+				if (objects.edges[id].delete) {
+					this.manipulation.deleteEdge--;
 				}
-				if (edge.manipulation.delete) {
-					settings.deleteEdge = function(selected, callback) {
-						self.onevent({
-							type: "delete",
-							objectType: "edges",
-							id: selected.edges[0]}, {});
-					}
+			} else if (edge.delete) {
+				this.manipulation.deleteEdge++;
+			}
+		}
+	}
+	if (changes.nodes) {
+		for (var id in changes.nodes) {
+			var node = changes.nodes[id];
+			if (node == null) {
+				if (objects.nodes[id].delete) {
+					this.manipulation.deleteNode--;
+				}
+				if (objects.nodes[id].edit) {
+					this.manipulation.editNode--;
+				}
+			} else {
+				if (node.delete) {
+					this.manipulation.deleteNode++;
+				}
+				if (node.edit) {
+					this.manipulation.editNode++;
 				}
 			}
 		}
 	}
+	// If we have a positive number of object manipulations, add them now
+	if (this.manipulation.deleteNode > 0) {
+		manipulate = true;
+		settings.deleteNode = function(selected, callback) {
+			self.onevent({
+				type: "delete",
+				objectType: "nodes",
+				id: selected.nodes[0]}, {});
+		}
+	}
+	if (this.manipulation.deleteEdge > 0) {
+		manipulate = true;
+		settings.deleteEdge = function(selected, callback) {
+			self.onevent({
+				type: "delete",
+				objectType: "edges",
+				id: selected.edges[0]}, {});
+		}
+	}
+	// Now we install our manipulations if we have any.
 	if (manipulate) {
+		if (!graph) {
+			graph = objects.graph;
+			changes.graph = graph;
+		}
 		graph.manipulation = settings;
 	} else if (graph && (objects.graph && objects.graph.manipulation)) {
 		// No manipulation anymore, but there used to be, so we must

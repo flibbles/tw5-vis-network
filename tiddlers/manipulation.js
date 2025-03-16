@@ -77,12 +77,35 @@ it("can have deleteEdge manipulation", function() {
 	// A mock of the kind of data vis will output to the adapter. GUID and all.
 	var visEdgeData = {edges: ["AB"], nodes: []};
 	manipulation.deleteEdge(visEdgeData, function(edgeData) {
-		fail("Using the addEdge callback.");
+		fail("Using the deleteEdge callback.");
 	});
 	expect(onevent).toHaveBeenCalled();
 });
 
-it("can disable existing manipulation", function() {
+it("can have deleteNode manipulation", function() {
+	adapter.init(element(), {});
+	var manipulation = adapter.output.options.manipulation;
+	adapter.update({nodes: {A: {delete: true}}});
+	// Now we update it. Even though graph isn't touched, the edge change
+	// needs to update the graph.
+	manipulation = adapter.output.options.manipulation;
+	expect(typeof manipulation.deleteNode).toBe("function");
+	expect(manipulation.addEdge).toBe(false);
+	expect(manipulation.addNode).toBe(false);
+	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
+		expect(graphEvent.type).toBe("delete");
+		expect(graphEvent.objectType).toBe("nodes");
+		expect(graphEvent.id).toBe("A");
+	});
+	// A mock of the kind of data vis will output to the adapter. GUID and all.
+	var visEdgeData = {edges: [], nodes: ["A"]};
+	manipulation.deleteNode(visEdgeData, function(edgeData) {
+		fail("Using the deleteNode callback.");
+	});
+	expect(onevent).toHaveBeenCalled();
+});
+
+it("can disable addObject manipulation", function() {
 	adapter.init(element(), {graph: {addEdge: true, addNode: true}});
 	var manipulation = adapter.output.options.manipulation;
 	expect(typeof manipulation.addNode).toBe("function");
@@ -96,6 +119,18 @@ it("can disable existing manipulation", function() {
 	adapter.update({graph: {}});
 	manipulation = adapter.output.options.manipulation;
 	expect(manipulation).toBe(false);
+});
+
+it("can toggle addEdge and deleteEdge manipulation", function() {
+	var manipulation;
+	adapter.init(element(), {nodes: {A: {}, B: {}}, edges: {AB: {from: "A", to: "B", delete: true}}});
+	manipulation = adapter.output.options.manipulation;
+	expect(manipulation.addEdge).toBe(false);
+	expect(typeof manipulation.deleteEdge).toBe("function");
+	adapter.update({graph: {addEdge: true}});
+	manipulation = adapter.output.options.manipulation;
+	expect(typeof manipulation.addEdge).toBe("function");
+	expect(typeof manipulation.deleteEdge).toBe("function");
 });
 
 });
