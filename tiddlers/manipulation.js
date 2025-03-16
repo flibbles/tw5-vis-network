@@ -67,6 +67,8 @@ it("can have deleteEdge manipulation", function() {
 	// needs to update the graph.
 	manipulation = adapter.output.options.manipulation;
 	expect(typeof manipulation.deleteEdge).toBe("function");
+	expect(manipulation.addEdge).toBe(false);
+	expect(manipulation.addNode).toBe(false);
 	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("delete");
 		expect(graphEvent.objectType).toBe("edges");
@@ -79,7 +81,6 @@ it("can have deleteEdge manipulation", function() {
 	});
 	expect(onevent).toHaveBeenCalled();
 });
-
 
 it("can disable existing manipulation", function() {
 	adapter.init(element(), {graph: {addEdge: true, addNode: true}});

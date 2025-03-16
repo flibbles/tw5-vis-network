@@ -9,11 +9,19 @@ Manages all the structure for graph manipulation.
 exports.manipulation = function(objects, changes) {
 	var self = this,
 		manipulate = false,
+		settings = {
+			addEdge: false,
+			addNode: false,
+			editEdge: false,
+			editNode: false,
+			deleteEdge: false,
+			deleteNode: false
+		},
 		graph = changes.graph;
 	if (graph && graph.manipulation) {
 		if (graph.manipulation.addNode) {
 			manipulate = true;
-			graph.manipulation.addNode = function(nodeData, callback) {
+			settings.addNode = function(nodeData, callback) {
 				self.onevent({
 					type: "addNode",
 					objectType: "graph"
@@ -21,12 +29,10 @@ exports.manipulation = function(objects, changes) {
 					x: round(nodeData.x),
 					y: round(nodeData.y)});
 			}
-		} else {
-			graph.manipulation.addNode = false;
 		}
 		if (graph.manipulation.addEdge) {
 			manipulate = true;
-			graph.manipulation.addEdge = function(edgeData, callback) {
+			settings.addEdge = function(edgeData, callback) {
 				self.onevent({
 					type: "addEdge",
 					objectType: "graph"
@@ -34,32 +40,34 @@ exports.manipulation = function(objects, changes) {
 					fromTiddler: edgeData.from,
 					toTiddler: edgeData.to});
 			}
-		} else {
-			graph.manipulation.addEdge = false;
 		}
 	}
 	if (changes.edges) {
 		for (var id in changes.edges) {
 			var edge = changes.edges[id];
-			if (edge.manipulation && edge.manipulation.delete) {
+			// TODO: If manipulation is passed as a property, it can trip stuff up.
+			if (edge.manipulation) {
 				manipulate = true;
 				if (!graph) {
 					graph = objects.graph;
 					changes.graph = graph;
 				}
-				graph.manipulation = graph.manipulation || {};
-				graph.manipulation.deleteEdge = function(selected, callback) {
-					self.onevent({
-						type: "delete",
-						objectType: "edges",
-						id: selected.edges[0]}, {});
+				if (edge.manipulation.delete) {
+					settings.deleteEdge = function(selected, callback) {
+						self.onevent({
+							type: "delete",
+							objectType: "edges",
+							id: selected.edges[0]}, {});
+					}
 				}
 			}
 		}
 	}
-	if (!manipulate && graph && (objects.graph && objects.graph.manipulation)) {
-		// No manipulation was enabled.
-		// Scrap what we have and set it all to false.
+	if (manipulate) {
+		graph.manipulation = settings;
+	} else if (graph && (objects.graph && objects.graph.manipulation)) {
+		// No manipulation anymore, but there used to be, so we must
+		// explicitly set to false.
 		graph.manipulation = false;
 	}
 };
