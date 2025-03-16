@@ -131,6 +131,10 @@ it("can toggle addEdge and deleteEdge manipulation", function() {
 	manipulation = adapter.output.options.manipulation;
 	expect(typeof manipulation.addEdge).toBe("function");
 	expect(typeof manipulation.deleteEdge).toBe("function");
+	adapter.update({edges: {AB: {from: "A", to: "B"}}});
+	manipulation = adapter.output.options.manipulation;
+	expect(typeof manipulation.addEdge).toBe("function");
+	expect(manipulation.deleteEdge).toBe(false);
 });
 
 });

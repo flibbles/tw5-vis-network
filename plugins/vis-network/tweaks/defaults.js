@@ -17,10 +17,12 @@ var options = {
 };
 
 exports.defaults = function(objects, changes) {
-	if (!changes.graph) {
-		changes.graph = {};
+	if (!objects.graph) {
+		if (!changes.graph) {
+			changes.graph = {};
+		}
+		set(changes.graph, options);
 	}
-	set(changes.graph, options);
 };
 
 function set(target, input) {

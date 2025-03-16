@@ -44,7 +44,8 @@ exports.properties = {
 		size: {type: "number", min: 0, default: 25},
 		physics: {type: "boolean", default: true},
 		fontColor: {type: "color", default: "#343434"},
-		delete: {type: "actions", variables: []}
+		delete: {type: "actions", variables: []},
+		edit: {type: "actions", variables: []}
 	},
 	edges: {
 		arrows: {type: "enum", values: ["to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
@@ -64,9 +65,7 @@ var propertyMap = {
 		hierarchical: {path: ["layout", "hierarchical"]},
 		physics: {path: ["physics", "enabled"]},
 		nodeColor: {path: ["nodes", "color"]},
-		fontColor: {path: ["nodes", "font", "color"]},
-		addNode: {path: ["manipulation", "addNode"]},
-		addEdge: {path: ["manipulation", "addEdge"]}
+		fontColor: {path: ["nodes", "font", "color"]}
 	},
 	nodes: {
 		fontColor: {path: ["font", "color"]}
