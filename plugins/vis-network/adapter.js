@@ -10,7 +10,15 @@ This allows flibbles/graph to alternatively use this library.
 
 "use strict";
 
-exports.Vis = require("./vis.js");
+var VisLibrary = require("./vis.js");
+
+/*
+We expose it like this so the testing framework can get in.
+*/
+exports.Vis = function() {
+	return VisLibrary;
+};
+
 // Tweaks are to perform very specific operations to the incoming data before
 // passing it along to vis.
 // Partly to account for differences in API.
@@ -68,19 +76,20 @@ var propertyMap = {
 };
 
 exports.init = function(element, objects) {
+	var Vis = exports.Vis();
 	this.element = element;
 	this.objects = {};
 	var newObjects = this.processObjects(objects);
 	this.dataSets = {
-		nodes: new exports.Vis.DataSet(Object.values(newObjects.nodes || {}), {queue: true}),
-		edges: new exports.Vis.DataSet(Object.values(newObjects.edges || {}), {queue: true})
+		nodes: new Vis.DataSet(Object.values(newObjects.nodes || {}), {queue: true}),
+		edges: new Vis.DataSet(Object.values(newObjects.edges || {}), {queue: true})
 	};
 	var self = this;
 	// We remember what children were already attached to the element, because they MUST remain. The TW widget stack requires the DOM to be what it made it.
 	// Also, use .childNodes, not .children. The latter misses text nodes
 	var children = Array.prototype.slice.call(element.childNodes);
 	// First `Orb` is just a namespace of the JS package 
-	this.vis = new exports.Vis.Network(element, this.dataSets, newObjects.graph);
+	this.vis = new Vis.Network(element, this.dataSets, newObjects.graph);
 
 	// We MUST preserve any elements already attached to the passed element.
 	for (var i = 0; i < children.length; i++) {
