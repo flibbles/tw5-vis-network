@@ -105,6 +105,30 @@ it("can have deleteNode manipulation", function() {
 	expect(onevent).toHaveBeenCalled();
 });
 
+it("can have editNode manipulation", function() {
+	adapter.init(element(), {});
+	var manipulation = adapter.output.options.manipulation;
+	adapter.update({nodes: {A: {edit: true}}});
+	// Now we update it. Even though graph isn't touched, the edge change
+	// needs to update the graph.
+	manipulation = adapter.output.options.manipulation;
+	expect(typeof manipulation.editNode).toBe("function");
+	expect(manipulation.addEdge).toBe(false);
+	expect(manipulation.addNode).toBe(false);
+	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
+		expect(graphEvent.type).toBe("edit");
+		expect(graphEvent.objectType).toBe("nodes");
+		expect(graphEvent.id).toBe("A");
+	});
+	// This callback returns the node object. So more than just id, but that's
+	// all we'll test for here.
+	var visNodeData = {id: "A"};
+	manipulation.editNode(visNodeData, function(edgeData) {
+		fail("Using the deleteNode callback.");
+	});
+	expect(onevent).toHaveBeenCalled();
+});
+
 it("can disable addObject manipulation", function() {
 	adapter.init(element(), {graph: {addEdge: true, addNode: true}});
 	var manipulation = adapter.output.options.manipulation;

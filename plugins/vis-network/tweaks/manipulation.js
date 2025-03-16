@@ -69,6 +69,16 @@ exports.manipulation = function(objects, changes) {
 	} else {
 		settings.deleteNode = false;
 	}
+	if (this.manipulation.editNode > 0) {
+		settings.editNode = function(node, callback) {
+			self.onevent({
+				type: "edit",
+				objectType: "nodes",
+				id: node.id}, {});
+		}
+	} else {
+		settings.editNode = false;
+	}
 	if (this.manipulation.deleteEdge > 0) {
 		settings.deleteEdge = function(selected, callback) {
 			self.onevent({
