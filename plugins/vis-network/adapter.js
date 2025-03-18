@@ -240,7 +240,7 @@ function createDiff(oldObject, newObject) {
 	for (var property in newObject) {
 		var newValue = newObject[property];
 		if (newValue !== undefined) {
-			if (typeof newValue === "object") {
+			if (typeof newValue === "object" && newValue !== null) {
 				var oldValue = oldObject[property];
 				diff[property] = createDiff(typeof oldValue === "object"? oldValue: {}, newValue);
 			} else {

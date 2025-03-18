@@ -150,6 +150,23 @@ it("can have editNode manipulation", function() {
 	expect(onevent).toHaveBeenCalled();
 });
 
+// Deal with vis-network quirks
+it("can turn editNode OFF", function() {
+	adapter.init(element(), {graph: {addNode: true}, nodes: {A: {edit: true}}});
+	// Now we try to turn it off,
+	adapter.update({nodes: {A: {}}});
+	var manipulation = adapter.output.options.manipulation;
+	// This will cause vis to throw an error to the log. Unavoidable.
+	// It is literally impossible to make vis turn off editNode without
+	// giving it something it doesn't want.
+	expect(manipulation.editNode).toBe(false);
+	// And make sure if we make further changes, we don't throw any more
+	// errors.
+	adapter.update({graph: {addEdge: true}});
+	manipulation = adapter.output.options.manipulation;
+	expect(Object.keys(manipulation)).not.toContain("editNode");
+});
+
 it("can disable addObject manipulation", function() {
 	adapter.init(element(), {graph: {addEdge: true, addNode: true}});
 	var manipulation = adapter.output.options.manipulation;

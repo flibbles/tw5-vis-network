@@ -56,6 +56,7 @@ exports.manipulation = function(objects, changes) {
 			this.manipulation.deleteEdge += difference(objects.edges, changes.edges, id, "delete");
 		}
 	}
+	var oldEditCount = this.manipulation.editNode;
 	if (changes.nodes) {
 		for (var id in changes.nodes) {
 			this.manipulation.deleteNode += difference(objects.nodes, changes.nodes, id, "delete");
@@ -82,8 +83,11 @@ exports.manipulation = function(objects, changes) {
 		}
 	} else {
 		// Look at this. vis-network treats editNode differently.
-		// It can't be a boolean. Function or nothing.
-		//settings.editNode = false;
+		// They don't take a boolean to turn it off, but they forgot that
+		// that means it can't be turned off at all without logging an
+		// error. YAY. We minimize how often we explicitly set editNode
+		// to false, to minimize this error.
+		settings.editNode = (oldEditCount > 0)? false: undefined;
 	}
 	if (this.manipulation.deleteEdge > 0) {
 		settings.deleteEdge = function(selected, callback) {
