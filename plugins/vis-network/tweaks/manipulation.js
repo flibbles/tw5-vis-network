@@ -45,6 +45,10 @@ exports.manipulation = function(objects, changes) {
 		} else {
 			settings.addEdge = false;
 		}
+		// We set it undefined, whatever it is, because it'll need to be purged
+		// before being passed to vis. It doesn't like unknown properties.
+		changes.graph.addNode = undefined;
+		changes.graph.addEdge = undefined;
 	}
 	// Get an accurate count of object-specific manipulations
 	if (changes.edges) {
@@ -77,7 +81,9 @@ exports.manipulation = function(objects, changes) {
 				id: node.id}, {});
 		}
 	} else {
-		settings.editNode = false;
+		// Look at this. vis-network treats editNode differently.
+		// It can't be a boolean. Function or nothing.
+		//settings.editNode = false;
 	}
 	if (this.manipulation.deleteEdge > 0) {
 		settings.deleteEdge = function(selected, callback) {
@@ -105,7 +111,7 @@ function defaults() {
 		addEdge: false,
 		addNode: false,
 		editEdge: false,
-		editNode: false,
+		editNode: undefined,
 		deleteEdge: false,
 		deleteNode: false
 	};

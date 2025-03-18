@@ -21,8 +21,10 @@ it("can have no manipulation", function() {
 
 it("can have addNode manipulation", function() {
 	adapter.init(element(), {graph: {addNode: true}, nodes: {A: {}}});
-	var manipulation = adapter.output.options.manipulation;
-	expect(typeof manipulation.addNode).toBe("function");
+	var options = adapter.output.options;
+	expect(typeof options.manipulation.addNode).toBe("function");
+	expect(Object.keys(options)).not.toContain("addNode");
+	expect(Object.keys(options)).not.toContain("addEdge");
 	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("addNode");
 		expect(graphEvent.objectType).toBe("graph");
@@ -34,16 +36,32 @@ it("can have addNode manipulation", function() {
 	});
 	// A mock of the kind of data vis will output to the adapter. GUID and all.
 	var visNodeData = {id: "12345678-abcd-123456", x: 34.345, y: 17.987, label: "new"};
-	manipulation.addNode(visNodeData, function(nodeData) {
+	options.manipulation.addNode(visNodeData, function(nodeData) {
 		fail("Using the addNode callback.");
 	});
 	expect(onevent).toHaveBeenCalled();
 });
 
+it("can explicitly set addNode and addEdge to false", function() {
+	var falseOptions = {graph: {addNode: false, addEdge: false}};
+	adapter.init(element(), falseOptions);
+	var keys = Object.keys(adapter.output.options);
+	expect(keys).not.toContain("manipulation");
+	expect(keys).not.toContain("addNode");
+	expect(keys).not.toContain("addEdge");
+	adapter.update(falseOptions);
+	keys = Object.keys(adapter.output.options);
+	expect(keys).not.toContain("manipulation");
+	expect(keys).not.toContain("addNode");
+	expect(keys).not.toContain("addEdge");
+});
+
 it("can have addEdge manipulation", function() {
 	adapter.init(element(), {graph: {addEdge: true}, nodes: {A: {}, B: {}}});
-	var manipulation = adapter.output.options.manipulation;
-	expect(typeof manipulation.addEdge).toBe("function");
+	var options = adapter.output.options;
+	expect(typeof options.manipulation.addEdge).toBe("function");
+	expect(Object.keys(options)).not.toContain("addNode");
+	expect(Object.keys(options)).not.toContain("addEdge");
 	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("addEdge");
 		expect(graphEvent.objectType).toBe("graph");
@@ -52,7 +70,7 @@ it("can have addEdge manipulation", function() {
 	});
 	// A mock of the kind of data vis will output to the adapter. GUID and all.
 	var visEdgeData = {from: "A", to: "B"};
-	manipulation.addEdge(visEdgeData, function(edgeData) {
+	options.manipulation.addEdge(visEdgeData, function(edgeData) {
 		fail("Using the addEdge callback.");
 	});
 	expect(onevent).toHaveBeenCalled();
@@ -92,6 +110,9 @@ it("can have deleteNode manipulation", function() {
 	expect(typeof manipulation.deleteNode).toBe("function");
 	expect(manipulation.addEdge).toBe(false);
 	expect(manipulation.addNode).toBe(false);
+	// Look at that. vis-network treats editNode differently than the others.
+	// Great...
+	expect(Object.keys(manipulation)).not.toContain("editNode");
 	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("delete");
 		expect(graphEvent.objectType).toBe("nodes");

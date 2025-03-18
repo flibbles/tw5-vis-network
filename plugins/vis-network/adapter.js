@@ -87,7 +87,7 @@ exports.init = function(element, objects) {
 	// Also, use .childNodes, not .children. The latter misses text nodes
 	var children = Array.prototype.slice.call(element.childNodes);
 	// First `Orb` is just a namespace of the JS package 
-	this.vis = new Vis.Network(element, this.dataSets, newObjects.graph);
+	this.vis = new Vis.Network(element, this.dataSets, createDiff({}, newObjects.graph));
 
 	// We MUST preserve any elements already attached to the passed element.
 	for (var i = 0; i < children.length; i++) {
@@ -153,7 +153,7 @@ exports.update = function(objects) {
 	var changes = this.processObjects(objects);
 	for (var type in changes) {
 		if (type === "graph") {
-			this.vis.setOptions(changes.graph);
+			this.vis.setOptions(createDiff({}, changes.graph));
 		} else {
 			var dataSet = this.dataSets[type];
 			for (var id in changes[type]) {
@@ -161,11 +161,8 @@ exports.update = function(objects) {
 				if (object === null) {
 					dataSet.remove({id: id});
 				} else {
-					var oldObj = dataSet.get(id);
-					if (oldObj) {
-						scrubLingering(oldObj, object);
-					}
-					dataSet.update(object);
+					var oldObj = dataSet.get(id) || {};
+					dataSet.update(createDiff(oldObj, object));
 				}
 			}
 			dataSet.flush();
@@ -234,13 +231,28 @@ function translate(output, properties, rules) {
 	return output;
 };
 
-function scrubLingering(oldObject, newObject) {
-	for (var property in oldObject) {
+/*
+Creates an object representing the differences between the old object and
+the new objects. Because vis applies changes; it doesn't replace.
+*/
+function createDiff(oldObject, newObject) {
+	var diff = Object.create(null);
+	for (var property in newObject) {
 		var newValue = newObject[property];
-		if (newValue === undefined) {
-			newObject[property] = null;
-		} else if (typeof oldObject[property] === "object" && typeof newValue === "object") {
-			scrubLingering(oldObject[property], newValue);
+		if (newValue !== undefined) {
+			if (typeof newValue === "object") {
+				var oldValue = oldObject[property];
+				diff[property] = createDiff(typeof oldValue === "object"? oldValue: {}, newValue);
+			} else {
+				diff[property] = newValue;
+			}
 		}
 	}
+	// Any properties that went missing must be flagged as deleted
+	for (var property in oldObject) {
+		if (newObject[property] === undefined) {
+			diff[property] = null;
+		}
+	}
+	return diff;
 };
