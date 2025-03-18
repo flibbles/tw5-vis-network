@@ -70,6 +70,7 @@ exports.manipulation = function(objects, changes) {
 				type: "delete",
 				objectType: "nodes",
 				id: selected.nodes[0]}, {});
+			callback({nodes: [], edges: []});
 		}
 	} else {
 		settings.deleteNode = false;
@@ -80,6 +81,7 @@ exports.manipulation = function(objects, changes) {
 				type: "edit",
 				objectType: "nodes",
 				id: node.id}, {});
+			callback(null);
 		}
 	} else {
 		// Look at this. vis-network treats editNode differently.
@@ -95,6 +97,7 @@ exports.manipulation = function(objects, changes) {
 				type: "delete",
 				objectType: "edges",
 				id: selected.edges[0]}, {});
+			callback({nodes: [], edges: []});
 		}
 	} else {
 		settings.deleteEdge = false;

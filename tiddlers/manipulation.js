@@ -76,7 +76,7 @@ it("can have addEdge manipulation", function() {
 	expect(onevent).toHaveBeenCalled();
 });
 
-it("can have deleteEdge manipulation", function() {
+it("can have deleteEdge manipulation", function(done) {
 	adapter.init(element(), {graph: {}, nodes: {A: {}, B: {}}});
 	var manipulation = adapter.output.options.manipulation;
 	expect(manipulation).toBeUndefined();
@@ -95,12 +95,14 @@ it("can have deleteEdge manipulation", function() {
 	// A mock of the kind of data vis will output to the adapter. GUID and all.
 	var visEdgeData = {edges: ["AB"], nodes: []};
 	manipulation.deleteEdge(visEdgeData, function(edgeData) {
-		fail("Using the deleteEdge callback.");
+		// The callback must be called with empty objects so vis doesn't hang.
+		expect(onevent).toHaveBeenCalled();
+		expect(edgeData).toEqual({nodes: [], edges: []});
+		done();
 	});
-	expect(onevent).toHaveBeenCalled();
 });
 
-it("can have deleteNode manipulation", function() {
+it("can have deleteNode manipulation", function(done) {
 	adapter.init(element(), {});
 	var manipulation = adapter.output.options.manipulation;
 	adapter.update({nodes: {A: {delete: true}}});
@@ -120,13 +122,15 @@ it("can have deleteNode manipulation", function() {
 	});
 	// A mock of the kind of data vis will output to the adapter. GUID and all.
 	var visEdgeData = {edges: [], nodes: ["A"]};
-	manipulation.deleteNode(visEdgeData, function(edgeData) {
-		fail("Using the deleteNode callback.");
+	manipulation.deleteNode(visEdgeData, function(nodeData) {
+		// The callback must be called with empty objects so vis doesn't hang.
+		expect(onevent).toHaveBeenCalled();
+		expect(nodeData).toEqual({nodes: [], edges: []});
+		done();
 	});
-	expect(onevent).toHaveBeenCalled();
 });
 
-it("can have editNode manipulation", function() {
+it("can have editNode manipulation", function(done) {
 	adapter.init(element(), {});
 	var manipulation = adapter.output.options.manipulation;
 	adapter.update({nodes: {A: {edit: true}}});
@@ -144,10 +148,12 @@ it("can have editNode manipulation", function() {
 	// This callback returns the node object. So more than just id, but that's
 	// all we'll test for here.
 	var visNodeData = {id: "A"};
-	manipulation.editNode(visNodeData, function(edgeData) {
-		fail("Using the deleteNode callback.");
+	manipulation.editNode(visNodeData, function(nodeData) {
+		// The callback must be called with null so vis doesn't hang.
+		expect(onevent).toHaveBeenCalled();
+		expect(nodeData).toBeNull();
+		done();
 	});
-	expect(onevent).toHaveBeenCalled();
 });
 
 // Deal with vis-network quirks
