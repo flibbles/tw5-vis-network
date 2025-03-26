@@ -13,7 +13,7 @@ var shapesWithInternalText = {
 	box: true
 };
 
-exports.contrast = function(objects, changes) {
+exports.color = function(objects, changes) {
 	var graph = changes.graph;
 	if (graph) {
 		if (graph.nodeColor) {
@@ -40,7 +40,7 @@ exports.contrast = function(objects, changes) {
 		var globalColor = (changes.graph && changes.graph.nodes && changes.graph.nodes.color) || (objects.graph && objects.graph.nodeColor);
 		if (!globalColor && objects.graph) {
 			// The color isn't being set. Maybe it was already set.
-			globalColor = objects.graph.nodes.color;
+			globalColor = objects.graph.nodes && objects.graph.nodes.color;
 		}
 		for (var id in changes.nodes) {
 			var node = changes.nodes[id];

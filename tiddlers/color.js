@@ -110,4 +110,15 @@ it("considers global node color", function() {
 	});
 });
 
+// This test is weird because Manipulate can create a graph object missing
+// color information
+it("graph changes don't upset contrast colors", function() {
+	adapter.init(element(), {graph: {nodeColor: "#111111"}, nodes: {A: {}}});
+	expect(adapter.output.options.nodes.color).toBe("#111111");
+	adapter.update({nodes: {A: {edit: true}}});
+	// It takes two updates for the bug to show up.
+	adapter.update({nodes: {A: {edit: false}}});
+	expect(adapter.output.options.nodes.color).toBe("#111111");
+});
+
 });

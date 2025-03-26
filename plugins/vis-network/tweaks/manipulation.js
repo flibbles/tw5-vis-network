@@ -104,7 +104,7 @@ exports.manipulation = function(objects, changes) {
 	}
 	// Now we install our manipulations if we have any.
 	if (changed(old, settings)) {
-		changes.graph = changes.graph || Object.create(null);
+		changes.graph = changes.graph || objects.graph || Object.create(null);
 		if (changed(settings, defaults())) {
 			changes.graph.manipulation = settings;
 		} else {
