@@ -16,6 +16,10 @@ var shapesWithInternalText = {
 exports.contrast = function(objects, changes) {
 	if (changes.nodes) {
 		var globalColor = (changes.graph && changes.graph.nodes && changes.graph.nodes.color) || (objects.graph && objects.graph.nodeColor);
+		if (!globalColor && objects.graph) {
+			// The color isn't being set. Maybe it was already set.
+			globalColor = objects.graph.nodes.color;
+		}
 		for (var id in changes.nodes) {
 			var node = changes.nodes[id];
 			if (node

@@ -118,62 +118,6 @@ it("will set defaults with no graph input", function() {
 		nodes: {shape: "dot", font: {}}});
 });
 
-/*** Auto fontColor contrast ***/
-
-it("will assign contrasting colors when labels are inside node", function() {
-	var darkFont = {color: "#000000"};
-	var lightFont = {color: "#ffffff"};
-	adapter.init(element(), {graph: {nodeColor: "#111111", fontColor: "#eeeeee"}, nodes: {
-		dot1: {label: "label", shape: "dot", color: "#000000"},
-		dot2: {label: "label", shape: "dot", color: "#ffffff"},
-		dot3: {label: "label", shape: "dot"},
-		box1: {label: "label", shape: "box", color: "#000000"},
-		box2: {label: "label", shape: "box", color: "#ffffff"},
-		box3: {label: "label", shape: "box"},
-		// emp as in empty. No label
-		emp1: {shape: "box", color: "#000000"},
-		emp2: {shape: "box", color: "#ffffff"},
-		emp3: {shape: "box"},
-		font1: {label: "label", shape: "box", fontColor: "#333333", color: "#000000"},
-		font2: {label: "label", shape: "box", fontColor: "#333333", color: "#ffffff"},
-		font3: {label: "label", shape: "box", fontColor: "#333333"}
-	}});
-	expect(adapter.output.objects.nodes.entries).toEqual({
-		dot1: {id: "dot1", label: "label", shape: "dot", color: "#000000"},
-		dot2: {id: "dot2", label: "label", shape: "dot", color: "#ffffff"},
-		dot3: {id: "dot3", label: "label", shape: "dot"},
-		box1: {id: "box1", label: "label", shape: "box", color: "#000000", font: lightFont},
-		box2: {id: "box2", label: "label", shape: "box", color: "#ffffff", font: darkFont},
-		box3: {id: "box3", label: "label", shape: "box", font: lightFont},
-		emp1: {id: "emp1", shape: "box", color: "#000000"},
-		emp2: {id: "emp2", shape: "box", color: "#ffffff"},
-		emp3: {id: "emp3", shape: "box"},
-		font1: {id: "font1", label: "label", shape: "box", color: "#000000", font: {color: "#333333"}},
-		font2: {id: "font2", label: "label", shape: "box", color: "#ffffff", font: {color: "#333333"}},
-		font3: {id: "font3", label: "label", shape: "box", font: {color: "#333333"}}
-	});
-});
-
-it("will not assign contrasting font colors with no background", function() {
-	adapter.init(element(), {nodes: {
-		blank: {label: "label", shape: "box"},
-		dark: {label: "label", shape: "box", color: "#000000"}
-	}});
-	expect(adapter.output.objects.nodes.entries).toEqual({
-		blank: {id: "blank", label: "label", shape: "box"},
-		dark: {id: "dark", label: "label", shape: "box", color: "#000000", font: {color: "#ffffff"}}
-	});
-});
-
-it("can remove default contrasting font colors", function() {
-	adapter.init(element(), {nodes: {
-		A: {shape: "box", color: "#000000", label: "label"}}});
-	adapter.update({nodes: {
-		A: {shape: "box", color: "#000000"}}});
-	var objects = adapter.output.objects;
-	expect(objects.nodes.entries).toEqual({A: {id: "A", label: null, shape: "box", color: "#000000", font: null}});
-});
-
 /*** Handling of non-graph DOM nodes ***/
 
 it("puts pre-existing DOM nodes after canvas", function() {

@@ -6,6 +6,8 @@ Tests the Vis-Network adapter's ability to expose its manipulation features.
 
 describe("Manipulation", function() {
 
+var adapter;
+
 beforeEach(function() {
 	({adapter} = $tw.test.setSpies());
 });
