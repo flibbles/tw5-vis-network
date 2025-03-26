@@ -5,7 +5,7 @@ inside nodes.
 
 \*/
 
-describe("Contrast", function() {
+describe("Color", function() {
 
 var adapter;
 var darkFont = {color: "#000000"};

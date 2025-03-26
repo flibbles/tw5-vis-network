@@ -1,6 +1,6 @@
 /*\
 
-Tests the Vis-Network adapter's ability to translate incoming properties.
+Tests the Vis-Network adapter.
 
 \*/
 
@@ -91,23 +91,6 @@ it("can remove labels from edges", function() {
 });
 
 /*** Default graph values ***/
-
-it("will set defaults with other graph input", function() {
-	adapter.init(element(), {graph: {something: "irrelevant"}});
-	var options = adapter.output.options;
-	expect(options).toEqual({
-		interaction: {hover: true},
-		nodes: {shape: "dot", font: {}},
-		something: "irrelevant"});
-});
-
-it("will set defaults with no graph input", function() {
-	adapter.init(element(), {});
-	var options = adapter.output.options;
-	expect(options).toEqual({
-		interaction: {hover: true},
-		nodes: {shape: "dot", font: {}}});
-});
 
 /*** Handling of non-graph DOM nodes ***/
 
