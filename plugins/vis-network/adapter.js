@@ -67,9 +67,7 @@ var propertyMap = {
 		nodeColor: {path: ["nodes", "color"]},
 		fontColor: {path: ["nodes", "font", "color"]}
 	},
-	nodes: {
-		fontColor: {path: ["font", "color"]}
-	},
+	nodes: {},
 	edges: {}
 };
 
@@ -79,8 +77,8 @@ exports.init = function(element, objects) {
 	this.objects = {};
 	var newObjects = this.processObjects(objects);
 	this.dataSets = {
-		nodes: new Vis.DataSet(Object.values(newObjects.nodes || {}), {queue: true}),
-		edges: new Vis.DataSet(Object.values(newObjects.edges || {}), {queue: true})
+		nodes: new Vis.DataSet(Object.values(newObjects.nodes || {}).map((x) => createDiff({}, x)), {queue: true}),
+		edges: new Vis.DataSet(Object.values(newObjects.edges || {}).map((x) => createDiff({}, x)), {queue: true})
 	};
 	var self = this;
 	// We remember what children were already attached to the element, because they MUST remain. The TW widget stack requires the DOM to be what it made it.

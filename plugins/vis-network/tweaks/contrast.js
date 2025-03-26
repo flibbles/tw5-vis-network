@@ -22,17 +22,22 @@ exports.contrast = function(objects, changes) {
 		}
 		for (var id in changes.nodes) {
 			var node = changes.nodes[id];
-			if (node
-			&& shapesWithInternalText[node.shape] === true
-			&& node.label
-			&& (node.color || globalColor)
-			&& (!node.font || !node.font.color)) {
-				node.font = node.font || {};
-				var fontColor = $tw.macros.contrastcolour.run(
-					node.color || "",
-					globalColor || "#D2E5FF",
-					"#000000", "#ffffff");
-				node.font.color = fontColor;
+			if (node) {
+				if (node.fontColor) {
+					node.font = node.font || {};
+					node.font.color = node.fontColor;
+					node.fontColor = undefined;
+				} else if (shapesWithInternalText[node.shape] === true
+				&& node.label
+				&& (node.color || globalColor)
+				&& (!node.font || !node.font.color)) {
+					node.font = node.font || {};
+					var fontColor = $tw.macros.contrastcolour.run(
+						node.color || "",
+						globalColor || "#D2E5FF",
+						"#000000", "#ffffff");
+					node.font.color = fontColor;
+				}
 			}
 		}
 	}
