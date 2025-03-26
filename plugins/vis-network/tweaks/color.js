@@ -26,11 +26,14 @@ exports.contrast = function(objects, changes) {
 			graph.nodes.font = {
 				color: graph.fontColor
 			};
-			graph.edges = graph.edges || {};
-			graph.edges.font = {
-				color: graph.fontColor
-			};
+			graph.edges = graph.edges || {font: {align: "horizontal"}};
+			graph.edges.font.color = graph.fontColor;
 			graph.fontColor = undefined;
+		}
+		if (graph.graphColor) {
+			graph.edges = graph.edges || {font: {align: "horizontal"}};
+			graph.edges.font.strokeColor = graph.graphColor;
+			graph.graphColor = undefined;
 		}
 	}
 	if (changes.nodes) {
