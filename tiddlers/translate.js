@@ -58,15 +58,6 @@ it("does not retain lingering properties", function() {
 	expect(objects.nodes.entries).toEqual({A: {id: "A", size: 5, label: null, physics: false}});
 });
 
-it("initializes with global style", function() {
-	adapter.init(element(), {graph: {
-		nodeColor: "#ffffff",
-		fontColor: "#000000"}});
-	var options = adapter.output.options;
-	expect(options.nodes.color).toBe("#ffffff");
-	expect(options.nodes.font.color).toBe("#000000");
-});
-
 it("can update graph properties", function() {
 	adapter.init(element(), {});
 	adapter.update({graph: {physics: false}});

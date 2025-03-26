@@ -63,9 +63,7 @@ exports.properties = {
 var propertyMap = {
 	graph: {
 		hierarchical: {path: ["layout", "hierarchical"]},
-		physics: {path: ["physics", "enabled"]},
-		nodeColor: {path: ["nodes", "color"]},
-		fontColor: {path: ["nodes", "font", "color"]}
+		physics: {path: ["physics", "enabled"]}
 	},
 	nodes: {},
 	edges: {}

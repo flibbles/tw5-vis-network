@@ -19,6 +19,20 @@ function element() {
 	return $tw.fakeDocument.createElement("div");
 };
 
+/*** Palette colors ***/
+
+it("initializes with global style", function() {
+	adapter.init(element(), {graph: {
+		nodeColor: "#ffffff",
+		fontColor: "#000000"}});
+	var options = adapter.output.options;
+	expect(options.nodes.color).toBe("#ffffff");
+	expect(options.nodes.font.color).toBe("#000000");
+	expect(options.edges.font.color).toBe("#000000");
+	expect(Object.keys(options)).not.toContain("nodeColor");
+	expect(Object.keys(options)).not.toContain("fontColor");
+});
+
 /*** Auto fontColor contrast ***/
 
 it("will assign contrasting colors when labels are inside node", function() {

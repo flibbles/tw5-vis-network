@@ -14,6 +14,25 @@ var shapesWithInternalText = {
 };
 
 exports.contrast = function(objects, changes) {
+	var graph = changes.graph;
+	if (graph) {
+		if (graph.nodeColor) {
+			graph.nodes = graph.nodes || {};
+			graph.nodes.color = graph.nodeColor;
+			graph.nodeColor = undefined;
+		}
+		if (graph.fontColor) {
+			graph.nodes = graph.nodes || {};
+			graph.nodes.font = {
+				color: graph.fontColor
+			};
+			graph.edges = graph.edges || {};
+			graph.edges.font = {
+				color: graph.fontColor
+			};
+			graph.fontColor = undefined;
+		}
+	}
 	if (changes.nodes) {
 		var globalColor = (changes.graph && changes.graph.nodes && changes.graph.nodes.color) || (objects.graph && objects.graph.nodeColor);
 		if (!globalColor && objects.graph) {
