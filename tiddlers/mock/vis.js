@@ -28,6 +28,10 @@ Network.prototype.setOptions = function(options) {
 	this.options = options;
 };
 
+Network.prototype.testEvent = function(name, params) {
+	this.invoke[name].call(this, params);
+};
+
 exports.Network = Network;
 
 var DataSet = function(array, options) {

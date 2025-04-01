@@ -24,7 +24,7 @@ test.spyOnevent = function(adapter, fake) {
 		var category = properties[graphEvent.objectType];
 		expect(category).not.toBeUndefined("ObjectType: " + graphEvent.objectType);
 		if (graphEvent.objectType !== "graph") {
-			expect(graphEvent.id).not.toBeUndefined(graphEvent);
+			expect(graphEvent.id).not.toBeUndefined("Id");
 		}
 		var property = category[graphEvent.type];
 		expect(property).not.toBeUndefined(graphEvent);

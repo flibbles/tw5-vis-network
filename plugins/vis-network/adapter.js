@@ -49,7 +49,8 @@ exports.properties = {
 		edit: {type: "actions", variables: []},
 		hover: {type: "actions", variables: ["x", "y", "xView", "yView"]},
 		blur: {type: "actions"},
-		drag: {type: "actions", variables: ["x", "y", "xView", "yView"]}
+		drag: {type: "actions", variables: ["x", "y", "xView", "yView"]},
+		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]}
 	},
 	edges: {
 		arrows: {type: "enum", values: ["to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
@@ -60,7 +61,8 @@ exports.properties = {
 		physics: {type: "boolean", default: true},
 		smooth: {type: "boolean", default: true},
 		width: {type: "number", min: 0, default: 1, increment: 0.1},
-		delete: {type: "actions"}
+		delete: {type: "actions"},
+		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]}
 	}
 };
 
@@ -108,6 +110,8 @@ exports.init = function(element, objects) {
 		} else if (params.edges.length >= 1) {
 			data.id = params.edges[0];
 			data.objectType = "edges";
+		} else {
+			data.objectType = "graph";
 		}
 		self.onevent(data, variablesFromInputParams(params));
 	});
