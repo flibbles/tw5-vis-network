@@ -32,7 +32,8 @@ exports.properties = {
 	graph: {
 		physics: {type: "boolean", default: true},
 		addNode: {type: "actions", variables: ["x", "y"]},
-		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]}
+		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]},
+		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]}
 	},
 	nodes: {
 		x: {type: "number", hidden: true},
@@ -45,7 +46,10 @@ exports.properties = {
 		physics: {type: "boolean", default: true},
 		fontColor: {type: "color", default: "#343434"},
 		delete: {type: "actions", variables: []},
-		edit: {type: "actions", variables: []}
+		edit: {type: "actions", variables: []},
+		hover: {type: "actions", variables: ["x", "y", "xView", "yView"]},
+		blur: {type: "actions"},
+		drag: {type: "actions", variables: ["x", "y", "xView", "yView"]}
 	},
 	edges: {
 		arrows: {type: "enum", values: ["to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
@@ -56,7 +60,7 @@ exports.properties = {
 		physics: {type: "boolean", default: true},
 		smooth: {type: "boolean", default: true},
 		width: {type: "number", min: 0, default: 1, increment: 0.1},
-		delete: {type: "actions", variables: ["edgeId"]}
+		delete: {type: "actions"}
 	}
 };
 

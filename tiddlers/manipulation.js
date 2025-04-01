@@ -27,7 +27,7 @@ it("can have addNode manipulation", function() {
 	expect(typeof options.manipulation.addNode).toBe("function");
 	expect(Object.keys(options)).not.toContain("addNode");
 	expect(Object.keys(options)).not.toContain("addEdge");
-	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("addNode");
 		expect(graphEvent.objectType).toBe("graph");
 		// We round the numbers to the nearest tenth so they're not so big
@@ -64,7 +64,7 @@ it("can have addEdge manipulation", function() {
 	expect(typeof options.manipulation.addEdge).toBe("function");
 	expect(Object.keys(options)).not.toContain("addNode");
 	expect(Object.keys(options)).not.toContain("addEdge");
-	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("addEdge");
 		expect(graphEvent.objectType).toBe("graph");
 		expect(variables.fromTiddler).toBe("A");
@@ -89,7 +89,7 @@ it("can have deleteEdge manipulation", function(done) {
 	expect(typeof manipulation.deleteEdge).toBe("function");
 	expect(manipulation.addEdge).toBe(false);
 	expect(manipulation.addNode).toBe(false);
-	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("delete");
 		expect(graphEvent.objectType).toBe("edges");
 		expect(graphEvent.id).toBe("AB");
@@ -117,7 +117,7 @@ it("can have deleteNode manipulation", function(done) {
 	// Look at that. vis-network treats editNode differently than the others.
 	// Great...
 	expect(Object.keys(manipulation)).not.toContain("editNode");
-	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("delete");
 		expect(graphEvent.objectType).toBe("nodes");
 		expect(graphEvent.id).toBe("A");
@@ -142,7 +142,7 @@ it("can have editNode manipulation", function(done) {
 	expect(typeof manipulation.editNode).toBe("function");
 	expect(manipulation.addEdge).toBe(false);
 	expect(manipulation.addNode).toBe(false);
-	var onevent = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("edit");
 		expect(graphEvent.objectType).toBe("nodes");
 		expect(graphEvent.id).toBe("A");

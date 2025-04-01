@@ -15,3 +15,28 @@ test.setSpies = function() {
 	});
 	return {adapter};
 };
+
+// This ensure that the called event matches up with what the adapter says it
+// invokes.
+test.spyOnevent = function(adapter, fake) {
+	var properties = adapter.properties;
+	var spy = spyOn(adapter, "onevent").and.callFake(function(graphEvent, variables) {
+		var category = properties[graphEvent.objectType];
+		expect(category).not.toBeUndefined("ObjectType: " + graphEvent.objectType);
+		if (graphEvent.objectType !== "graph") {
+			expect(graphEvent.id).not.toBeUndefined(graphEvent);
+		}
+		var property = category[graphEvent.type];
+		expect(property).not.toBeUndefined(graphEvent);
+		var expectedVars = property.variables || [];
+		var actualVars = Object.keys(variables);
+		expect($tw.utils.count(variables)).toBe(expectedVars.length);
+		$tw.utils.each(expectedVars, function(name) {
+			expect(actualVars).toContain(name);
+		});
+		if (fake) {
+			fake(graphEvent, variables);
+		}
+	});
+	return spy;
+};
