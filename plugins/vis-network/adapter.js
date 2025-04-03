@@ -50,7 +50,8 @@ exports.properties = {
 		hover: {type: "actions", variables: ["x", "y", "xView", "yView"]},
 		blur: {type: "actions"},
 		drag: {type: "actions", variables: ["x", "y", "xView", "yView"]},
-		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]}
+		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]},
+		free: {type: "actions", variables: ["x", "y"]}
 	},
 	edges: {
 		arrows: {type: "enum", values: ["to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
@@ -119,12 +120,13 @@ exports.init = function(element, objects) {
 	this.vis.on("dragEnd", function(params) {
 		if (params.nodes.length > 0) {
 			var data = {
-				type: "drag",
+				type: "free",
 				objectType: "nodes",
 				id: params.nodes[0],
 				event: params.event
 			};
-			self.onevent(data, variablesFromInputParams(params));
+			var nodePosition = this.getPosition(params.nodes[0]);
+			self.onevent(data, nodePosition);
 		}
 	});
 	this.vis.on("hoverNode", function(params) {

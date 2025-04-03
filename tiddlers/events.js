@@ -14,6 +14,8 @@ beforeEach(function() {
 	({adapter} = $tw.test.setSpies());
 });
 
+// TODO: Test all the other basic events too, like hover, blur, drag, etc...
+
 function element() {
 	return $tw.fakeDocument.createElement("div");
 };
@@ -69,6 +71,25 @@ it("can do doubleclick for edges", function() {
 	expect(onevent).toHaveBeenCalledTimes(1);
 });
 
-// TODO: Test all the other basic events too, like hover, blur, drag, etc...
+/*** Free event (when a node is released) ***/
+
+fit("can process a node 'free' event", function() {
+	adapter.init(element(), {nodes: {A: {}}});
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
+		expect(graphEvent.type).toBe("free");
+		expect(graphEvent.objectType).toBe("nodes");
+		expect(graphEvent.id).toBe("A");
+		expect(variables).toEqual( { x: 1, y: 6 } );
+	});
+	var visEventData = {
+		edges: [],
+		event: {pointerType: "mouse", type: "panend"},
+		nodes: ["A"],
+		pointer: { DOM: {x: 2.3, y: 7.3}, canvas: {x: 102, y: 107} } };
+	var newPos = { A: {x: 1, y: 6} };
+	spyOn(adapter.output, "getPosition").and.callFake(function(id) { return newPos[id]; });
+	adapter.output.testEvent("dragEnd", visEventData);
+	expect(onevent).toHaveBeenCalledTimes(1);
+});
 
 });

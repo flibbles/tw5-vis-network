@@ -28,11 +28,18 @@ Network.prototype.setOptions = function(options) {
 	this.options = options;
 };
 
+Network.prototype.getPosition = function() {
+	throw new Error("getPosition called without being spied upon.");
+};
+
+// Adding this for testing. Not an actual vis-network method
 Network.prototype.testEvent = function(name, params) {
 	this.invoke[name].call(this, params);
 };
 
 exports.Network = Network;
+
+/*** DataSet ***/
 
 var DataSet = function(array, options) {
 	this.map = new Map();
