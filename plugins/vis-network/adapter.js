@@ -33,7 +33,8 @@ exports.properties = {
 		physics: {type: "boolean", default: true},
 		addNode: {type: "actions", variables: ["x", "y"]},
 		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]},
-		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]}
+		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]},
+		foldManipulation: {type: "boolean", default: false}
 	},
 	nodes: {
 		x: {type: "number", hidden: true},

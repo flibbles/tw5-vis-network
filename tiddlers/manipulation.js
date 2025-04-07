@@ -8,6 +8,11 @@ describe("Manipulation", function() {
 
 var adapter;
 
+// I'm caching the value of this property because it's defined by me,
+// not vis-network, and it's subject to change. Having it here helps make
+// sure I'm testing the correct property consistently across all tests.
+var prefold = "foldManipulation";
+
 beforeEach(function() {
 	({adapter} = $tw.test.setSpies());
 });
@@ -25,8 +30,10 @@ it("can have addNode manipulation", function() {
 	adapter.init(element(), {graph: {addNode: true}, nodes: {A: {}}});
 	var options = adapter.output.options;
 	expect(typeof options.manipulation.addNode).toBe("function");
+	expect(options.manipulation.initiallyActive).toBe(true);
 	expect(Object.keys(options)).not.toContain("addNode");
 	expect(Object.keys(options)).not.toContain("addEdge");
+	expect(Object.keys(options)).not.toContain("initiallyActive");
 	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("addNode");
 		expect(graphEvent.objectType).toBe("graph");
@@ -62,6 +69,7 @@ it("can have addEdge manipulation", function() {
 	adapter.init(element(), {graph: {addEdge: true}, nodes: {A: {}, B: {}}});
 	var options = adapter.output.options;
 	expect(typeof options.manipulation.addEdge).toBe("function");
+	expect(options.manipulation.initiallyActive).toBe(true);
 	expect(Object.keys(options)).not.toContain("addNode");
 	expect(Object.keys(options)).not.toContain("addEdge");
 	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
@@ -87,6 +95,7 @@ it("can have deleteEdge manipulation", function(done) {
 	// needs to update the graph.
 	manipulation = adapter.output.options.manipulation;
 	expect(typeof manipulation.deleteEdge).toBe("function");
+	expect(manipulation.initiallyActive).toBe(true);
 	expect(manipulation.addEdge).toBe(false);
 	expect(manipulation.addNode).toBe(false);
 	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
@@ -112,6 +121,7 @@ it("can have deleteNode manipulation", function(done) {
 	// needs to update the graph.
 	manipulation = adapter.output.options.manipulation;
 	expect(typeof manipulation.deleteNode).toBe("function");
+	expect(manipulation.initiallyActive).toBe(true);
 	expect(manipulation.addEdge).toBe(false);
 	expect(manipulation.addNode).toBe(false);
 	// Look at that. vis-network treats editNode differently than the others.
@@ -140,6 +150,7 @@ it("can have editNode manipulation", function(done) {
 	// needs to update the graph.
 	manipulation = adapter.output.options.manipulation;
 	expect(typeof manipulation.editNode).toBe("function");
+	expect(manipulation.initiallyActive).toBe(true);
 	expect(manipulation.addEdge).toBe(false);
 	expect(manipulation.addNode).toBe(false);
 	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
@@ -180,10 +191,12 @@ it("can disable addObject manipulation", function() {
 	var manipulation = adapter.output.options.manipulation;
 	expect(typeof manipulation.addNode).toBe("function");
 	expect(typeof manipulation.addEdge).toBe("function");
+	expect(manipulation.initiallyActive).toBe(true);
 	// Partially disable it
 	adapter.update({graph: {addEdge: true}});
 	manipulation = adapter.output.options.manipulation;
 	expect(manipulation.addNode).toBe(false);
+	expect(manipulation.initiallyActive).toBe(true);
 	expect(typeof manipulation.addEdge).toBe("function");
 	// Fully disable it
 	adapter.update({graph: {}});
@@ -197,14 +210,60 @@ it("can toggle addEdge and deleteEdge manipulation", function() {
 	manipulation = adapter.output.options.manipulation;
 	expect(manipulation.addEdge).toBe(false);
 	expect(typeof manipulation.deleteEdge).toBe("function");
+	expect(manipulation.initiallyActive).toBe(true);
 	adapter.update({graph: {addEdge: true}});
 	manipulation = adapter.output.options.manipulation;
 	expect(typeof manipulation.addEdge).toBe("function");
 	expect(typeof manipulation.deleteEdge).toBe("function");
+	expect(manipulation.initiallyActive).toBe(true);
 	adapter.update({edges: {AB: {from: "A", to: "B"}}});
 	manipulation = adapter.output.options.manipulation;
 	expect(typeof manipulation.addEdge).toBe("function");
 	expect(manipulation.deleteEdge).toBe(false);
+	expect(manipulation.initiallyActive).toBe(true);
+	expect(Object.keys(adapter.output.options)).not.toContain("initiallyActive");
+});
+
+/*** Manipulation folding ***/
+
+it("can apply fold manipulation retroactively", function() {
+	adapter.init(element(), {graph: {[prefold]: true}});
+	var options = adapter.output.options;
+	var keys = Object.keys(options);
+	expect(keys).not.toContain(prefold);
+	expect(keys).not.toContain("initiallyActive");
+	expect(options.manipulation).toBe(false);
+	adapter.update({nodes: {A: {delete: true}}});
+	options = adapter.output.options;
+	keys = Object.keys(options);
+	expect(keys).not.toContain(prefold);
+	expect(keys).not.toContain("initiallyActive");
+	expect(typeof options.manipulation.deleteNode).toBe("function");
+	expect(options.manipulation.initiallyActive).toBe(false);
+});
+
+it("can set fold manipulation to false", function() {
+	adapter.init(element(), {graph: {[prefold]: true, addNode: true}});
+	var options = adapter.output.options;
+	var keys = Object.keys(options);
+	expect(keys).not.toContain(prefold);
+	expect(keys).not.toContain("initiallyActive");
+	expect(typeof options.manipulation.addNode).toBe("function");
+	expect(options.manipulation.initiallyActive).toBe(false);
+	adapter.update({graph: {[prefold]: false, addNode: true}});
+	expect(adapter.output.options.manipulation.initiallyActive).toBe(true);
+});
+
+it("can unset fold manipulation", function() {
+	adapter.init(element(), {graph: {[prefold]: true, addNode: true}});
+	var options = adapter.output.options;
+	var keys = Object.keys(options);
+	expect(keys).not.toContain(prefold);
+	expect(keys).not.toContain("initiallyActive");
+	expect(typeof options.manipulation.addNode).toBe("function");
+	expect(options.manipulation.initiallyActive).toBe(false);
+	adapter.update({graph: {addNode: true}});
+	expect(adapter.output.options.manipulation.initiallyActive).toBe(true);
 });
 
 });

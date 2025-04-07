@@ -73,7 +73,7 @@ it("can do doubleclick for edges", function() {
 
 /*** Free event (when a node is released) ***/
 
-fit("can process a node 'free' event", function() {
+it("can process a node 'free' event", function() {
 	adapter.init(element(), {nodes: {A: {}}});
 	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("free");

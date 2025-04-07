@@ -17,7 +17,8 @@ exports.manipulation = function(objects, changes) {
 			deleteEdge: 0,
 			deleteNode: 0,
 			editEdge: 0,
-			editNode: 0
+			editNode: 0,
+			fold: false
 		}
 	}
 	if (changes.graph) {
@@ -102,10 +103,20 @@ exports.manipulation = function(objects, changes) {
 	} else {
 		settings.deleteEdge = false;
 	}
+	// We check if we manually set our manipulation folding
+	var fold = false;
+	if (changes.graph) {
+		fold = !!changes.graph.foldManipulation;
+		changes.graph.foldManipulation = undefined;
+	} else {
+		fold = this.manipulation.fold;
+	}
 	// Now we install our manipulations if we have any.
-	if (changed(old, settings)) {
+	if (changed(old, settings) || fold !== this.manipulation.fold) {
 		changes.graph = changes.graph || objects.graph || Object.create(null);
+		this.manipulation.fold = fold;
 		if (changed(settings, defaults())) {
+			settings.initiallyActive = !fold;
 			changes.graph.manipulation = settings;
 		} else {
 			changes.graph.manipulation = false;
