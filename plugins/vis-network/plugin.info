@@ -7,5 +7,5 @@
   "source": "https://github.com/flibbles/tw5-vis-network",
   "type": "application/json",
   "plugin-type": "plugin",
-  "list": "readme"
+  "list": "readme license"
 }
