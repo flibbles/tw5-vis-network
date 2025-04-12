@@ -41,6 +41,7 @@ exports.properties = {
 		y: {type: "number", hidden: true},
 		color: {type: "color", default: "#D2E5FF"},
 		borderWidth: {type: "number", min: 0, default: 1, increment: 0.1},
+		borderColor: {type: "color", default: "#2B7CE9"},
 		label: {type: "string"},
 		shape: {type: "enum", values: ["box", "circle", "circularImage", "diamond", "database", "dot", "ellipse", "hexagon", "icon", "image", "square", "star", "text", "triangle", "triangleDown"]},
 		size: {type: "number", min: 0, default: 25},
@@ -249,7 +250,7 @@ function createDiff(oldObject, newObject) {
 		if (newValue !== undefined) {
 			if (typeof newValue === "object" && newValue !== null) {
 				var oldValue = oldObject[property];
-				diff[property] = createDiff(typeof oldValue === "object"? oldValue: {}, newValue);
+				diff[property] = createDiff((typeof oldValue === "object" && oldValue !== null)? oldValue: {}, newValue);
 			} else {
 				diff[property] = newValue;
 			}

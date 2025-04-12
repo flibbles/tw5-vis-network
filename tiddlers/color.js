@@ -121,4 +121,48 @@ it("graph changes don't upset contrast colors", function() {
 	expect(adapter.output.options.nodes.color).toBe("#111111");
 });
 
+/*** Node color ***/
+
+it("can take border color", function() {
+	adapter.init(element(), {graph: {nodeColor: "#111111"}, nodes: {A: {borderColor: "#00ff00"}}});
+	expect(adapter.output.options.nodes.color).toBe("#111111");
+	expect(adapter.output.objects.nodes.entries).toEqual({A: {
+		id: "A",
+		color: {
+			border: "#00ff00",
+			highlight: {border: "#00ff00"},
+			hover: {border: "#00ff00"}
+	}}});
+});
+
+it("can do border and background colors together", function() {
+	adapter.init(element(), {graph: {nodeColor: "#111111"}, nodes: {A: {color: "#ff0000", borderColor: "#00ff00"}}});
+	expect(adapter.output.options.nodes.color).toBe("#111111");
+	expect(adapter.output.objects.nodes.entries).toEqual({A: {
+		id: "A",
+		color: {
+			border: "#00ff00",
+			highlight: {background: "#ff0000", border: "#00ff00"},
+			hover: {background: "#ff0000", border: "#00ff00"},
+			background: "#ff0000"
+	}}});
+	// Now remove border. See if we can handle the vis-network bug
+	adapter.update({nodes: {A: {borderColor: "#00ff00"}}});
+	expect(adapter.output.objects.nodes.entries).toEqual({A: {
+		id: "A",
+		color: {
+			border: "#00ff00",
+			highlight: {background: "#111111", border: "#00ff00"},
+			hover: {background: "#111111", border: "#00ff00"},
+			background: "#111111"
+	}}});
+});
+
+it("can turn colors on and off without crashing", function() {
+	// This test caused a crash at one point
+	adapter.init(element(), {nodes: {A: {color: "#ff0000", borderColor: "#00ff00"}}});
+	adapter.update({nodes: {A: {}}});
+	adapter.update({nodes: {A: {borderColor: "#0000ff"}}});
+});
+
 });
