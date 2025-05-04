@@ -128,6 +128,8 @@ exports.init = function(element, objects) {
 				event: params.event
 			};
 			var nodePosition = this.getPosition(params.nodes[0]);
+			nodePosition.x = round(nodePosition.x);
+			nodePosition.y = round(nodePosition.y);
 			self.onevent(data, nodePosition);
 		}
 	});
@@ -149,10 +151,14 @@ exports.init = function(element, objects) {
 	});
 };
 
+function round(number) {
+	return Math.round(number * 10) / 10;
+};
+
 function variablesFromInputParams(params) {
 	return {
-		x: params.pointer.canvas.x,
-		y: params.pointer.canvas.y,
+		x: round(params.pointer.canvas.x),
+		y: round(params.pointer.canvas.y),
 		xView: params.pointer.DOM.x,
 		yView: params.pointer.DOM.y};
 };

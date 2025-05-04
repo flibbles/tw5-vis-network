@@ -25,13 +25,14 @@ it("can do doubleclick for graphs", function() {
 	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
 		expect(graphEvent.type).toBe(dbclick);
 		expect(graphEvent.objectType).toBe("graph");
-		expect(variables).toEqual({x: 1002, y: 1007, xView: 2, yView: 7});
+		// It rounds to nice numbers
+		expect(variables).toEqual({x: 1002.3, y: 1008, xView: 2, yView: 7});
 	});
 	var visEventData = {
 		edges: [],
 		event: {pointerType: "mouse", type: "doubletap"},
 		nodes: [],
-		pointer: { DOM: {x: 2, y: 7}, canvas: {x: 1002, y: 1007} } };
+		pointer: { DOM: {x: 2, y: 7}, canvas: {x: 1002.3456, y: 1007.9876} } };
 	adapter.output.testEvent("doubleClick", visEventData);
 	expect(onevent).toHaveBeenCalledTimes(1);
 	expect(Object.keys(adapter.output.options)).not.toContain(dbclick);
@@ -79,14 +80,15 @@ it("can process a node 'free' event", function() {
 		expect(graphEvent.type).toBe("free");
 		expect(graphEvent.objectType).toBe("nodes");
 		expect(graphEvent.id).toBe("A");
-		expect(variables).toEqual( { x: 1, y: 6 } );
+		// It rounds it nicely to a tenth
+		expect(variables).toEqual( { x: 1.3, y: 7 } );
 	});
 	var visEventData = {
 		edges: [],
 		event: {pointerType: "mouse", type: "panend"},
 		nodes: ["A"],
 		pointer: { DOM: {x: 2.3, y: 7.3}, canvas: {x: 102, y: 107} } };
-	var newPos = { A: {x: 1, y: 6} };
+	var newPos = { A: {x: 1.3456, y: 6.9876} };
 	spyOn(adapter.output, "getPosition").and.callFake(function(id) { return newPos[id]; });
 	adapter.output.testEvent("dragEnd", visEventData);
 	expect(onevent).toHaveBeenCalledTimes(1);
