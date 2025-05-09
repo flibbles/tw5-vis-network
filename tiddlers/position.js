@@ -67,4 +67,34 @@ it("can preserve generated positions for some nodes", function() {
 		B: {id: "B", value: 2, x: 3, y: 6}});
 });
 
+it("can remove and reinsert nodes with fixed positions", function() {
+	adapter.init(element(), {graph: {}, nodes: { B: {x: 3, y: 5}}});
+	var objects = adapter.output.objects;
+	// Let's act like Vis-Network came up with its own coordinates for B
+	objects.nodes.update({id: "B", x: 17, y: 19});
+	// Now update through adapter
+	adapter.update({nodes: { B: null}});
+	// Now put it back
+	adapter.update({nodes: { B: {x: 3, y: 5}}});
+	objects = adapter.output.objects;
+	// new position, so override vis choice.
+	expect(objects.nodes.entries).toEqual({ B: {id: "B", x: 3, y: 5}});
+});
+
+it("can remove and reinsert nodes without position", function() {
+	adapter.init(element(), {graph: {}, nodes: { B: {x: 3, y: 5}}});
+	var objects = adapter.output.objects;
+	// Let's act like Vis-Network came up with its own coordinates for B
+	objects.nodes.update({id: "B", x: 17, y: 19});
+	// Now update through adapter
+	adapter.update({nodes: { B: null}});
+	// Now put it back without any position
+	adapter.update({nodes: { B: {}}});
+	// Now update it with a position which it originally had
+	adapter.update({nodes: { B: {x: 3, y: 5}}});
+	objects = adapter.output.objects;
+	// new position, so override vis choice.
+	expect(objects.nodes.entries).toEqual({ B: {id: "B", x: 3, y: 5}});
+});
+
 });
