@@ -28,8 +28,9 @@ Network.prototype.setOptions = function(options) {
 	this.options = options;
 };
 
-Network.prototype.getPosition = function() {
-	throw new Error("getPosition called without being spied upon.");
+Network.prototype.getPosition = function(id) {
+	var node = this.objects.nodes.get(id);
+	return {x: node.x, y: node.y};
 };
 
 // Adding this for testing. Not an actual vis-network method

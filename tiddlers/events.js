@@ -88,8 +88,8 @@ it("can process a node 'free' event", function() {
 		event: {pointerType: "mouse", type: "panend"},
 		nodes: ["A"],
 		pointer: { DOM: {x: 2.3, y: 7.3}, canvas: {x: 102, y: 107} } };
-	var newPos = { A: {x: 1.3456, y: 6.9876} };
-	spyOn(adapter.output, "getPosition").and.callFake(function(id) { return newPos[id]; });
+	// Put in new values for the free event to catch
+	adapter.output.objects.nodes.update({id: "A", x: 1.3456, y: 6.9876});
 	adapter.output.testEvent("dragEnd", visEventData);
 	expect(onevent).toHaveBeenCalledTimes(1);
 });
