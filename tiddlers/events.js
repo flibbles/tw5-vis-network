@@ -72,6 +72,28 @@ it("can do doubleclick for edges", function() {
 	expect(onevent).toHaveBeenCalledTimes(1);
 });
 
+/*** Drag event (when a node starts being moved) ***/
+
+it("can process a node 'drag' event", function() {
+	adapter.init(element(), {nodes: {A: {}, B: {}}, edges: {AB: {from: "A", to: "B"}}});
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
+		expect(graphEvent.type).toBe("drag");
+		expect(graphEvent.objectType).toBe("nodes");
+		expect(graphEvent.id).toBe("A");
+		// It rounds it nicely to a tenth
+		expect(variables).toEqual( { x: 1.3, y: 7 } );
+	});
+	var visEventData = {
+		edges: ["AB"], // Attached edges get included for some reason.
+		event: {pointerType: "mouse", type: "panstart"},
+		nodes: ["A"],
+		pointer: { DOM: {x: 2.3, y: 7.3}, canvas: {x: 102, y: 107} } };
+	// Put in new values for the free event to catch
+	adapter.output.objects.nodes.update({id: "A", x: 1.3456, y: 6.9876});
+	adapter.output.testEvent("dragStart", visEventData);
+	expect(onevent).toHaveBeenCalledTimes(1);
+});
+
 /*** Free event (when a node is released) ***/
 
 it("can process a node 'free' event", function() {

@@ -49,10 +49,10 @@ exports.properties = {
 		fontColor: {type: "color", default: "#343434"},
 		delete: {type: "actions", variables: []},
 		edit: {type: "actions", variables: []},
+		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]},
 		hover: {type: "actions", variables: ["x", "y", "xView", "yView"]},
 		blur: {type: "actions"},
-		drag: {type: "actions", variables: ["x", "y", "xView", "yView"]},
-		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]},
+		drag: {type: "actions", variables: ["x", "y"]},
 		free: {type: "actions", variables: ["x", "y"]}
 	},
 	edges: {
@@ -119,6 +119,20 @@ exports.init = function(element, objects) {
 		self.onevent(data, variablesFromInputParams(params));
 	});
 
+	this.vis.on("dragStart", function(params) {
+		if (params.nodes.length > 0) {
+			var data = {
+				type: "drag",
+				objectType: "nodes",
+				id: params.nodes[0],
+				event: params.event
+			};
+			var nodePosition = this.getPosition(params.nodes[0]);
+			nodePosition.x = round(nodePosition.x);
+			nodePosition.y = round(nodePosition.y);
+			self.onevent(data, nodePosition);
+		}
+	});
 	this.vis.on("dragEnd", function(params) {
 		if (params.nodes.length > 0) {
 			var data = {
