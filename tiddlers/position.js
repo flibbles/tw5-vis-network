@@ -97,4 +97,20 @@ it("can remove and reinsert nodes without position", function() {
 	expect(objects.nodes.entries).toEqual({ B: {id: "B", x: 3, y: 5}});
 });
 
+it("can resubmit nodes without locations", function() {
+	adapter.init(element(), {graph: {}, nodes: {A: {val: 1, x: 3, y: 5}}});
+	// Let's say it moves a little on its own
+	var objects = adapter.output.objects;
+	objects.nodes.update({id: "A", x: 17, y: 19});
+	// Now we simulate this node getting removed from a ledger.
+	adapter.update({nodes: { A: {val: 1}}});
+	// The node should have the old location, not some non-number like null
+	expect(objects.nodes.entries).toEqual({A: {id: "A", val: 1, x: 17, y: 19}});
+	// Now that that works, let's try putting it back in at its old location.
+	adapter.update({nodes: {A: {val: 2, x: 3, y: 5}}});
+	// It should hold the old location, despite the change, because the
+	// new location was wiped.
+	expect(objects.nodes.entries).toEqual({A: {id: "A", val: 2, x: 3, y: 5}});
+});
+
 });
