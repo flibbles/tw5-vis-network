@@ -4,3 +4,5 @@ title: $:/plugins/flibbles/vis-network/readme
 ! tw5-vis-network
 
 A tiddlywiki plugin for the [[vis-network library|https://visjs.github.io/vis-network/docs/network/]].
+
+Current vis-network version: v9.1.2
