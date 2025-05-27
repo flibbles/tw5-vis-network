@@ -36,6 +36,7 @@ exports.properties = {
 		addNode: {type: "actions", variables: ["x", "y"]},
 		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]},
 		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]},
+		navigationButtons: {type: "boolean"}
 	},
 	nodes: {
 		x: {type: "number", hidden: true},
@@ -74,7 +75,8 @@ var propertyMap = {
 	graph: {
 		hierarchical: {path: ["layout", "hierarchical"]},
 		physics: {path: ["physics", "enabled"]},
-		maxVelocity: {path: ["physics", "maxVelocity"]}
+		maxVelocity: {path: ["physics", "maxVelocity"]},
+		navigationButtons: {path: ["interaction", "navigationButtons"]}
 	},
 	nodes: {},
 	edges: {}
