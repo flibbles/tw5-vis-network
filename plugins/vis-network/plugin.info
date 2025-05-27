@@ -1,4 +1,5 @@
 {
+  "name": "Vis-Network",
   "title": "$:/plugins/flibbles/vis-network",
   "description": "TiddlyWiki5 plugin for the vis-network library",
   "author": "Cameron Fischer",

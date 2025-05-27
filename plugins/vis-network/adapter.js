@@ -31,10 +31,11 @@ exports.name = "Vis-Network";
 exports.properties = {
 	graph: {
 		physics: {type: "boolean", default: true},
+		maxVelocity: {type: "number", min: 1, default: 50, max: 100},
+		foldManipulation: {type: "boolean", default: false},
 		addNode: {type: "actions", variables: ["x", "y"]},
 		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]},
 		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]},
-		foldManipulation: {type: "boolean", default: false}
 	},
 	nodes: {
 		x: {type: "number", hidden: true},
@@ -43,7 +44,7 @@ exports.properties = {
 		borderWidth: {type: "number", min: 0, default: 1, increment: 0.1},
 		borderColor: {type: "color", default: "#2B7CE9"},
 		label: {type: "string"},
-		shape: {type: "enum", values: ["box", "circle", "circularImage", "diamond", "database", "dot", "ellipse", "hexagon", "icon", "image", "square", "star", "text", "triangle", "triangleDown"]},
+		shape: {type: "enum", values: ["box", "circle", /*"circularImage",*/ "diamond", "database", "dot", "ellipse", "hexagon", "icon", /*"image",*/ "square", "star", "text", "triangle", "triangleDown"]},
 		size: {type: "number", min: 0, default: 25},
 		physics: {type: "boolean", default: true},
 		fontColor: {type: "color", default: "#343434"},
@@ -72,7 +73,8 @@ exports.properties = {
 var propertyMap = {
 	graph: {
 		hierarchical: {path: ["layout", "hierarchical"]},
-		physics: {path: ["physics", "enabled"]}
+		physics: {path: ["physics", "enabled"]},
+		maxVelocity: {path: ["physics", "maxVelocity"]}
 	},
 	nodes: {},
 	edges: {}
