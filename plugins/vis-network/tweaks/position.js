@@ -1,6 +1,6 @@
 /*
 
-Manages all the structure for graph manipulation.
+Manages all the positioning for nodes in graph manipulation.
 
 */
 

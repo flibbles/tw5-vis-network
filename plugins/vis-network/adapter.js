@@ -36,7 +36,13 @@ exports.properties = {
 		addNode: {type: "actions", variables: ["x", "y"]},
 		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]},
 		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]},
-		navigationButtons: {type: "boolean"}
+		navigationButtons: {type: "boolean"},
+		hierarchy: {type: "boolean", default: false},
+		hierarchyDirection: {type: "enum", default: "UD", values: ["UD", "DU", "LR", "RL"]},
+		hierarchyNodeSpacing: {type: "number", default: 100, min: 0, max:200},
+		//hierarchyShakeTowards: {type: "enum", default: "leaves", values: ["leaves", "roots"]},
+		//hierarchyParentCentralization: {type: "boolean", default: true},
+		//hierarchySortMethod: {type: "enum", default: "hubsize", values: ["hubsize", "directed"]},
 	},
 	nodes: {
 		x: {type: "number", hidden: true},
