@@ -30,7 +30,7 @@ test.spyOnevent = function(adapter, fake) {
 		expect(property).not.toBeUndefined(graphEvent);
 		var expectedVars = property.variables || [];
 		var actualVars = Object.keys(variables);
-		expect($tw.utils.count(variables)).toBe(expectedVars.length);
+		expect($tw.utils.count(variables)).toBe(expectedVars.length, "Unexpected number of event arguments.");
 		$tw.utils.each(expectedVars, function(name) {
 			expect(actualVars).toContain(name);
 		});

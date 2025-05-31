@@ -114,7 +114,7 @@ exports.init = function(element, objects) {
 	this.vis.on("doubleClick", function(params) {
 		var data = {
 			type: "doubleclick",
-			event: params.event,
+			event: params.event.pointers[0],
 		};
 		// TODO: Meta keys
 		if (params.nodes.length >= 1) {
@@ -171,7 +171,7 @@ exports.init = function(element, objects) {
 			objectType: "nodes",
 			id: params.node,
 			event: params.event
-		}, variablesFromInputParams(params));
+		}, {});
 	});
 };
 
