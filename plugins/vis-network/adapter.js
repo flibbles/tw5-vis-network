@@ -40,6 +40,7 @@ exports.properties = {
 		hierarchy: {type: "boolean", default: false},
 		hierarchyDirection: {type: "enum", default: "UD", values: ["UD", "DU", "LR", "RL"]},
 		hierarchyNodeSpacing: {type: "number", default: 100, min: 0, max:200},
+		zoom: {type: "boolean", default: true},
 		//hierarchyShakeTowards: {type: "enum", default: "leaves", values: ["leaves", "roots"]},
 		//hierarchyParentCentralization: {type: "boolean", default: true},
 		//hierarchySortMethod: {type: "enum", default: "hubsize", values: ["hubsize", "directed"]},
