@@ -162,4 +162,37 @@ it("can process a node 'free' event", function() {
 	expect(onevent).toHaveBeenCalledTimes(1);
 });
 
+/*** Focus event on graph ***/
+
+it("can do focus for graphs", function() {
+	adapter.init(element(), {graph: {focus: true}});
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
+		expect(graphEvent.type).toBe("focus");
+		expect(graphEvent.objectType).toBe("graph");
+	});
+	adapter.output.getFrame().dispatchEvent({type: "focus"});
+	expect(onevent).toHaveBeenCalledTimes(1);
+	// Now we make sure that event is de-registered on destroy
+	adapter.destroy();
+	onevent.calls.reset();
+	adapter.output.getFrame().dispatchEvent({type: "focus"});
+	expect(onevent).not.toHaveBeenCalled();
+});
+
+it("can do blur for graphs", function() {
+	adapter.init(element(), {graph: {blur: true}});
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
+		expect(graphEvent.type).toBe("blur");
+		expect(graphEvent.objectType).toBe("graph");
+	});
+	adapter.output.getFrame().dispatchEvent({type: "blur"});
+	expect(onevent).toHaveBeenCalledTimes(1);
+	// Now we make sure that event is de-registered on destroy
+	adapter.destroy();
+	onevent.calls.reset();
+	adapter.output.getFrame().dispatchEvent({type: "blur"});
+	expect(onevent).not.toHaveBeenCalled();
+
+});
+
 });

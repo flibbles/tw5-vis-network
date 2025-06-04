@@ -41,6 +41,8 @@ exports.properties = {
 		hierarchyDirection: {type: "enum", default: "UD", values: ["UD", "DU", "LR", "RL"]},
 		hierarchyNodeSpacing: {type: "number", default: 100, min: 0, max:200},
 		zoom: {type: "boolean", default: true},
+		focus: {type: "actions"},
+		blur: {type: "actions"},
 		//hierarchyShakeTowards: {type: "enum", default: "leaves", values: ["leaves", "roots"]},
 		//hierarchyParentCentralization: {type: "boolean", default: true},
 		//hierarchySortMethod: {type: "enum", default: "hubsize", values: ["hubsize", "directed"]},
@@ -83,7 +85,8 @@ var propertyMap = {
 		hierarchical: {path: ["layout", "hierarchical"]},
 		physics: {path: ["physics", "enabled"]},
 		maxVelocity: {path: ["physics", "maxVelocity"]},
-		navigationButtons: {path: ["interaction", "navigationButtons"]}
+		navigationButtons: {path: ["interaction", "navigationButtons"]},
+		focus: {path: []}
 	},
 	nodes: {},
 	edges: {}
@@ -104,6 +107,8 @@ exports.init = function(element, objects) {
 	var children = Array.prototype.slice.call(element.childNodes);
 	// First `Orb` is just a namespace of the JS package 
 	this.vis = new Vis.Network(element, this.dataSets, createDiff({}, newObjects.graph));
+	this.vis.canvas.frame.addEventListener("focus", this);
+	this.vis.canvas.frame.addEventListener("blur", this);
 
 	// We MUST preserve any elements already attached to the passed element.
 	for (var i = 0; i < children.length; i++) {
@@ -210,6 +215,8 @@ exports.update = function(objects) {
 };
 
 exports.destroy = function() {
+	this.vis.canvas.frame.removeEventListener("focus", this);
+	this.vis.canvas.frame.removeEventListener("blur", this);
 	this.vis.destroy();
 };
 
@@ -251,18 +258,29 @@ exports.processObjects = function(objects) {
 	return changes;
 };
 
+// handles both focus and blur events that occur to the canvas frame
+exports.handleEvent = function(event) {
+	this.onevent({
+		type: event.type,
+		objectType: "graph",
+		event: event
+	});
+};
+
 function translate(output, properties, rules) {
 	for (var property in properties) {
 		var mapping = rules[property];
 		var dest = output;
 		if (mapping && mapping.path) {
 			var i = 0;
-			for (; i < mapping.path.length-1; i++) {
-				var dir = mapping.path[i];
-				dest[dir] = dest[dir] || {};
-				dest = dest[dir];
+			if (mapping.path.length > 0) {
+				for (; i < mapping.path.length-1; i++) {
+					var dir = mapping.path[i];
+					dest[dir] = dest[dir] || {};
+					dest = dest[dir];
+				}
+				dest[mapping.path[i]] = properties[property];
 			}
-			dest[mapping.path[i]] = properties[property];
 		} else {
 			output[property] = properties[property];
 		}

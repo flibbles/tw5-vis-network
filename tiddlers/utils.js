@@ -27,9 +27,9 @@ test.spyOnevent = function(adapter, fake) {
 			expect(graphEvent.id).not.toBeUndefined("Id");
 		}
 		var property = category[graphEvent.type];
-		expect(property).not.toBeUndefined(graphEvent);
+		expect(property).not.toBeUndefined(`Vis does not define action property '${graphEvent.type}'`);
 		var expectedVars = property.variables || [];
-		var actualVars = Object.keys(variables);
+		var actualVars = Object.keys(variables || {});
 		expect($tw.utils.count(variables)).toBe(expectedVars.length, "Unexpected number of event arguments.");
 		$tw.utils.each(expectedVars, function(name) {
 			expect(actualVars).toContain(name);
