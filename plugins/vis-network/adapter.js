@@ -86,7 +86,8 @@ var propertyMap = {
 		physics: {path: ["physics", "enabled"]},
 		maxVelocity: {path: ["physics", "maxVelocity"]},
 		navigationButtons: {path: ["interaction", "navigationButtons"]},
-		focus: {path: []}
+		focus: {path: []},
+		blur: {path: []}
 	},
 	nodes: {},
 	edges: {}
