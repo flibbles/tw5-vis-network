@@ -55,6 +55,7 @@ exports.properties = {
 		borderColor: {type: "color", default: "#2B7CE9"},
 		label: {type: "string"},
 		shape: {type: "enum", values: ["box", "circle", /*"circularImage",*/ "diamond", "database", "dot", "ellipse", "hexagon", "icon", /*"image",*/ "square", "star", "text", "triangle", "triangleDown"]},
+		image: {type: "title"},
 		size: {type: "number", min: 0, default: 25},
 		physics: {type: "boolean", default: true},
 		fontColor: {type: "color", default: "#343434"},
