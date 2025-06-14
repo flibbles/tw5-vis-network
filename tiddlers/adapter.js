@@ -49,6 +49,15 @@ it("can update nodes", function() {
 	expect(flush).toHaveBeenCalled();
 });
 
+it("can remove nodes", function() {
+	var flush = spyOn(MockVis.DataSet.prototype, "flush").and.callThrough();
+	adapter.init(element(), {
+		nodes: {A: {}, B: {}}});
+	adapter.update({nodes: { B: null}});
+	expect(adapter.output.objects.nodes.entries).toEqual({A: {id: "A"}});
+	expect(flush).toHaveBeenCalled();
+});
+
 it("does not retain lingering properties", function() {
 	adapter.init(element(), {nodes: {A: {label: "old", size: 2, physics: true}}});
 	// Setting physics to false makes sure the falsy value doesn't get picked

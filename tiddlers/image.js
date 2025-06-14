@@ -4,7 +4,7 @@ Tests the image capability of nodes.
 
 \*/
 
-fdescribe("Image", function() {
+describe("Image", function() {
 
 var adapter;
 var embeddedUrl;
