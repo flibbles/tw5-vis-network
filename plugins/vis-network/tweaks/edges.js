@@ -14,6 +14,7 @@ $tw.utils.each(["dynamic", "continuous", "discrete", "diagonalCross", "straightC
 // We set type to an empty object instead of null, because vis-network
 // will erroneously try to access it in some cases.
 smooths.no = {enabled: false, type: {}};
+smooths.dynamic.roundness = 0.5;
 smooths.cubicBezier.forceDirection = "none";
 smooths.cubicBezierHorizontal.type = "cubicBezier";
 smooths.cubicBezierHorizontal.forceDirection = "horizontal";
@@ -33,20 +34,18 @@ exports.edges = function(objects, changes) {
 				}
 				// Fix for flibbles/tw5-graph#33 bug
 				if (edge.smooth) {
-					edge.smooth = smooths[edge.smooth];
+					edge.smooth = Object.assign({}, smooths[edge.smooth]);
+					edge.smooth.roundness = (edge.roundness === undefined)?
+						0.5: edge.roundness;
 				} else if (old.smooth !== undefined) {
 					// Once smooth is set, it can never truly be unset without
 					// vis-network crashes occurring.
 					edge.smooth = smooths.dynamic;
 				}
+				if (edge.roundness !== undefined) {
+					edge.roundness = undefined;
+				}
 			}
 		}
 	}
-};
-
-function hierarchyEnabled(objects, changes) {
-	if (changes.graph && changes.graph.hierarchy) {
-		return changes.graph.hierarchy;
-	}
-	return !!(objects.graph && objects.graph.layout && objects.graph.layout.hierarchical);
 };
