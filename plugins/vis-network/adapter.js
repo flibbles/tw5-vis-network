@@ -75,7 +75,8 @@ exports.properties = {
 		hidden: {type: "boolean", default: false},
 		label: {type: "string"},
 		physics: {type: "boolean", default: true},
-		smooth: {type: "boolean", default: true},
+		smooth: {type: "enum", default: "dynamic", values: ["no", "dynamic", "continuous", "discrete", "diagonalCross", "straightCross", "horizontal", "vertical", "curvedCW", "curvedCCW", "cubicBezier", "cubicBezierHorizontal", "cubicBezierVertical"]},
+		roundness: {type: "number", default: 0.5, min: 0, max: 1, increment: 0.01},
 		width: {type: "number", min: 0, default: 1, increment: 0.1},
 		delete: {type: "actions"},
 		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]}
