@@ -48,8 +48,8 @@ exports.properties = {
 		//hierarchySortMethod: {type: "enum", default: "hubsize", values: ["hubsize", "directed"]},
 	},
 	nodes: {
-		x: {type: "number", hidden: true},
-		y: {type: "number", hidden: true},
+		x: {type: "number"},
+		y: {type: "number"},
 		color: {type: "color", default: "#D2E5FF"},
 		borderWidth: {type: "number", min: 0, default: 1, increment: 0.1},
 		borderColor: {type: "color", default: "#2B7CE9"},
