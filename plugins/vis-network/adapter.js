@@ -36,7 +36,7 @@ exports.properties = {
 		addNode: {type: "actions", variables: ["x", "y"]},
 		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]},
 		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]},
-		navigationButtons: {type: "boolean"},
+		navigation: {type: "boolean"},
 		hierarchy: {type: "boolean", default: false},
 		hierarchyDirection: {type: "enum", default: "UD", values: ["UD", "DU", "LR", "RL"]},
 		hierarchyNodeSpacing: {type: "number", default: 100, min: 0, max:200},
@@ -88,7 +88,6 @@ var propertyMap = {
 		hierarchical: {path: ["layout", "hierarchical"]},
 		physics: {path: ["physics", "enabled"]},
 		maxVelocity: {path: ["physics", "maxVelocity"]},
-		navigationButtons: {path: ["interaction", "navigationButtons"]},
 		focus: {path: []},
 		blur: {path: []}
 	},
