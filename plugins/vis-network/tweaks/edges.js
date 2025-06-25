@@ -14,8 +14,10 @@ $tw.utils.each(["dynamic", "continuous", "discrete", "diagonalCross", "straightC
 // We set type to an empty object instead of null, because vis-network
 // will erroneously try to access it in some cases.
 smooths.no = {enabled: false, type: {}};
-smooths.cubicBezier.forceDirection = false;
+smooths.cubicBezier.forceDirection = "none";
+smooths.cubicBezierHorizontal.type = "cubicBezier";
 smooths.cubicBezierHorizontal.forceDirection = "horizontal";
+smooths.cubicBezierVertical.type = "cubicBezier";
 smooths.cubicBezierVertical.forceDirection = "vertical";
 
 exports.edges = function(objects, changes) {

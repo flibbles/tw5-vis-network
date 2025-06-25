@@ -74,4 +74,20 @@ it("smooth handles vis-network bug w/ hierarchy and smooth edges", function() {
 		BC: {id: "BC", from: "B", to: "C", smooth: {enabled: false, type: {}}}});
 });
 
+it("smooth has different bezier permutations", function() {
+	adapter.init(element(), {
+		nodes: {A: {}, B: {}, C: {}},
+		edges: {
+			// One to go from explicit no to unset
+			AB: {from: "A", to: "B", smooth: "cubicBezier"},
+			// One to go from explicit yes to unset
+			AC: {from: "A", to: "C", smooth: "cubicBezierHorizontal"},
+			// One to go from explicit yes to explicit no
+			BC: {from: "B", to: "C", smooth: "cubicBezierVertical"}}});
+	expect(adapter.output.objects.edges.entries).toEqual({
+		AB: {id: "AB", from: "A", to: "B", smooth: {enabled: true, type: "cubicBezier", forceDirection: "none"}},
+		AC: {id: "AC", from: "A", to: "C", smooth: {enabled: true, type: "cubicBezier", forceDirection: "horizontal"}},
+		BC: {id: "BC", from: "B", to: "C", smooth: {enabled: true, type: "cubicBezier", forceDirection: "vertical"}}});
+});
+
 });
