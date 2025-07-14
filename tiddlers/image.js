@@ -58,8 +58,8 @@ it("Works with background setting", function() {
 	var image;
 	var canvas = { drawImage: function(image, x, y) {
 		expect(image.src).toBe(embeddedUrl);
-		expect(x).toBe(0);
-		expect(y).toBe(0);
+		expect(x).toBe(-40);
+		expect(y).toBe(-25);
 	} };
 	window().Image = function() {
 		image = this;
@@ -72,6 +72,8 @@ it("Works with background setting", function() {
 	var redrawSpy = spyOn(adapter.output, "redraw");
 	image.onload();
 	expect(redrawSpy).toHaveBeenCalled();
+	image.width=80;
+	image.height=50;
 	adapter.output.testEvent("beforeDrawing", canvas);
 	expect(canvasSpy).toHaveBeenCalled();
 	// Now we unset it

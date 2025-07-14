@@ -145,7 +145,8 @@ exports.init = function(element, objects) {
 
 	this.vis.on("beforeDrawing", function(canvas) {
 		if (self.backgroundImage) {
-			canvas.drawImage(self.backgroundImage, 0, 0);
+			var image = self.backgroundImage;
+			canvas.drawImage(image, -image.width/2, -image.height/2);
 		}
 	});
 	this.vis.on("dragStart", function(params) {
