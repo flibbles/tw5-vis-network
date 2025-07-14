@@ -75,6 +75,10 @@ Network.prototype.getFrame = function() {
 	return this.wrapper;
 };
 
+Network.prototype.redraw = function() {
+	// Do nothing. Normally spied upon.
+}
+
 exports.Network = Network;
 
 /*** DataSet ***/

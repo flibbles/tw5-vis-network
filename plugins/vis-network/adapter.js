@@ -13,10 +13,14 @@ This allows flibbles/graph to alternatively use this library.
 var VisLibrary = require("./vis.js");
 
 /*
-We expose it like this so the testing framework can get in.
+We expose these objects like this so the testing framework can get in.
 */
 exports.Vis = function() {
 	return VisLibrary;
+};
+
+exports.window = function() {
+	return window;
 };
 
 // Tweaks are to perform very specific operations to the incoming data before
@@ -43,6 +47,7 @@ exports.properties = {
 		zoom: {type: "boolean", default: true},
 		focus: {type: "actions"},
 		blur: {type: "actions"},
+		background: {type: "image"}
 		//hierarchyShakeTowards: {type: "enum", default: "leaves", values: ["leaves", "roots"]},
 		//hierarchyParentCentralization: {type: "boolean", default: true},
 		//hierarchySortMethod: {type: "enum", default: "hubsize", values: ["hubsize", "directed"]},
@@ -138,6 +143,11 @@ exports.init = function(element, objects) {
 		self.onevent(data, variablesFromInputParams(params));
 	});
 
+	this.vis.on("beforeDrawing", function(canvas) {
+		if (self.backgroundImage) {
+			canvas.drawImage(self.backgroundImage, 0, 0);
+		}
+	});
 	this.vis.on("dragStart", function(params) {
 		if (params.nodes.length > 0) {
 			var data = {

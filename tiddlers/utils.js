@@ -2,10 +2,12 @@
 var Adapters = $tw.modules.getModulesByTypeAsHashmap("graphengine");
 var Adapter = Adapters["Vis-Network"];
 var MockVis = require("./mock/vis");
+var MockWindow = require("./mock/window").Window;
 var test = $tw.test = {};
 
 test.setSpies = function() {
 	spyOn(Adapter, "Vis").and.returnValue(MockVis);
+	var window = spyOn(Adapter, "window").and.returnValue(new MockWindow());
 	var adapter = Object.create(Adapter);
 	adapter.onevent = function() {
 		fail("Event called without spy.");
@@ -13,7 +15,7 @@ test.setSpies = function() {
 	Object.defineProperty(adapter, "output", {
 		get: function() { return this.vis; }
 	});
-	return {adapter};
+	return {adapter, window};
 };
 
 // This ensure that the called event matches up with what the adapter says it
