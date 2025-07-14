@@ -9,7 +9,8 @@ Manages images in nodes.
 exports.background = function(objects, changes) {
 	var self = this;
 	if (changes.graph) {
-		if (changes.graph.background) {
+		if (changes.graph.background
+		&& (!this.backgroundImage || this.backgroundImage.src !== changes.graph.background)) {
 			var window = this.window();
 			var image = new window.Image();
 			// We don't actually set the image as our background until after

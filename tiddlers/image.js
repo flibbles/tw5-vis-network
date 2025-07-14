@@ -85,4 +85,16 @@ it("Works with background setting", function() {
 	expect(canvasSpy).not.toHaveBeenCalled();
 });
 
+it("does not reload background unnecessarily", function() {
+	var image;
+	window().Image = function() {
+		image = this;
+	};
+	adapter.init(element(), {graph: { background: embeddedUrl }});
+	var oldImage = image;
+	image.onload();
+	adapter.update({graph: { background: embeddedUrl, addNode: true}});
+	expect(image).toBe(oldImage);
+});
+
 });
