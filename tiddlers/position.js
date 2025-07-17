@@ -113,4 +113,10 @@ it("can resubmit nodes without locations", function() {
 	expect(objects.nodes.entries).toEqual({A: {id: "A", val: 2, x: 3, y: 5}});
 });
 
+it("can set position to 0,0 and not have falsey problems", function() {
+	adapter.init(element(), {graph: {}, nodes: {A: {x: 3, y: 5}}});
+	adapter.update({nodes: { A: {x: 0, y: 0}}});
+	expect(adapter.output.objects.nodes.entries).toEqual({A: {id: "A", x: 0, y: 0}});
+});
+
 });

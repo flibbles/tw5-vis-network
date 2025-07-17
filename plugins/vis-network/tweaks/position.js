@@ -15,7 +15,7 @@ exports.position = function(objects, changes) {
 		for (var id in changes.nodes) {
 			var node = changes.nodes[id];
 			if (node) {
-				if (node.x || node.y) {
+				if (node.x !== undefined || node.y !== undefined) {
 					var posKey = node.x + "," + node.y;
 					if (this.position[id] === posKey) {
 						// This isn't a new position
