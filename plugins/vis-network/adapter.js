@@ -36,7 +36,7 @@ exports.properties = {
 	graph: {
 		physics: {type: "boolean", default: true},
 		maxVelocity: {type: "number", min: 1, default: 50, max: 100},
-		foldManipulation: {type: "boolean", default: false},
+		hideControls: {type: "boolean", default: false, description: "Hide node and edge manipulation controls by default"},
 		addNode: {type: "actions", variables: ["x", "y"]},
 		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]},
 		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]},
@@ -74,7 +74,7 @@ exports.properties = {
 		free: {type: "actions", variables: ["x", "y"]}
 	},
 	edges: {
-		arrows: {type: "enum", values: ["to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
+		arrows: {type: "enum", default: "to", values: [" ", "to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
 		color: {type: "color"},
 		dashes: {type: "boolean", default: false},
 		hidden: {type: "boolean", default: false},

@@ -106,8 +106,8 @@ exports.manipulation = function(objects, changes) {
 	// We check if we manually set our manipulation folding
 	var fold = false;
 	if (changes.graph) {
-		fold = !!changes.graph.foldManipulation;
-		changes.graph.foldManipulation = undefined;
+		fold = !!changes.graph.hideControls;
+		changes.graph.hideControls = undefined;
 	} else {
 		fold = this.manipulation.fold;
 	}

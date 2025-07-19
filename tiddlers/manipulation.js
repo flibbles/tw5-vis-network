@@ -11,7 +11,7 @@ var adapter;
 // I'm caching the value of this property because it's defined by me,
 // not vis-network, and it's subject to change. Having it here helps make
 // sure I'm testing the correct property consistently across all tests.
-var prefold = "foldManipulation";
+var prefold = "hideControls";
 
 beforeEach(function() {
 	({adapter} = $tw.test.setSpies());

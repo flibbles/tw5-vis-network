@@ -23,6 +23,7 @@ it("will set defaults with other graph input", function() {
 	expect(options).toEqual({
 		interaction: {hover: true},
 		nodes: {shape: "dot", font: {}},
+		edges: {arrows: "to"},
 		something: "irrelevant"});
 });
 
@@ -31,7 +32,8 @@ it("will set defaults with no graph input", function() {
 	var options = adapter.output.options;
 	expect(options).toEqual({
 		interaction: {hover: true},
-		nodes: {shape: "dot", font: {}}});
+		nodes: {shape: "dot", font: {}},
+		edges: {arrows: "to"}});
 });
 
 });

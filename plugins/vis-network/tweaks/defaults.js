@@ -13,6 +13,9 @@ var options = {
 	nodes: {
 		shape: "dot",
 		font: {}
+	},
+	edges: {
+		arrows: "to"
 	}
 };
 

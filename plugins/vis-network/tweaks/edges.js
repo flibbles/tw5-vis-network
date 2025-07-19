@@ -45,6 +45,9 @@ exports.edges = function(objects, changes) {
 				if (edge.roundness !== undefined) {
 					edge.roundness = undefined;
 				}
+				if (edge.arrows === " ") {
+					edge.arrows = "";
+				}
 			}
 		}
 	}

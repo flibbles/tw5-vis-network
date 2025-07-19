@@ -16,6 +16,19 @@ function element() {
 	return $tw.fakeDocument.createElement("div");
 };
 
+/*** Arrows ***/
+
+it("has arrows on by default, but can turn them off", function() {
+	adapter.init(element(), {
+		nodes: {N: {}},
+		edges: {
+			E1: {from: "N", to: "N"},
+			E2: {from: "N", to: "N", arrows: " "}}});
+	expect(adapter.output.objects.edges.entries).toEqual({
+		E1: {id: "E1", from: "N", to: "N"},
+		E2: {id: "E2", from: "N", to: "N", arrows: ""}});
+});
+
 /*** Smooth ***/
 
 it("smooth sees no as false", function() {
