@@ -29,18 +29,21 @@ exports.position = function(objects, changes) {
 				} else {
 					// Node does not specify a location.
 					// If one had existed, we should preserve its existing loc
-					if (this.position[id]) {
+					if (this.position[id] !== undefined) {
 						var nodePosition = this.vis.getPosition(id);
 						node.x = nodePosition.x;
 						node.y = nodePosition.y;
 						// We forget the old set location.
-						// It's "free-floating" now>
+						// It's "free-floating" now
+						// In the future, we will always record SOME position, even if it's
+						// just what Vis already thinks it to be.
+						// Otherwise we can suffer some nasty recursion exceptions of out Vis.
 						this.position[id] = null;
 					}
 				}
 			} else if (this.position[id]) {
 				// The node is being removed. Forget its initial position
-				this.position[id] = null;
+				this.position[id] = undefined;
 			}
 		}
 	}

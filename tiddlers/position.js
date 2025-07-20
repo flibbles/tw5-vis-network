@@ -119,4 +119,16 @@ it("can set position to 0,0 and not have falsey problems", function() {
 	expect(adapter.output.objects.nodes.entries).toEqual({A: {id: "A", x: 0, y: 0}});
 });
 
+// This test ensures that we continue to set nodes which have had ANY positioning occur.
+// To stop doing so can result in an error from within Vis. This is our workaround.
+it("can unset position and not have falsey problems", function() {
+	adapter.init(element(), {graph: {}, nodes: {A: {value: 1, x: 3, y: 5}}});
+	adapter.update({nodes: { A: {value: 1}}});
+	var objects = adapter.output.objects;
+	// Now Vis-sets it somewhere else
+	objects.nodes.update({id: "A", x: 17, y: 19});
+	adapter.update({nodes: { A: {value: 2}}});
+	expect(adapter.output.objects.nodes.entries).toEqual({A: {id: "A", value: 2, x: 17, y: 19}});
+});
+
 });
