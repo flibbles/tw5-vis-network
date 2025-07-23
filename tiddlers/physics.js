@@ -40,8 +40,9 @@ it("ignores maxVelocity if physics is disabled", function() {
 
 it("can set and unset spring constant", function() {
 	adapter.init(element(), {graph: {springConstant: 0.055}});
-	var options = adapter.output.options;
-	expect(options.physics).toEqual({springConstant: 0.055});
+	expect(adapter.output.options.physics).toEqual({barnesHut: {springConstant: 0.055}});
+	adapter.update({graph: {}});
+	expect(adapter.output.options.physics).toEqual({enabled: true});
 });
 
 });

@@ -160,9 +160,11 @@ it("can do border and background colors together", function() {
 
 it("can turn colors on and off without crashing", function() {
 	// This test caused a crash at one point
-	adapter.init(element(), {nodes: {A: {color: "#ff0000", borderColor: "#00ff00"}}});
-	adapter.update({nodes: {A: {}}});
-	adapter.update({nodes: {A: {borderColor: "#0000ff"}}});
+	expect(function() {
+		adapter.init(element(), {nodes: {A: {color: "#ff0000", borderColor: "#00ff00"}}});
+		adapter.update({nodes: {A: {}}});
+		adapter.update({nodes: {A: {borderColor: "#0000ff"}}});
+	}).not.toThrow();
 });
 
 });
