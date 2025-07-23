@@ -14,7 +14,9 @@ var map = {
 	hierarchySortMethod: "sortMethod",
 };
 
-exports.layout = function(objects, changes) {
+exports.name = "layout";
+
+exports.process = function(objects, changes) {
 	var graph = changes.graph;
 	if (graph) {
 		if (graph.hierarchy !== undefined) {

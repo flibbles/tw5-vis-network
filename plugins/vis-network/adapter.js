@@ -27,7 +27,7 @@ exports.window = function() {
 // passing it along to vis.
 // Partly to account for differences in API.
 // Partly to account for all the bugs in vis-network.
-var graphTweaks = $tw.modules.applyMethods("vis-tweak");
+var graphTweaks = $tw.modules.getModulesByTypeAsHashmap("vis-tweak");
 
 exports.name = "Vis-Network";
 //exports.platforms = ["browser"];
@@ -255,7 +255,7 @@ exports.processObjects = function(objects) {
 		}
 	}
 	for (var name in graphTweaks) {
-		graphTweaks[name].call(this, this.objects, changes);
+		graphTweaks[name].process.call(this, this.objects, changes);
 	}
 	// Apply those changes to our own record.
 	for (var type in changes) {

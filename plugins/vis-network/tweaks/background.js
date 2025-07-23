@@ -6,7 +6,9 @@ Manages images in nodes.
 
 "use strict";
 
-exports.background = function(objects, changes) {
+exports.name = "background";
+
+exports.process = function(objects, changes) {
 	var self = this;
 	if (changes.graph) {
 		if (changes.graph.background

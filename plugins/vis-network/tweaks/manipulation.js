@@ -6,7 +6,9 @@ Manages all the structure for graph manipulation.
 
 "use strict";
 
-exports.manipulation = function(objects, changes) {
+exports.name = "manipulation";
+
+exports.process = function(objects, changes) {
 	var self = this,
 		old = objects.graph && objects.graph.manipulation,
 		wasUnset = !old;

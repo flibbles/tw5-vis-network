@@ -16,7 +16,9 @@ var solverSettings = {
 
 var solver = "barnesHut"; //"forceAtlas2Based";
 
-exports.physics = function(objects, changes) {
+exports.name = "physics";
+
+exports.process = function(objects, changes) {
 	var graph = changes.graph;
 	var enabled = true;
 	if (graph) {

@@ -6,7 +6,9 @@ Manages all the positioning for nodes in graph manipulation.
 
 "use strict";
 
-exports.position = function(objects, changes) {
+exports.name = "position";
+
+exports.process = function(objects, changes) {
 	if (!this.position) {
 		// We use this to store all positions that were given to us by TW5
 		this.position = Object.create(null);

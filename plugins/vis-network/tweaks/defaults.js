@@ -19,7 +19,9 @@ var options = {
 	}
 };
 
-exports.defaults = function(objects, changes) {
+exports.name = "defaults";
+
+exports.process = function(objects, changes) {
 	if (!objects.graph) {
 		if (!changes.graph) {
 			changes.graph = {};

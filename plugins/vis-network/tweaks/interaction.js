@@ -6,7 +6,9 @@ Manages all the structure for graph interaction.
 
 "use strict";
 
-exports.interaction = function(objects, changes) {
+exports.name = "interaction";
+
+exports.process = function(objects, changes) {
 	var graph = changes.graph;
 	if (graph) {
 		if (graph.zoom !== undefined) {

@@ -13,7 +13,9 @@ var shapesWithInternalText = {
 	box: true
 };
 
-exports.color = function(objects, changes) {
+exports.name = "color";
+
+exports.process = function(objects, changes) {
 	var graph = changes.graph;
 	if (graph) {
 		if (graph.nodeColor) {

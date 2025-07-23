@@ -21,7 +21,9 @@ smooths.cubicBezierHorizontal.forceDirection = "horizontal";
 smooths.cubicBezierVertical.type = "cubicBezier";
 smooths.cubicBezierVertical.forceDirection = "vertical";
 
-exports.edges = function(objects, changes) {
+exports.name = "edges";
+
+exports.process = function(objects, changes) {
 	if (changes.edges) {
 		var oldEdges = (objects && objects.edges) || {};
 		for (var id in changes.edges) {

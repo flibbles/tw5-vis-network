@@ -6,7 +6,9 @@ Manages images in nodes.
 
 "use strict";
 
-exports.image = function(objects, changes) {
+exports.name = "image";
+
+exports.process = function(objects, changes) {
 	if (changes.nodes) {
 		for (var id in changes.nodes) {
 			var node = changes.nodes[id];
