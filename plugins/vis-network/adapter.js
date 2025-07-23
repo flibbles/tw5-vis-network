@@ -90,11 +90,7 @@ exports.properties = {
 };
 
 var propertyMap = {
-	graph: {
-		hierarchical: {path: ["layout", "hierarchical"]},
-		focus: {path: []},
-		blur: {path: []}
-	},
+	graph: {},
 	nodes: {},
 	edges: {}
 };
