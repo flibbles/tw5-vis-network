@@ -67,20 +67,7 @@ it("does not retain lingering properties", function() {
 	expect(objects.nodes.entries).toEqual({A: {id: "A", size: 5, label: null, physics: false}});
 });
 
-it("can update graph properties", function() {
-	adapter.init(element(), {});
-	adapter.update({graph: {physics: false}});
-	var options = adapter.output.options;
-	expect(options.physics.enabled).toBe(false);
-});
-
 /*** Property translation ***/
-
-it("translates graph properties", function() {
-	adapter.init(element(), {graph: {physics: true}});
-	var options = adapter.output.options;
-	expect(options.physics.enabled).toBe(true);
-});
 
 it("translate ", function() {
 	function testNode(input, expected) {

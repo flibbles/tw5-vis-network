@@ -86,6 +86,20 @@ it("can have addEdge manipulation", function() {
 	expect(onevent).toHaveBeenCalled();
 });
 
+it("can manipulate other aspects of graph and preserve node settings", function() {
+	adapter.init(element(), {graph: {addNode: true, addEdge: true}, nodes: {A: {delete: true}}});
+	adapter.update({graph: {navigation: true, addNode: true, addEdge: true}});
+	var manipulation = adapter.output.options.manipulation;
+	expect(typeof manipulation.deleteNode).toBe("function");
+	expect(typeof manipulation.addNode).toBe("function");
+	expect(typeof manipulation.addEdge).toBe("function");
+	adapter.update({nodes: {A: {delete: true, color: "blue"}}});
+	manipulation = adapter.output.options.manipulation;
+	expect(typeof manipulation.deleteNode).toBe("function");
+	expect(typeof manipulation.addNode).toBe("function");
+	expect(typeof manipulation.addEdge).toBe("function");
+});
+
 it("can have deleteEdge manipulation", function(done) {
 	adapter.init(element(), {graph: {}, nodes: {A: {}, B: {}}});
 	var manipulation = adapter.output.options.manipulation;

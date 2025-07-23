@@ -8,8 +8,12 @@ Manages all the structure for graph manipulation.
 
 exports.manipulation = function(objects, changes) {
 	var self = this,
-		old = (objects.graph && objects.graph.manipulation) || defaults(),
-		settings = $tw.utils.extend({}, old);
+		old = objects.graph && objects.graph.manipulation,
+		wasUnset = !old;
+	if (wasUnset) {
+		old = defaults();
+	}
+	var settings = $tw.utils.extend({}, old);
 	if (!this.manipulation) {
 		// We keep track of how many of these we have so we can know when to
 		// keep these behaviors.
@@ -121,6 +125,10 @@ exports.manipulation = function(objects, changes) {
 		} else {
 			changes.graph.manipulation = false;
 		}
+	} else if (changes.graph && !wasUnset) {
+		// If we're updating graph settings, but not manipulation,
+		// we must preserve the old manipulation settings.
+		changes.graph.manipulation = old;
 	}
 };
 

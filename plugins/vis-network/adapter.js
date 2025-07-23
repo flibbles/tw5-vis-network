@@ -35,6 +35,7 @@ exports.name = "Vis-Network";
 exports.properties = {
 	graph: {
 		physics: {type: "boolean", default: true},
+		springConstant: {type: "number", min: 0, max: 0.2, increment: 0.01, default: 0.04},
 		maxVelocity: {type: "number", min: 1, default: 50, max: 100},
 		hideControls: {type: "boolean", default: false, description: "Hide node and edge manipulation controls by default"},
 		addNode: {type: "actions", variables: ["x", "y"]},
@@ -91,8 +92,6 @@ exports.properties = {
 var propertyMap = {
 	graph: {
 		hierarchical: {path: ["layout", "hierarchical"]},
-		physics: {path: ["physics", "enabled"]},
-		maxVelocity: {path: ["physics", "maxVelocity"]},
 		focus: {path: []},
 		blur: {path: []}
 	},
