@@ -4,7 +4,7 @@ Tests the Vis-Network adapter.
 
 \*/
 
-var MockVis = require("./mock/vis");
+var MockVis = $tw.modules.applyMethods("testmockup");
 var adapter;
 
 describe("Adapter", function() {

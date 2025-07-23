@@ -23,7 +23,7 @@
 					"prefix": "$:/test/mock/"
 				},
 				"type": "application/javascript",
-				"module-type": "library"
+				"module-type": "testmockup"
 			}
 		}
 	]
