@@ -146,18 +146,6 @@ exports.destroy = function() {
 };
 
 exports.processObjects = function(changes) {
-	for (var type in changes) {
-		// Assign the ids to each non-graph object
-		if (type !== "graph") {
-			var set = changes[type];
-			for (var id in set) {
-				var object = set[id];
-				if (object !== null) {
-					object.id = id;
-				}
-			}
-		}
-	}
 	for (var name in graphTweaks) {
 		graphTweaks[name].process.call(this, this.objects, changes);
 	}
