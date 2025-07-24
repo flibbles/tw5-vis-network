@@ -102,7 +102,6 @@ exports.init = function(element, objects) {
 	// We remember what children were already attached to the element, because they MUST remain. The TW widget stack requires the DOM to be what it made it.
 	// Also, use .childNodes, not .children. The latter misses text nodes
 	var children = Array.prototype.slice.call(element.childNodes);
-	// First `Orb` is just a namespace of the JS package 
 	this.vis = new Vis.Network(element, this.dataSets, createDiff({}, newObjects.graph));
 
 	// We MUST preserve any elements already attached to the passed element.
@@ -114,12 +113,6 @@ exports.init = function(element, objects) {
 			graphTweaks[name].init.call(this, this.vis);
 		}
 	}
-	this.vis.on("beforeDrawing", function(canvas) {
-		if (self.backgroundImage) {
-			var image = self.backgroundImage;
-			canvas.drawImage(image, -image.width/2, -image.height/2);
-		}
-	});
 };
 
 exports.update = function(objects) {

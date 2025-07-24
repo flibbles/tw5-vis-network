@@ -8,6 +8,16 @@ Manages images in nodes.
 
 exports.name = "background";
 
+exports.init = function(visNetwork) {
+	var self = this;
+	visNetwork.on("beforeDrawing", function(canvas) {
+		if (self.backgroundImage) {
+			var image = self.backgroundImage;
+			canvas.drawImage(image, -image.width/2, -image.height/2);
+		}
+	});
+};
+
 exports.process = function(objects, changes) {
 	var self = this;
 	if (changes.graph) {
