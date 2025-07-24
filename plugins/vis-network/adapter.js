@@ -89,12 +89,6 @@ exports.properties = {
 	}
 };
 
-var propertyMap = {
-	graph: {},
-	nodes: {},
-	edges: {}
-};
-
 exports.init = function(element, objects) {
 	var Vis = exports.Vis();
 	this.element = element;
@@ -229,24 +223,16 @@ exports.destroy = function() {
 	this.vis.destroy();
 };
 
-exports.processObjects = function(objects) {
-	var changes = {};
-	for (var type in objects) {
-		var rules = propertyMap[type];
-		changes[type] = Object.create(null);
-		if (type === "graph") {
-			translate(changes.graph, objects.graph, rules);
-		} else {
-			var set = objects[type];
+exports.processObjects = function(changes) {
+	for (var type in changes) {
+		// Assign the ids to each non-graph object
+		if (type !== "graph") {
+			var set = changes[type];
 			for (var id in set) {
 				var object = set[id];
-				var newObj;
-				if (object === null) {
-					newObj = null;
-				} else {
-					newObj = translate({id: id}, object, rules);
+				if (object !== null) {
+					object.id = id;
 				}
-				changes[type][id] = newObj;
 			}
 		}
 	}
@@ -274,27 +260,6 @@ exports.handleEvent = function(event) {
 		objectType: "graph",
 		event: event
 	});
-};
-
-function translate(output, properties, rules) {
-	for (var property in properties) {
-		var mapping = rules[property];
-		var dest = output;
-		if (mapping && mapping.path) {
-			var i = 0;
-			if (mapping.path.length > 0) {
-				for (; i < mapping.path.length-1; i++) {
-					var dir = mapping.path[i];
-					dest[dir] = dest[dir] || {};
-					dest = dest[dir];
-				}
-				dest[mapping.path[i]] = properties[property];
-			}
-		} else {
-			output[property] = properties[property];
-		}
-	}
-	return output;
 };
 
 /*
