@@ -104,12 +104,16 @@ exports.init = function(element, objects) {
 	var children = Array.prototype.slice.call(element.childNodes);
 	// First `Orb` is just a namespace of the JS package 
 	this.vis = new Vis.Network(element, this.dataSets, createDiff({}, newObjects.graph));
-	this.vis.canvas.frame.addEventListener("focus", this);
-	this.vis.canvas.frame.addEventListener("blur", this);
 
 	// We MUST preserve any elements already attached to the passed element.
 	for (var i = 0; i < children.length; i++) {
 		element.appendChild(children[i]);
+	}
+
+	for (var name in graphTweaks) {
+		if (graphTweaks[name].init) {
+			graphTweaks[name].init.call(this, this.vis);
+		}
 	}
 
 	//this.vis.on("click", function(params) {
@@ -218,8 +222,11 @@ exports.update = function(objects) {
 };
 
 exports.destroy = function() {
-	this.vis.canvas.frame.removeEventListener("focus", this);
-	this.vis.canvas.frame.removeEventListener("blur", this);
+	for (var name in graphTweaks) {
+		if (graphTweaks[name].destroy) {
+			graphTweaks[name].destroy.call(this, this.vis);
+		}
+	}
 	this.vis.destroy();
 };
 
@@ -251,15 +258,6 @@ exports.processObjects = function(changes) {
 		}
 	}
 	return changes;
-};
-
-// handles both focus and blur events that occur to the canvas frame
-exports.handleEvent = function(event) {
-	this.onevent({
-		type: event.type,
-		objectType: "graph",
-		event: event
-	});
 };
 
 /*
