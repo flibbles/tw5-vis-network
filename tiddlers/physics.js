@@ -19,30 +19,43 @@ function element() {
 
 it("can enable and disable physics", function() {
 	adapter.init(element(), {graph: {physics: true}});
-	expect(adapter.output.options.physics).toEqual({enabled: true});
+	var physics = adapter.output.options.physics;
+	expect(Object.keys(physics)).toEqual(["enabled", "barnesHut"]);
+	expect(physics.enabled).toBe(true);
+	var barnesHut = physics.barnesHut;
 	adapter.update({graph: {physics: false}});
-	expect(adapter.output.options.physics).toEqual({enabled: false});
+	expect(adapter.output.options.physics).toEqual({enabled: false, barnesHut: barnesHut});
 	adapter.update({graph: {}});
-	expect(adapter.output.options.physics).toEqual({enabled: true});
+	expect(adapter.output.options.physics).toEqual({enabled: true, barnesHut: barnesHut});
 });
 
 it("maintains current physics if manipulation recreates graph options", function() {
 	adapter.init(element(), {graph: {physics: true, maxVelocity: 20}});
 	adapter.update({nodes: {A: {delete: true}}});
-	expect(adapter.output.options.physics).toEqual({enabled: true, maxVelocity: 20});
+	var physics = adapter.output.options.physics;
+	expect(physics).toEqual({enabled: true, barnesHut: physics.barnesHut, maxVelocity: 20});
 });
 
 it("ignores maxVelocity if physics is disabled", function() {
 	adapter.init(element(), {graph: {physics: false, maxVelocity: 20}});
-	expect(adapter.output.options.physics).toEqual({enabled: false});
+	expect(adapter.output.options.physics.enabled).toBe(false);
 	expect(Object.keys(adapter.output.options)).not.toContain("maxVelocity");
 });
 
 it("can set and unset spring constant", function() {
-	adapter.init(element(), {graph: {springConstant: 0.055}});
-	expect(adapter.output.options.physics).toEqual({barnesHut: {springConstant: 0.055}});
-	adapter.update({graph: {}});
-	expect(adapter.output.options.physics).toEqual({enabled: true});
+	adapter.init(element(), {graph: {springConstant: 0.055, springLength: 15}});
+	var physics = adapter.output.options.physics;
+	expect(physics.barnesHut.springConstant).toBe(0.055);
+	expect(physics.barnesHut.springLength).toBe(15);
+	// This is a default, making sure that the defaults are loading.
+	expect(physics.barnesHut.theta).toBe(0.5);
+	adapter.update({graph: {springLength: 15}});
+	physics = adapter.output.options.physics;
+	expect(physics.enabled).toBe(true);
+	// Both should be back to defaults
+	expect(physics.barnesHut.springConstant).toBe(0.04);
+	expect(physics.barnesHut.springLength).toBe(15);
+	expect(physics.barnesHut.theta).toBe(0.5);
 });
 
 });
