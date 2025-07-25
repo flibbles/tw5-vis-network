@@ -27,7 +27,7 @@ function element() {
 it("Works with just image setting", function() {
 	adapter.init(element(), {nodes: {
 		A: {image: embeddedUrl},
-		B: {circularImage: embeddedUrl}}});
+		B: {image: embeddedUrl, circular: true}}});
 	var objects = adapter.output.objects;
 	expect(objects.nodes.entries).toEqual({
 		A: {id: "A", shape: "image", image: embeddedUrl},
@@ -37,7 +37,7 @@ it("Works with just image setting", function() {
 it("prefers images settings to shape settings", function() {
 	adapter.init(element(), {nodes: {
 		A: {image: embeddedUrl, shape: "box"},
-		B: {circularImage: embeddedUrl, shape: "box"}}});
+		B: {image: embeddedUrl, shape: "box", circular: true}}});
 	var objects = adapter.output.objects;
 	expect(objects.nodes.entries).toEqual({
 		A: {id: "A", shape: "image", image: embeddedUrl},

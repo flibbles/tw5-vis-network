@@ -14,11 +14,8 @@ exports.process = function(objects, changes) {
 			var node = changes.nodes[id];
 			if (node) {
 				if (node.image) {
-					node.shape = "image";
-				} else if (node.circularImage) {
-					node.shape = "circularImage";
-					node.image = node.circularImage;
-					node.circularImage = undefined;
+					node.shape = node.circular? "circularImage": "image";
+					node.circular = undefined;
 				} else {
 					if (node.shape === "image" || node.shape === "circularImage") {
 						node.shape = undefined;

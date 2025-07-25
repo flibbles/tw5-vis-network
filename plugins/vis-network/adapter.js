@@ -65,7 +65,7 @@ exports.properties = {
 		label: {type: "string"},
 		shape: {type: "enum", values: ["box", "circle", /*"circularImage",*/ "diamond", "database", "dot", "ellipse", "hexagon", "icon", /*"image",*/ "square", "star", "text", "triangle", "triangleDown"]},
 		image: {type: "image"},
-		circularImage: {type: "image"},
+			circular: {type: "boolean", parent: "image", default: false},
 		size: {type: "number", min: 0, default: 25},
 		physics: {type: "boolean", default: true},
 		fontColor: {type: "color", default: "#343434"},
