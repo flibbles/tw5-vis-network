@@ -31,7 +31,8 @@ var physics = {
 	}
 };
 
-var solver = "barnesHut"; //"forceAtlas2Based";
+var solver = "barnesHut";
+//var solver = "forceAtlas2Based";
 
 exports.name = "physics";
 
@@ -80,6 +81,6 @@ exports.process = function(objects, changes) {
 function freshSettings(initial) {
 	initial = initial || {};
 	initial[solver] = Object.assign({}, physics[solver]);
-	//initial.solver = solver;
+	initial.solver = solver;
 	return initial;
 };

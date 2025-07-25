@@ -7,6 +7,8 @@ Tests the Vis-Network adapter's ability to configure physics.
 var MockVis = require("./mock/vis");
 var adapter;
 
+var solver = "barnesHut";
+
 describe("Physics", function() {
 
 beforeEach(function() {
@@ -20,20 +22,20 @@ function element() {
 it("can enable and disable physics", function() {
 	adapter.init(element(), {graph: {physics: true}});
 	var physics = adapter.output.options.physics;
-	expect(Object.keys(physics)).toEqual(["enabled", "barnesHut"]);
+	expect(Object.keys(physics)).toEqual(["enabled", solver, "solver"]);
 	expect(physics.enabled).toBe(true);
 	var barnesHut = physics.barnesHut;
 	adapter.update({graph: {physics: false}});
-	expect(adapter.output.options.physics).toEqual({enabled: false, barnesHut: barnesHut});
+	expect(adapter.output.options.physics).toEqual({enabled: false, barnesHut: barnesHut, solver: solver});
 	adapter.update({graph: {}});
-	expect(adapter.output.options.physics).toEqual({enabled: true, barnesHut: barnesHut});
+	expect(adapter.output.options.physics).toEqual({enabled: true, barnesHut: barnesHut, solver: solver});
 });
 
 it("maintains current physics if manipulation recreates graph options", function() {
 	adapter.init(element(), {graph: {physics: true, maxVelocity: 20}});
 	adapter.update({nodes: {A: {delete: true}}});
 	var physics = adapter.output.options.physics;
-	expect(physics).toEqual({enabled: true, barnesHut: physics.barnesHut, maxVelocity: 20});
+	expect(physics).toEqual({enabled: true, [solver]: physics[solver], maxVelocity: 20, solver: solver});
 });
 
 it("ignores maxVelocity if physics is disabled", function() {

@@ -36,8 +36,9 @@ exports.properties = {
 	graph: {
 		physics: {type: "boolean", default: true},
 			centralGravity: {type: "number", parent: "physics", min: 0, max: 1, increment: 0.1, default: 0.3},
+			gravitationalConstant: {type: "number", parent: "physics", min: -2000, max: 0, increment: 10, default: -2000},
 			springConstant: {type: "number", parent: "physics", min: 0, max: 0.2, increment: 0.01, default: 0.04},
-			springLength: {type: "number", parent: "physics", min: -200, max: 200, increment: 10, default: 95},
+			springLength: {type: "number", parent: "physics", min: 0, max: 200, increment: 10, default: 95},
 			maxVelocity: {type: "number", parent: "physics", min: 1, default: 50, max: 100},
 		hideControls: {type: "boolean", default: false, description: "Hide node and edge manipulation controls by default"},
 		addNode: {type: "actions", variables: ["x", "y"]},
