@@ -63,7 +63,7 @@ exports.properties = {
 		borderWidth: {type: "number", min: 0, default: 1, increment: 0.1},
 		borderColor: {type: "color", default: "#2B7CE9"},
 		label: {type: "string"},
-		shape: {type: "enum", values: ["box", "circle", /*"circularImage",*/ "diamond", "database", "dot", "ellipse", "hexagon", "icon", /*"image",*/ "square", "star", "text", "triangle", "triangleDown"]},
+		shape: {type: "enum", values: ["box", "circle", /*"circularImage",*/ "diamond", "database", "dot", "ellipse", "hexagon", /*"icon",*/ /*"image",*/ "square", "star", "text", "triangle", "triangleDown"]},
 		image: {type: "image"},
 			circular: {type: "boolean", parent: "image", default: false},
 		size: {type: "number", min: 0, default: 25},
