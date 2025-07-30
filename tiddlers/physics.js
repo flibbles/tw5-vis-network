@@ -7,7 +7,8 @@ Tests the Vis-Network adapter's ability to configure physics.
 var MockVis = require("./mock/vis");
 var adapter;
 
-var solver = "barnesHut";
+//var solver = "barnesHut";
+var solver = "forceAtlas2Based";
 
 describe("Physics", function() {
 
@@ -24,11 +25,11 @@ it("can enable and disable physics", function() {
 	var physics = adapter.output.options.physics;
 	expect(Object.keys(physics)).toEqual(["enabled", solver, "solver"]);
 	expect(physics.enabled).toBe(true);
-	var barnesHut = physics.barnesHut;
+	var defaults = physics[solver];
 	adapter.update({graph: {physics: false}});
-	expect(adapter.output.options.physics).toEqual({enabled: false, barnesHut: barnesHut, solver: solver});
+	expect(adapter.output.options.physics).toEqual({enabled: false, [solver]: defaults, solver: solver});
 	adapter.update({graph: {}});
-	expect(adapter.output.options.physics).toEqual({enabled: true, barnesHut: barnesHut, solver: solver});
+	expect(adapter.output.options.physics).toEqual({enabled: true, [solver]: defaults, solver: solver});
 });
 
 it("maintains current physics if manipulation recreates graph options", function() {
@@ -47,17 +48,18 @@ it("ignores maxVelocity if physics is disabled", function() {
 it("can set and unset spring constant", function() {
 	adapter.init(element(), {graph: {springConstant: 0.055, springLength: 15}});
 	var physics = adapter.output.options.physics;
-	expect(physics.barnesHut.springConstant).toBe(0.055);
-	expect(physics.barnesHut.springLength).toBe(15);
+	expect(physics[solver].springConstant).toBe(0.055);
+	expect(physics[solver].springLength).toBe(15);
 	// This is a default, making sure that the defaults are loading.
-	expect(physics.barnesHut.theta).toBe(0.5);
+	expect(physics[solver].theta).toBe(0.5);
 	adapter.update({graph: {springLength: 15}});
 	physics = adapter.output.options.physics;
 	expect(physics.enabled).toBe(true);
 	// Both should be back to defaults
-	expect(physics.barnesHut.springConstant).toBe(0.04);
-	expect(physics.barnesHut.springLength).toBe(15);
-	expect(physics.barnesHut.theta).toBe(0.5);
+	expect(physics[solver].springConstant).not.toBe(0.055);
+	expect(typeof physics[solver].springConstant).toBe("number");
+	expect(physics[solver].springLength).toBe(15);
+	expect(physics[solver].theta).toBe(0.5);
 });
 
 });

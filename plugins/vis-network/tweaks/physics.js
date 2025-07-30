@@ -31,8 +31,8 @@ var physics = {
 	}
 };
 
-var solver = "barnesHut";
-//var solver = "forceAtlas2Based";
+//var solver = "barnesHut";
+var solver = "forceAtlas2Based";
 
 exports.name = "physics";
 
