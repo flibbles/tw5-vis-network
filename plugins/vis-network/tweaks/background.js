@@ -36,8 +36,7 @@ exports.process = function(objects, changes) {
 			};
 			image.src = changes.graph.background;
 			changes.graph.background = undefined;
-		} else {
-			self.backgroundImage = undefined;
 		}
+		this.backgroundImage = undefined;
 	}
 };

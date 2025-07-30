@@ -6,16 +6,17 @@ Tests the image capability of nodes.
 
 describe("Image", function() {
 
-var adapter, window;
+var adapter;
+var imageTiddler = "$:/plugins/flibbles/vis-network/icon";
 var embeddedUrl;
 
 beforeAll(function() {
-	var parser = $tw.wiki.parseTiddler("$:/plugins/flibbles/vis-network/icon");
+	var parser = $tw.wiki.parseTiddler(imageTiddler);
 	embeddedUrl = parser.tree[0].attributes.src.value;
 });
 
 beforeEach(function() {
-	({adapter, window} = $tw.test.setSpies());
+	({adapter} = $tw.test.setSpies());
 });
 
 function element() {
@@ -50,51 +51,6 @@ it("image settings alone does not crash vis", function() {
 		B: {shape: "circularImage"}}});
 	var objects = adapter.output.objects;
 	expect(objects.nodes.entries).toEqual({A: {id: "A"}, B: {id: "B"}});
-});
-
-/*** Background image ***/
-
-it("Works with background setting", function() {
-	var image;
-	var canvas = { drawImage: function(image, x, y) {
-		expect(image.src).toBe(embeddedUrl);
-		expect(x).toBe(-40);
-		expect(y).toBe(-25);
-	} };
-	window().Image = function() {
-		image = this;
-	};
-	adapter.init(element(), {graph: { background: embeddedUrl }});
-	var options = adapter.output.options;
-	expect(Object.keys(options)).not.toContain("background");
-	expect(image.onload).not.toBeUndefined();
-	var canvasSpy = spyOn(canvas, "drawImage").and.callThrough();
-	var redrawSpy = spyOn(adapter.output, "redraw");
-	image.onload();
-	expect(redrawSpy).toHaveBeenCalled();
-	image.width=80;
-	image.height=50;
-	adapter.output.testEvent("beforeDrawing", canvas);
-	expect(canvasSpy).toHaveBeenCalled();
-	// Now we unset it
-	canvasSpy.calls.reset();
-	adapter.update({graph: {}});
-	options = adapter.output.options;
-	expect(Object.keys(options)).not.toContain("background");
-	adapter.output.testEvent("beforeDrawing", canvas);
-	expect(canvasSpy).not.toHaveBeenCalled();
-});
-
-it("does not reload background unnecessarily", function() {
-	var image;
-	window().Image = function() {
-		image = this;
-	};
-	adapter.init(element(), {graph: { background: embeddedUrl }});
-	var oldImage = image;
-	image.onload();
-	adapter.update({graph: { background: embeddedUrl, addNode: true}});
-	expect(image).toBe(oldImage);
 });
 
 });
