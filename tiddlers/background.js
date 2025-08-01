@@ -63,10 +63,20 @@ it("does not reload background unnecessarily", function() {
 		image = this;
 	};
 	adapter.init(element(), {graph: { background: embeddedUrl }});
+	var canvas = { drawImage: function(image, x, y) { } };
+	image.onload();
+	adapter.output.testEvent(drawEvent, canvas);
 	var oldImage = image;
 	image.onload();
+	// Now we update something unrelated
+	var canvasSpy = spyOn(canvas, "drawImage").and.callThrough();
 	adapter.update({graph: { background: embeddedUrl, addNode: true}});
+	var options = adapter.output.options
 	expect(image).toBe(oldImage);
+	expect(Object.keys(options)).not.toContain("background");
+	// issue #40: modifying something else caused the background to unset
+	adapter.output.testEvent(drawEvent, canvas);
+	expect(canvasSpy).toHaveBeenCalled();
 });
 
 it("modifying background url", function() {
