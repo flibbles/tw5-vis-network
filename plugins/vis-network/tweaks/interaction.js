@@ -28,5 +28,13 @@ exports.process = function(objects, changes) {
 			graph.interaction = graph.interaction || {};
 			graph.interaction.navigationButtons = false;
 		}
+		if (graph.zoomSpeed !== undefined) {
+			graph.interaction = graph.interaction || {};
+			graph.interaction.zoomSpeed = graph.zoomSpeed;
+			graph.zoomSpeed = undefined;
+		} else if (objects.graph && objects.graph.interaction && objects.graph.interaction.zoomSpeed !== undefined) {
+			graph.interaction = graph.interaction || {};
+			graph.interaction.zoomSpeed = 1;
+		}
 	}
 };

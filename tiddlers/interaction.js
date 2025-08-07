@@ -43,6 +43,16 @@ it("can enable and disable zoom", function() {
 	expect(adapter.output.options).toEqual({interaction: {navigationButtons: true, zoomView: true}});
 });
 
+it("can alter and unset zoomSpeed", function() {
+	adapter.init(element(), {graph: {zoom: true, zoomSpeed: 4}});
+	expect(adapter.output.options.interaction.zoomView).toBe(true);
+	expect(adapter.output.options.zoom).toBeUndefined();
+	expect(adapter.output.options.zoomSpeed).toBeUndefined();
+	// Now turn it off
+	adapter.update({graph: {zoom: true}});
+	expect(adapter.output.options).toEqual({interaction: {zoomView: true, zoomSpeed: 1}});
+});
+
 it("can enable and disable navigation", function() {
 	adapter.init(element(), {graph: {navigation: true}});
 	expect(adapter.output.options.interaction.navigationButtons).toBe(true);

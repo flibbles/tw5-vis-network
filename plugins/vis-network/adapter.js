@@ -50,6 +50,7 @@ exports.properties = {
 		hierarchyDirection: {type: "enum", parent: "hierarchy", default: "UD", values: ["UD", "DU", "LR", "RL"]},
 		hierarchyNodeSpacing: {type: "number", parent: "hierarchy", default: 100, min: 0, max:200},
 		zoom: {type: "boolean", default: true},
+		zoomSpeed: {type: "number", min: 0, max: 10, increment: 0.1, default: 1},
 		focus: {type: "actions"},
 		blur: {type: "actions"},
 		background: {type: "image"}
