@@ -82,7 +82,7 @@ exports.properties = {
 	edges: {
 		arrows: {type: "enum", default: "to", values: [" ", "to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
 		color: {type: "color"},
-		dashes: {type: "boolean", default: false},
+		stroke: {type: "enum", values: ["solid", "dashed", "dotted"], default: "solid"},
 		hidden: {type: "boolean", default: false},
 		label: {type: "string"},
 		physics: {type: "boolean", default: true},
@@ -177,7 +177,9 @@ function createDiff(oldObject, newObject) {
 	for (var property in newObject) {
 		var newValue = newObject[property];
 		if (newValue !== undefined) {
-			if (typeof newValue === "object" && newValue !== null) {
+			if (typeof newValue === "object"
+			&& newValue !== null
+			&& !Array.isArray(newValue)) {
 				var oldValue = oldObject[property];
 				diff[property] = createDiff((typeof oldValue === "object" && oldValue !== null)? oldValue: {}, newValue);
 			} else {

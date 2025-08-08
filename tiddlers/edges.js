@@ -29,6 +29,33 @@ it("has arrows on by default, but can turn them off", function() {
 		E2: {id: "E2", from: "N", to: "N", arrows: ""}});
 });
 
+/*** Stroke ***/
+
+it("can enable and disable dashed lines", function() {
+	adapter.init(element(), {
+		nodes: {A: {}, B: {}, C: {}, D: {}},
+		edges: {
+			AB: {from: "A", to: "B", stroke: "dashed"},
+			BC: {from: "B", to: "C", stroke: "dotted"},
+			CD: {from: "C", to: "D", stroke: "solid"},
+			DA: {from: "D", to: "A"}}});
+	expect(adapter.output.objects.edges.entries).toEqual({
+		AB: {id: "AB", from: "A", to: "B", dashes: true},
+		BC: {id: "BC", from: "B", to: "C", dashes: [1, 4]},
+		CD: {id: "CD", from: "C", to: "D", dashes: false},
+		DA: {id: "DA", from: "D", to: "A"}});
+	adapter.update({
+		edges: {
+			AB: {from: "A", to: "B"},
+			BC: {from: "B", to: "C", stroke: "solid"},
+			CD: {from: "C", to: "D"}}});
+	expect(adapter.output.objects.edges.entries).toEqual({
+		AB: {id: "AB", from: "A", to: "B", dashes: false},
+		BC: {id: "BC", from: "B", to: "C", dashes: false},
+		CD: {id: "CD", from: "C", to: "D", dashes: false},
+		DA: {id: "DA", from: "D", to: "A"}});
+});
+
 /*** Smooth ***/
 
 it("smooth sees no as false", function() {

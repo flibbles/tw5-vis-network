@@ -11,6 +11,12 @@ $tw.utils.each(["dynamic", "continuous", "discrete", "diagonalCross", "straightC
 	smooths[type] = {enabled: true, type: type};
 });
 
+var strokes = {
+	solid: false,
+	dashed: true, // equivalent of [5,5] I believe
+	dotted: [1, 4]
+};
+
 // We set type to an empty object instead of null, because vis-network
 // will erroneously try to access it in some cases.
 smooths.no = {enabled: false, type: {}};
@@ -49,6 +55,12 @@ exports.process = function(objects, changes) {
 				}
 				if (edge.arrows === " ") {
 					edge.arrows = "";
+				}
+				if (edge.stroke) {
+					edge.dashes = strokes[edge.stroke] || false;
+					edge.stroke = undefined;
+				} else if (old.dashes !== undefined) {
+					edge.dashes = false;
 				}
 			}
 		}
