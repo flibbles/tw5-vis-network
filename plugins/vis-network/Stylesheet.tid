@@ -33,3 +33,7 @@ div.vis-network div.vis-edit-mode button.vis-button.vis-edit.vis-edit-mode:hover
 div.vis-network div.vis-edit-mode button.vis-button.vis-edit.vis-edit-mode.tc-selected {
 	background-color: <<colour primary>>;
 }
+
+.graph-engine-vis-network {
+	height: 400px;
+}
