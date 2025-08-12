@@ -13,9 +13,10 @@ exports.init = function(visNetwork) {
 	//this.vis.on("click", function(params) { });
 	visNetwork.on("doubleClick", function(params) {
 		var data = {
-			type: "doubleclick",
+			type: "actions",
 			event: params.event.pointers[0],
 		};
+		var variables;
 		// TODO: Meta keys
 		if (params.nodes.length >= 1) {
 			data.id = params.nodes[0];
@@ -24,9 +25,11 @@ exports.init = function(visNetwork) {
 			data.id = params.edges[0];
 			data.objectType = "edges";
 		} else {
+			data.type = "doubleclick";
 			data.objectType = "graph";
+			variables = variablesFromInputParams(params);
 		}
-		self.onevent(data, variablesFromInputParams(params));
+		self.onevent(data, variables);
 	});
 	visNetwork.on("dragStart", function(params) {
 		if (params.nodes.length > 0) {

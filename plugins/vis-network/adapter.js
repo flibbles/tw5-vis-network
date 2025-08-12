@@ -73,7 +73,7 @@ exports.properties = {
 		fontColor: {type: "color", default: "#343434"},
 		delete: {type: "actions", variables: []},
 		edit: {type: "actions", variables: []},
-		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]},
+		actions: {type: "actions"},
 		hover: {type: "actions", variables: ["x", "y", "xView", "yView"]},
 		blur: {type: "actions"},
 		drag: {type: "actions", variables: ["x", "y"]},
@@ -90,7 +90,7 @@ exports.properties = {
 		roundness: {type: "number", default: 0.5, min: 0, max: 1, increment: 0.01},
 		width: {type: "number", min: 0, default: 1, increment: 0.1},
 		delete: {type: "actions"},
-		doubleclick: {type: "actions", variables: ["x", "y", "xView", "yView"]}
+		actions: {type: "actions"}
 	}
 };
 

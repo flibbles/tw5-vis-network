@@ -40,14 +40,16 @@ it("can do doubleclick for graphs", function() {
 	expect(Object.keys(adapter.output.options)).not.toContain(dbclick);
 });
 
-it("can do doubleclick for nodes", function() {
-	adapter.init(element(), {nodes: {A: {[dbclick]: true}}});
+it("can do actions for nodes", function() {
+	adapter.init(element(), {nodes: {A: {actions: true}}});
 	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
-		expect(graphEvent.type).toBe(dbclick);
+		expect(graphEvent.type).toBe("actions");
 		expect(graphEvent.objectType).toBe("nodes");
 		expect(graphEvent.id).toBe("A");
 		expect(graphEvent.event.ctrlKey).toBe(true);
-		expect(variables).toEqual({x: 1002, y: 1007, xView: 2, yView: 7});
+		// Variables are stripped down for simplicity for now
+		expect(variables).toBeUndefined();
+		//expect(variables).toEqual({x: 1002, y: 1007, xView: 2, yView: 7});
 	});
 	// Emulating the sort of data vis sends us. We have the ctrl button held.
 	var pointerUp = {type: "pointerup", ctrlKey: true};
@@ -60,13 +62,15 @@ it("can do doubleclick for nodes", function() {
 	expect(onevent).toHaveBeenCalledTimes(1);
 });
 
-it("can do doubleclick for edges", function() {
-	adapter.init(element(), {nodes: {A: {}, B: {}}, edges: {AB: {from: "A", to: "B", [dbclick]: true}}});
+it("can do actions for edges", function() {
+	adapter.init(element(), {nodes: {A: {}, B: {}}, edges: {AB: {from: "A", to: "B", actions: true}}});
 	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
-		expect(graphEvent.type).toBe(dbclick);
+		expect(graphEvent.type).toBe("actions");
 		expect(graphEvent.objectType).toBe("edges");
 		expect(graphEvent.id).toBe("AB");
-		expect(variables).toEqual({x: 1002, y: 1007, xView: 2, yView: 7});
+		// Variables are stripped down for simplicity for now
+		expect(variables).toBeUndefined();
+		//expect(variables).toEqual({x: 1002, y: 1007, xView: 2, yView: 7});
 	});
 	var pointerUp = {type: "pointerup", ctrlKey: true};
 	var visEventData = {
