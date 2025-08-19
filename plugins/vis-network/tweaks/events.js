@@ -90,7 +90,7 @@ function round(number) {
 function variablesFromInputParams(params) {
 	return {
 		x: round(params.pointer.canvas.x),
-		y: round(params.pointer.canvas.y),
-		xView: params.pointer.DOM.x,
-		yView: params.pointer.DOM.y};
+		y: round(params.pointer.canvas.y)};
+		//xView: params.pointer.DOM.x,
+		//yView: params.pointer.DOM.y};
 };

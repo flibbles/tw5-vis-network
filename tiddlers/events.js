@@ -27,7 +27,8 @@ it("can do doubleclick for graphs", function() {
 		expect(graphEvent.objectType).toBe("graph");
 		expect(graphEvent.event.ctrlKey).toBe(true);
 		// It rounds to nice numbers
-		expect(variables).toEqual({x: 1002.3, y: 1008, xView: 2, yView: 7});
+		// We're not exposing the DOM locations at this time. We might later.
+		expect(variables).toEqual({x: 1002.3, y: 1008/*, xView: 2, yView: 7*/});
 	});
 	var pointerUp = {type: "pointerup", ctrlKey: true};
 	var visEventData = {
@@ -91,7 +92,7 @@ it("can process a node 'hover' event", function() {
 		expect(graphEvent.objectType).toBe("nodes");
 		expect(graphEvent.id).toBe("A");
 		expect(graphEvent.event.ctrlKey).toBe(true);
-		expect(variables).toEqual({x: 1002, y: 1007, xView: 2, yView: 7});
+		expect(variables).toEqual({x: 1002, y: 1007/*, xView: 2, yView: 7*/});
 	});
 	// Emulating the sort of data vis sends us. We have the ctrl button held.
 	var mousemove = {type: "mousemove", ctrlKey: true};
