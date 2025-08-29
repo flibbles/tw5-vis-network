@@ -1,0 +1,17 @@
+{
+	"directories": [
+		{
+			"path": ".",
+			"filesRegExp": "^.*\\.js$",
+			"isTiddlerFile": false,
+			"fields": {
+				"title": {
+					"source": "filename",
+					"prefix": "$:/plugins/flibbles/vis-network/messages/"
+				},
+				"type": "application/javascript",
+				"module-type": "vis-message"
+			}
+		}
+	]
+}

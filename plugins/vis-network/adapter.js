@@ -12,6 +12,8 @@ This allows flibbles/graph to alternatively use this library.
 
 var VisLibrary = require("./vis.js");
 
+var Messages = $tw.modules.getModulesByTypeAsHashmap("vis-message");
+
 /*
 We expose these objects like this so the testing framework can get in.
 */
@@ -94,6 +96,25 @@ exports.properties = {
 	}
 };
 
+/**
+ * Set up all the messages here so it's accessable by TW5-Graph.
+ */
+exports.messages = Object.create(null);
+
+for (var name in Messages) {
+	exports.messages[name] = Messages[name].parameters || {};
+}
+
+exports.handleMessage = function(message, params) {
+	var handler = Messages[message.type];
+	if (handler) {
+		return handler.handle.call(this, message, params);
+	}
+};
+
+/**
+ * Core methods for adapter
+ */
 exports.init = function(element, objects) {
 	var Vis = exports.Vis();
 	this.element = element;
