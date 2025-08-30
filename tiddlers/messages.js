@@ -19,7 +19,7 @@ function element() {
 it("can do doubleclick for graphs", function() {
 	adapter.init(element(), {});
 	var moveTo = spyOn(adapter.output, "moveTo");
-	adapter.handleMessage({type: "graph-zoom-to"}, {x: 14, y: 17});
+	adapter.handleMessage({type: "graph-move-view"}, {x: 14, y: 17});
 	expect(moveTo).toHaveBeenCalledWith({position: {x: 14, y: 17}, animation: true});
 });
 
