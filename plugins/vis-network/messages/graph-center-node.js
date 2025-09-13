@@ -3,17 +3,17 @@
 exports.name = "graph-center-node";
 
 exports.parameters = {
-	id: {type: "string"},
+	tiddler: {type: "string"},
 	scale: {type: "number"}
 };
 
 exports.handle = function(message, params) {
-	if (params.id) {
+	if (params.tiddler) {
 		var settings = {}
 		if (params.scale !== undefined) {
 			settings.scale = params.scale;
 		}
 		settings.animation = true;
-		this.vis.focus(params.id, settings);
+		this.vis.focus(params.tiddler, settings);
 	}
 };
