@@ -61,8 +61,8 @@ Network.prototype.getPosition = function(id) {
 	return {x: node.x, y: node.y};
 };
 
-Network.prototype.moveTo = function() {
-};
+Network.prototype.moveTo = function() { };
+Network.prototype.focus = function() { };
 
 Network.prototype.destroy = function() {
 	// Do nothing, except maybe flag that we're destroyed???
