@@ -115,9 +115,11 @@ exports.handleMessage = function(message, params) {
 /**
  * Core methods for adapter
  */
-exports.init = function(element, objects) {
+exports.init = function(element, objects, options) {
 	var Vis = exports.Vis();
 	this.element = element;
+	options = options || {};
+	this.wiki = options.wiki || $tw.wiki;
 	this.objects = {};
 	var newObjects = this.processObjects(objects);
 	this.dataSets = {
@@ -130,6 +132,9 @@ exports.init = function(element, objects) {
 	var children = Array.prototype.slice.call(element.childNodes);
 	this.vis = new Vis.Network(element, this.dataSets, createDiff({}, newObjects.graph));
 
+	// The first child of the frame should always be the canvas element.
+	// I think we can just grab it blindly. Let's remember it.
+	this.canvasElement = this.vis.canvas.frame.children[0];
 	// We MUST preserve any elements already attached to the passed element.
 	for (var i = 0; i < children.length; i++) {
 		element.appendChild(children[i]);

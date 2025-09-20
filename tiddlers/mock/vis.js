@@ -39,13 +39,15 @@ var Network = function(element, objects, options) {
 		}
 	};
 	// Now we create the inner canvas element
-	this.canvas = $tw.fakeDocument.createElement("canvas");
-	this.wrapper.appendChild(this.canvas);
-	// The canvas has a pointer to the div called "frame"
-	this.canvas.frame = this.wrapper;
+	this.canvasElement = $tw.fakeDocument.createElement("canvas");
+	// Make this, so it can be mocked later.
+	this.canvasElement.toDataURL = function() {};
+	this.wrapper.appendChild(this.canvasElement);
 	// Vis-Network always blasts whatever already existed in the passed element
 	element.children = [];
 	element.appendChild(this.wrapper);
+	// The canvas has a pointer to the div called "frame"
+	this.canvas = { frame: this.wrapper };
 };
 
 Network.prototype.on = function(name, method) {
