@@ -7,9 +7,9 @@
 			"fields": {
 				"title": {
 					"source": "filename",
-					"prefix": "$:/plugins/flibbles/vis-network/tweaks/"
+					"prefix": "$:/plugins/flibbles/vis-network/properties/"
 				},
-				"module-type": "vis-tweak",
+				"module-type": "vis-property",
 				"type": "application/javascript"
 			}
 		}

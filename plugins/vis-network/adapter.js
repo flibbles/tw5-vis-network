@@ -29,7 +29,7 @@ exports.window = function() {
 // passing it along to vis.
 // Partly to account for differences in API.
 // Partly to account for all the bugs in vis-network.
-var graphTweaks = $tw.modules.getModulesByTypeAsHashmap("vis-tweak");
+var propertyHandlers = $tw.modules.getModulesByTypeAsHashmap("vis-property");
 
 exports.name = "Vis-Network";
 //exports.platforms = ["browser"];
@@ -139,9 +139,9 @@ exports.init = function(element, objects, options) {
 	for (var i = 0; i < children.length; i++) {
 		element.appendChild(children[i]);
 	}
-	for (var name in graphTweaks) {
-		if (graphTweaks[name].init) {
-			graphTweaks[name].init.call(this, this.vis);
+	for (var name in propertyHandlers) {
+		if (propertyHandlers[name].init) {
+			propertyHandlers[name].init.call(this, this.vis);
 		}
 	}
 };
@@ -168,17 +168,17 @@ exports.update = function(objects) {
 };
 
 exports.destroy = function() {
-	for (var name in graphTweaks) {
-		if (graphTweaks[name].destroy) {
-			graphTweaks[name].destroy.call(this, this.vis);
+	for (var name in propertyHandlers) {
+		if (propertyHandlers[name].destroy) {
+			propertyHandlers[name].destroy.call(this, this.vis);
 		}
 	}
 	this.vis.destroy();
 };
 
 exports.processObjects = function(changes) {
-	for (var name in graphTweaks) {
-		graphTweaks[name].process.call(this, this.objects, changes);
+	for (var name in propertyHandlers) {
+		propertyHandlers[name].process.call(this, this.objects, changes);
 	}
 	// Apply those changes to our own record.
 	for (var type in changes) {
