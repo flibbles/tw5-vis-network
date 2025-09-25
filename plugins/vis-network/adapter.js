@@ -12,13 +12,6 @@ This allows flibbles/graph to alternatively use this library.
 
 var VisLibrary = require("./vis.js");
 
-var Messages = $tw.modules.getModulesByTypeAsHashmap("vis-message");
-// Tweaks are to perform very specific operations to the incoming data before
-// passing it along to vis.
-// Partly to account for differences in API.
-// Partly to account for all the bugs in vis-network.
-var propertyHandlers = $tw.modules.getModulesByTypeAsHashmap("vis-property");
-
 /*
 We expose these objects like this so the testing framework can get in.
 */
@@ -30,34 +23,27 @@ exports.window = function() {
 	return window;
 };
 
-
 exports.name = "Vis-Network";
 //exports.platforms = ["browser"];
 
 /**
  * Set up all the properties here so it's accessable by TW5-Graph.
+ *
+ * Property Handlers perform specific operations to the incoming data before
+ * passing it along to vis.
+ * Partly to account for differences in API.
+ * Partly to account for all the bugs in vis-network.
  */
 
-exports.properties = {
-	graph: {
-		hideControls: {type: "boolean", default: false, description: "Hide node and edge manipulation controls by default"},
-	},
-	nodes: {
-		borderWidth: {type: "number", min: 0, default: 1, increment: 0.1},
-		label: {type: "string"},
-		size: {type: "number", min: 0, default: 25},
-	},
-	edges: {
-		hidden: {type: "boolean", default: false},
-		width: {type: "number", min: 0, default: 1, increment: 0.1},
-	}
-};
+var propertyHandlers = $tw.modules.getModulesByTypeAsHashmap("vis-property");
+exports.properties = {};
 
 for (var handler in propertyHandlers) {
 	var module = propertyHandlers[handler];
 	if (module.properties) {
 		// This property handler has properties to declare. Fold them in.
 		for (var category in module.properties) {
+			exports.properties[category] = exports.properties[category] || Object.create(null);
 			$tw.utils.extend(
 				exports.properties[category],
 				module.properties[category]);
@@ -76,6 +62,9 @@ exports.forEachProperty = function(methodName) {
 /**
  * Set up all the messages here so it's accessable by TW5-Graph.
  */
+
+var Messages = $tw.modules.getModulesByTypeAsHashmap("vis-message");
+
 exports.messages = Object.create(null);
 
 for (var name in Messages) {

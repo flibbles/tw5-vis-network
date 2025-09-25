@@ -10,6 +10,7 @@ exports.name = "manipulation";
 
 exports.properties = {
 	graph: {
+		hideControls: {type: "boolean", default: false, description: "Hide node and edge manipulation controls by default"},
 		addNode: {type: "actions", variables: ["x", "y"]},
 		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]},
 	},

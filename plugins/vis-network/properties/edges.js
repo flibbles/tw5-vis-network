@@ -33,6 +33,9 @@ exports.name = "edges";
 
 exports.properties = {
 	edges: {
+		// These two properties don't require special handling
+		hidden: {type: "boolean", default: false},
+		width: {type: "number", min: 0, default: 1, increment: 0.1},
 		// "Arrows" actually accept any combination of those values. Plus this has many more options.
 		arrows: {type: "enum", default: "to", values: [" ", "to", "from", "middle"]},
 		stroke: {type: "enum", values: ["solid", "dashed", "dotted"], default: "solid"},
