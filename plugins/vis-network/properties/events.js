@@ -8,6 +8,22 @@ Manages the contrast of font colors when inside its shape.
 
 exports.name = "events";
 
+exports.properties = {
+	graph: {
+		doubleclick: {type: "actions", variables: ["x", "y"]},
+	},
+	nodes: {
+		actions: {type: "actions"},
+		hover: {type: "actions", variables: ["x", "y"]},
+		blur: {type: "actions"},
+		drag: {type: "actions", variables: ["x", "y"]},
+		free: {type: "actions", variables: ["x", "y"]}
+	},
+	edges: {
+		actions: {type: "actions"}
+	}
+};
+
 exports.init = function(visNetwork) {
 	var self = this;
 	//this.vis.on("click", function(params) { });

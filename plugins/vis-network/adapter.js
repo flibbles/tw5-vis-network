@@ -13,6 +13,11 @@ This allows flibbles/graph to alternatively use this library.
 var VisLibrary = require("./vis.js");
 
 var Messages = $tw.modules.getModulesByTypeAsHashmap("vis-message");
+// Tweaks are to perform very specific operations to the incoming data before
+// passing it along to vis.
+// Partly to account for differences in API.
+// Partly to account for all the bugs in vis-network.
+var propertyHandlers = $tw.modules.getModulesByTypeAsHashmap("vis-property");
 
 /*
 We expose these objects like this so the testing framework can get in.
@@ -25,74 +30,46 @@ exports.window = function() {
 	return window;
 };
 
-// Tweaks are to perform very specific operations to the incoming data before
-// passing it along to vis.
-// Partly to account for differences in API.
-// Partly to account for all the bugs in vis-network.
-var propertyHandlers = $tw.modules.getModulesByTypeAsHashmap("vis-property");
 
 exports.name = "Vis-Network";
 //exports.platforms = ["browser"];
 
+/**
+ * Set up all the properties here so it's accessable by TW5-Graph.
+ */
+
 exports.properties = {
 	graph: {
-		physics: {type: "boolean", default: true},
-			centralGravity: {type: "number", parent: "physics", min: 0, max: 1, increment: 0.1, default: 0.3},
-			damping: {type: "number", parent: "physics", min: 0, max: 1, increment: 0.01, default: 0.09},
-			gravitationalConstant: {type: "number", parent: "physics", min: -2000, max: 0, increment: 10, default: -2000},
-			springConstant: {type: "number", parent: "physics", min: 0, max: 0.2, increment: 0.01, default: 0.04},
-			springLength: {type: "number", parent: "physics", min: 0, max: 200, increment: 10, default: 95},
-			maxVelocity: {type: "number", parent: "physics", min: 1, default: 50, max: 100},
 		hideControls: {type: "boolean", default: false, description: "Hide node and edge manipulation controls by default"},
-		navigation: {type: "boolean"},
-		hierarchy: {type: "boolean", default: false},
-			hierarchyDirection: {type: "enum", parent: "hierarchy", default: "UD", values: ["UD", "DU", "LR", "RL"]},
-			hierarchyNodeSpacing: {type: "number", parent: "hierarchy", default: 100, min: 0, max:200},
-			//hierarchyShakeTowards: {type: "enum", default: "leaves", values: ["leaves", "roots"]},
-			//hierarchyParentCentralization: {type: "boolean", default: true},
-			//hierarchySortMethod: {type: "enum", default: "hubsize", values: ["hubsize", "directed"]},
-		zoom: {type: "boolean", default: true},
-		zoomSpeed: {type: "number", min: 0, max: 10, increment: 0.1, default: 1},
-		background: {type: "image"},
-		addNode: {type: "actions", variables: ["x", "y"]},
-		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]},
-		doubleclick: {type: "actions", variables: ["x", "y"]},
-		focus: {type: "actions"},
-		blur: {type: "actions"},
 	},
 	nodes: {
-		x: {type: "number"},
-		y: {type: "number"},
-		color: {type: "color", default: "#D2E5FF"},
 		borderWidth: {type: "number", min: 0, default: 1, increment: 0.1},
-		borderColor: {type: "color", default: "#2B7CE9"},
 		label: {type: "string"},
-		shape: {type: "enum", values: ["box", "circle", /*"circularImage",*/ "diamond", "database", "dot", "ellipse", "hexagon", /*"icon",*/ /*"image",*/ "square", "star", "text", "triangle", "triangleDown"]},
-		image: {type: "image"},
-			circular: {type: "boolean", parent: "image", default: false},
 		size: {type: "number", min: 0, default: 25},
-		physics: {type: "boolean", default: true},
-		fontColor: {type: "color", default: "#343434"},
-		delete: {type: "actions", variables: []},
-		edit: {type: "actions", variables: []},
-		actions: {type: "actions"},
-		hover: {type: "actions", variables: ["x", "y"]},
-		blur: {type: "actions"},
-		drag: {type: "actions", variables: ["x", "y"]},
-		free: {type: "actions", variables: ["x", "y"]}
 	},
 	edges: {
-		arrows: {type: "enum", default: "to", values: [" ", "to", "from", "middle"]}, // This actually accept any combination of those values. Plus this has many more options.
-		color: {type: "color"},
-		stroke: {type: "enum", values: ["solid", "dashed", "dotted"], default: "solid"},
 		hidden: {type: "boolean", default: false},
-		label: {type: "string"},
-		physics: {type: "boolean", default: true},
-		smooth: {type: "enum", default: "dynamic", values: ["no", "dynamic", "continuous", "discrete", "diagonalCross", "straightCross", "horizontal", "vertical", "curvedCW", "curvedCCW", "cubicBezier", "cubicBezierHorizontal", "cubicBezierVertical"]},
-		roundness: {type: "number", default: 0.5, min: 0, max: 1, increment: 0.01},
 		width: {type: "number", min: 0, default: 1, increment: 0.1},
-		delete: {type: "actions"},
-		actions: {type: "actions"}
+	}
+};
+
+for (var handler in propertyHandlers) {
+	var module = propertyHandlers[handler];
+	if (module.properties) {
+		// This property handler has properties to declare. Fold them in.
+		for (var category in module.properties) {
+			$tw.utils.extend(
+				exports.properties[category],
+				module.properties[category]);
+		}
+	}
+}
+
+exports.forEachProperty = function(methodName) {
+	var args = Array.prototype.slice.call(arguments, 1);
+	for (var name in propertyHandlers) {
+		var method = propertyHandlers[name][methodName];
+		method && method.apply(this, args);
 	}
 };
 
@@ -139,11 +116,7 @@ exports.init = function(element, objects, options) {
 	for (var i = 0; i < children.length; i++) {
 		element.appendChild(children[i]);
 	}
-	for (var name in propertyHandlers) {
-		if (propertyHandlers[name].init) {
-			propertyHandlers[name].init.call(this, this.vis);
-		}
-	}
+	this.forEachProperty("init", this.vis);
 };
 
 exports.update = function(objects) {
@@ -168,18 +141,12 @@ exports.update = function(objects) {
 };
 
 exports.destroy = function() {
-	for (var name in propertyHandlers) {
-		if (propertyHandlers[name].destroy) {
-			propertyHandlers[name].destroy.call(this, this.vis);
-		}
-	}
+	this.forEachProperty("destroy", this.vis);
 	this.vis.destroy();
 };
 
 exports.processObjects = function(changes) {
-	for (var name in propertyHandlers) {
-		propertyHandlers[name].process.call(this, this.objects, changes);
-	}
+	this.forEachProperty("process", this.objects, changes);
 	// Apply those changes to our own record.
 	for (var type in changes) {
 		if (type === "graph") {

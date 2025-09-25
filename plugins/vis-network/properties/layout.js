@@ -16,6 +16,17 @@ var map = {
 
 exports.name = "layout";
 
+exports.properties = {
+	graph: {
+		hierarchy: {type: "boolean", default: false},
+		hierarchyDirection: {type: "enum", parent: "hierarchy", default: "UD", values: ["UD", "DU", "LR", "RL"]},
+		hierarchyNodeSpacing: {type: "number", parent: "hierarchy", default: 100, min: 0, max:200},
+		//hierarchyShakeTowards: {type: "enum", default: "leaves", values: ["leaves", "roots"]},
+		//hierarchyParentCentralization: {type: "boolean", default: true},
+		//hierarchySortMethod: {type: "enum", default: "hubsize", values: ["hubsize", "directed"]},
+	}
+};
+
 exports.process = function(objects, changes) {
 	var graph = changes.graph;
 	if (graph) {

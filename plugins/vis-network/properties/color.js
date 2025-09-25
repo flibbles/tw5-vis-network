@@ -15,6 +15,17 @@ var shapesWithInternalText = {
 
 exports.name = "color";
 
+exports.properties = {
+	nodes: {
+		color: {type: "color", default: "#D2E5FF"},
+		fontColor: {type: "color", default: "#343434"},
+		borderColor: {type: "color", default: "#2B7CE9"}
+	},
+	edges: {
+		color: {type: "color"}
+	}
+};
+
 exports.process = function(objects, changes) {
 	var graph = changes.graph;
 	if (graph) {

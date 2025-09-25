@@ -8,6 +8,13 @@ Manages all the positioning for nodes in graph manipulation.
 
 exports.name = "position";
 
+exports.properties = {
+	nodes: {
+		x: {type: "number"},
+		y: {type: "number"},
+	}
+};
+
 exports.process = function(objects, changes) {
 	if (!this.position) {
 		// We use this to store all positions that were given to us by TW5

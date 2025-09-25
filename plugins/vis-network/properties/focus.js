@@ -10,6 +10,13 @@ Not actually a vis thing. We put this behavior in ourselves.
 
 exports.name = "focus";
 
+exports.properties = {
+	graph: {
+		focus: {type: "actions"},
+		blur: {type: "actions"}
+	}
+};
+
 exports.init = function(visNetwork) {
 	visNetwork.canvas.frame.addEventListener("focus", this);
 	visNetwork.canvas.frame.addEventListener("blur", this);

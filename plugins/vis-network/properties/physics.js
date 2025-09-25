@@ -36,6 +36,30 @@ var solver = "forceAtlas2Based";
 
 exports.name = "physics";
 
+exports.properties = {
+	graph: {
+		physics: {type: "boolean", default: true},
+		centralGravity: {type: "number", parent: "physics",
+			min: 0, max: 1, increment: 0.1, default: 0.3},
+		damping: {type: "number", parent: "physics",
+			min: 0, max: 1, increment: 0.01, default: 0.09},
+		gravitationalConstant: {type: "number", parent: "physics",
+			min: -2000, max: 0, increment: 10, default: -2000},
+		springConstant: {type: "number", parent: "physics",
+			min: 0, max: 0.2, increment: 0.01, default: 0.04},
+		springLength: {type: "number", parent: "physics",
+			min: 0, max: 200, increment: 10, default: 95},
+		maxVelocity: {type: "number", parent: "physics",
+			min: 1, default: 50, max: 100},
+	},
+	nodes: {
+		physics: {type: "boolean", default: true},
+	},
+	edges: {
+		physics: {type: "boolean", default: true},
+	}
+};
+
 exports.process = function(objects, changes) {
 	var graph = changes.graph;
 	var enabled = true;

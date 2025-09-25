@@ -8,6 +8,12 @@ Manages images in nodes.
 
 exports.name = "background";
 
+exports.properties = {
+	graph: {
+		background: {type: "image"}
+	}
+};
+
 exports.init = function(visNetwork) {
 	var self = this;
 	visNetwork.on("beforeDrawing", function(canvas) {

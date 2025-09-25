@@ -8,6 +8,21 @@ Manages all the structure for graph manipulation.
 
 exports.name = "manipulation";
 
+exports.properties = {
+	graph: {
+		addNode: {type: "actions", variables: ["x", "y"]},
+		addEdge: {type: "actions", variables: ["fromTiddler", "toTiddler"]},
+	},
+	nodes: {
+		delete: {type: "actions", variables: []},
+		edit: {type: "actions", variables: []},
+	},
+	edges: {
+		delete: {type: "actions"},
+		//edit: {type: "actions", variables: []},
+	}
+};
+
 exports.process = function(objects, changes) {
 	var self = this,
 		old = objects.graph && objects.graph.manipulation,

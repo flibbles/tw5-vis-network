@@ -7,7 +7,9 @@ Handles a bug in vis-network where edge labels cannot be removed.
 "use strict";
 
 var smooths = {};
-$tw.utils.each(["dynamic", "continuous", "discrete", "diagonalCross", "straightCross", "horizontal", "vertical", "curvedCW", "curvedCCW", "cubicBezier", "cubicBezierHorizontal", "cubicBezierVertical"], function(type) {
+var curves = ["dynamic", "continuous", "discrete", "diagonalCross", "straightCross", "horizontal", "vertical", "curvedCW", "curvedCCW", "cubicBezier", "cubicBezierHorizontal", "cubicBezierVertical"];
+
+$tw.utils.each(curves, function(type) {
 	smooths[type] = {enabled: true, type: type};
 });
 
@@ -28,6 +30,17 @@ smooths.cubicBezierVertical.type = "cubicBezier";
 smooths.cubicBezierVertical.forceDirection = "vertical";
 
 exports.name = "edges";
+
+exports.properties = {
+	edges: {
+		// "Arrows" actually accept any combination of those values. Plus this has many more options.
+		arrows: {type: "enum", default: "to", values: [" ", "to", "from", "middle"]},
+		stroke: {type: "enum", values: ["solid", "dashed", "dotted"], default: "solid"},
+		roundness: {type: "number", default: 0.5, min: 0, max: 1, increment: 0.01},
+		label: {type: "string"},
+		smooth: {type: "enum", default: "dynamic", values: ["no"].concat(curves)},
+	}
+};
 
 exports.process = function(objects, changes) {
 	if (changes.edges) {

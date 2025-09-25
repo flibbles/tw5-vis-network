@@ -8,6 +8,14 @@ Manages all the structure for graph interaction.
 
 exports.name = "interaction";
 
+exports.properties = {
+	graph: {
+		navigation: {type: "boolean"},
+		zoom: {type: "boolean", default: true},
+		zoomSpeed: {type: "number", min: 0, max: 10, increment: 0.1, default: 1},
+	}
+};
+
 exports.process = function(objects, changes) {
 	var graph = changes.graph;
 	if (graph) {
