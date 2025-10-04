@@ -14,6 +14,16 @@ beforeEach(function() {
 	({adapter} = $tw.test.setSpies());
 });
 
+beforeAll(function() {
+	$tw.old_browser = $tw.browser;
+	$tw.browser = {};
+});
+
+afterAll(function() {
+	$tw.browser = $tw.old_browser;
+	delete $tw.old_browser;
+});
+
 // TODO: Test all the other basic events too, like hover, blur, drag, etc...
 
 function element() {
@@ -197,7 +207,86 @@ it("can do blur for graphs", function() {
 	onevent.calls.reset();
 	adapter.output.getFrame().dispatchEvent({type: "blur"});
 	expect(onevent).not.toHaveBeenCalled();
+});
 
+/*** Drag 'n Drop links ***/
+
+function DropEvent(dataPerType) {
+	this.type = "drop";
+	this.preventDefault = jasmine.createSpy("preventDefault");
+	this.stopPropagation = jasmine.createSpy("stopPropagation");
+	this.dataTransfer = { getData: function(type) {
+		return dataPerType[type] || "";
+	}};
+};
+
+it("can perform all necessary requirements for dropping", function() {
+	adapter.init(element(), {graph: {drop: true}});
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, _) {
+		expect(graphEvent.type).toBe("drop");
+		expect(graphEvent.objectType).toBe("graph");
+	});
+	// First, make sure dragover prevents default
+	var dragoverEvent = {type: "dragover", preventDefault: jasmine.createSpy("preventDefault")};
+	adapter.output.getFrame()
+	adapter.output.getFrame().dispatchEvent(dragoverEvent);
+	expect(dragoverEvent.preventDefault).toHaveBeenCalled();
+	expect(onevent).not.toHaveBeenCalled();
+	// Now let's call the actual drag event
+	var dropEvent = new DropEvent({"text/vnd.tiddler": '{"title": "dragged"}'});
+	adapter.output.getFrame().dispatchEvent(dropEvent);
+	expect(onevent).toHaveBeenCalledTimes(1);
+	expect(dropEvent.preventDefault).toHaveBeenCalledTimes(1);
+	expect(dropEvent.stopPropagation).toHaveBeenCalledTimes(1);
+	// Now we make sure that the handler is de-registered on destroy
+	adapter.destroy();
+	onevent.calls.reset();
+	dragoverEvent.preventDefault.calls.reset();
+	adapter.output.getFrame().dispatchEvent(dragoverEvent);
+	expect(dragoverEvent.preventDefault).not.toHaveBeenCalled();
+	adapter.output.getFrame().dispatchEvent({type: "drop"});
+	expect(onevent).not.toHaveBeenCalled();
+});
+
+it("can drop tiddler links onto graph", function() {
+	adapter.init(element(), {graph: {drop: true}});
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
+		expect(variables).toEqual({dropTiddler: "dragged"});
+	});
+	var event = new DropEvent({"text/vnd.tiddler": '{"title": "dragged"}'});
+	adapter.output.getFrame().dispatchEvent(event);
+	expect(onevent).toHaveBeenCalledTimes(1);
+});
+
+it("can drop URL links onto graph", function() {
+	var link = "https://www.github.com";
+	adapter.init(element(), {graph: {drop: true}});
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
+		expect(variables).toEqual({dropTiddler: link});
+	});
+	var event = new DropEvent({URL: link});
+	adapter.output.getFrame().dispatchEvent(event);
+	expect(onevent).toHaveBeenCalledTimes(1);
+});
+
+it("can drop html onto graph", function() {
+	adapter.init(element(), {graph: {drop: true}});
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
+		expect(variables).toEqual({dropTiddler: "html text"});
+	});
+	var event = new DropEvent({"text/html": "html text"});
+	adapter.output.getFrame().dispatchEvent(event);
+	expect(onevent).toHaveBeenCalledTimes(1);
+});
+
+it("can drop text onto graph", function() {
+	adapter.init(element(), {graph: {drop: true}});
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
+		expect(variables).toEqual({dropTiddler: "plain"});
+	});
+	var event = new DropEvent({"text/plain": "plain"});
+	adapter.output.getFrame().dispatchEvent(event);
+	expect(onevent).toHaveBeenCalledTimes(1);
 });
 
 });
