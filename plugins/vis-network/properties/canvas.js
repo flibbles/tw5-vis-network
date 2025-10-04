@@ -25,7 +25,7 @@ exports.init = function(visNetwork) {
 	visNetwork.canvas.frame.addEventListener("dragover", this);
 
 	// handles both focus and blur events that occur to the canvas frame
-	this.handleEvent = handleFocusAndBlur;
+	this.handleEvent = handleEvent;
 };
 
 exports.destroy = function(visNetwork) {
@@ -43,7 +43,7 @@ exports.process = function(objects, changes) {
 	}
 };
 
-function handleFocusAndBlur(event) {
+function handleEvent(event) {
 	var self = this;
 	switch (event.type) {
 		case "drop":
