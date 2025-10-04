@@ -52,11 +52,13 @@ function handleEvent(event) {
 			var dataTransfer = event.dataTransfer;
 			$tw.utils.importDataTransfer(event.dataTransfer, null, function(fieldsArray) {
 				fieldsArray.forEach(function(fields) {
-					self.onevent({
-						type: "drop",
-						objectType: "graph",
-						event: event
-					}, {dropTiddler: fields.title || fields.text});
+					if (fields.title) {
+						self.onevent({
+							type: "drop",
+							objectType: "graph",
+							event: event
+						}, {dropTiddler: fields.title || fields.text});
+					}
 				});
 			});
 			event.preventDefault();

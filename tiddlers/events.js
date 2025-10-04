@@ -258,7 +258,7 @@ it("can drop tiddler links onto graph", function() {
 	expect(onevent).toHaveBeenCalledTimes(1);
 });
 
-it("can drop URL links onto graph", function() {
+it("ignores URL links onto graph", function() {
 	var link = "https://www.github.com";
 	adapter.init(element(), {graph: {drop: true}});
 	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
@@ -266,27 +266,27 @@ it("can drop URL links onto graph", function() {
 	});
 	var event = new DropEvent({URL: link});
 	adapter.output.getFrame().dispatchEvent(event);
-	expect(onevent).toHaveBeenCalledTimes(1);
+	expect(onevent).not.toHaveBeenCalled();
 });
 
-it("can drop html onto graph", function() {
+it("ignores html onto graph", function() {
 	adapter.init(element(), {graph: {drop: true}});
 	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
 		expect(variables).toEqual({dropTiddler: "html text"});
 	});
 	var event = new DropEvent({"text/html": "html text"});
 	adapter.output.getFrame().dispatchEvent(event);
-	expect(onevent).toHaveBeenCalledTimes(1);
+	expect(onevent).not.toHaveBeenCalled();
 });
 
-it("can drop text onto graph", function() {
+it("ignores text onto graph", function() {
 	adapter.init(element(), {graph: {drop: true}});
 	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
 		expect(variables).toEqual({dropTiddler: "plain"});
 	});
 	var event = new DropEvent({"text/plain": "plain"});
 	adapter.output.getFrame().dispatchEvent(event);
-	expect(onevent).toHaveBeenCalledTimes(1);
+	expect(onevent).not.toHaveBeenCalled();
 });
 
 });
