@@ -1,6 +1,6 @@
 /*
 
-Handles the focusing and blurring of the graph canvas.
+Handles the focusing, blurring, and dropping of the graph canvas.
 
 Not actually a vis thing. We put this behavior in ourselves.
 
@@ -8,7 +8,7 @@ Not actually a vis thing. We put this behavior in ourselves.
 
 "use strict";
 
-exports.name = "focus";
+exports.name = "canvas";
 
 exports.properties = {
 	graph: {
