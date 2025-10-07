@@ -50,8 +50,9 @@ exports.process = function(objects, changes) {
 						this.position[id] = null;
 					}
 				}
-			} else if (this.position[id]) {
-				// The node is being removed. Forget its initial position
+			} else if (this.position[id] !== undefined) {
+				// The node is being removed. Forget its initial position.
+				// Or that we ever positioned it at all (null).
 				this.position[id] = undefined;
 			}
 		}

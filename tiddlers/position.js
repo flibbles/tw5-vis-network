@@ -131,4 +131,15 @@ it("can unset position and not have falsey problems", function() {
 	expect(adapter.output.objects.nodes.entries).toEqual({A: {id: "A", value: 2, x: 17, y: 19}});
 });
 
+it("can unset, remove, then add nodes without crashing", function() {
+	adapter.init(element(), {graph: {}, nodes: {A: {value: 1, x: 3, y: 5}}});
+	// Unset
+	adapter.update({nodes: { A: {value: 1}}});
+	// Remove
+	adapter.update({nodes: { A: null}});
+	// Then re-add
+	adapter.update({nodes: { A: {value: 2}}});
+	expect(adapter.output.objects.nodes.entries).toEqual({A: {id: "A", value: 2}});
+});
+
 });

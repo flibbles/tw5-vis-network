@@ -60,6 +60,9 @@ Network.prototype.setOptions = function(options) {
 
 Network.prototype.getPosition = function(id) {
 	var node = this.objects.nodes.get(id);
+	if (!node) {
+		throw new Error("Mock DataSet being asked for node that does not exists. This results in an error in a real DataSet");
+	}
 	return {x: node.x, y: node.y};
 };
 
