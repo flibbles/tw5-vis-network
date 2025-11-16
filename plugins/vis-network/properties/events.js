@@ -20,7 +20,9 @@ exports.properties = {
 		free: {type: "actions", variables: ["x", "y"]}
 	},
 	edges: {
-		actions: {type: "actions"}
+		actions: {type: "actions"},
+		hover: {type: "actions", variables: ["x", "y"]},
+		blur: {type: "actions"}
 	}
 };
 
@@ -88,6 +90,22 @@ exports.init = function(visNetwork) {
 			type: "blur",
 			objectType: "nodes",
 			id: params.node,
+			event: params.event
+		}, {});
+	});
+	visNetwork.on("hoverEdge", function(params) {
+		self.onevent({
+			type: "hover",
+			objectType: "edges",
+			id: params.edge,
+			event: params.event,
+		}, variablesFromInputParams(params));
+	});
+	visNetwork.on("blurEdge", function(params) {
+		self.onevent({
+			type: "blur",
+			objectType: "edges",
+			id: params.edge,
 			event: params.event
 		}, {});
 	});

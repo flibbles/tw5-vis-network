@@ -93,7 +93,7 @@ it("can do actions for edges", function() {
 	expect(onevent).toHaveBeenCalledTimes(1);
 });
 
-/*** Hover and blur event (when the mouse moves over a node) ***/
+/*** Hover and blur event (when the mouse moves over something) ***/
 
 it("can process a node 'hover' event", function() {
 	adapter.init(element(), {nodes: {A: {hover: true}}});
@@ -114,8 +114,27 @@ it("can process a node 'hover' event", function() {
 	expect(onevent).toHaveBeenCalledTimes(1);
 });
 
+it("can process an edge 'hover' event", function() {
+	adapter.init(element(), {nodes: {A: {}, B: {}}, edges: {AB: {from: "A", to: "B", hover: true}}});
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
+		expect(graphEvent.type).toBe("hover");
+		expect(graphEvent.objectType).toBe("edges");
+		expect(graphEvent.id).toBe("AB");
+		expect(graphEvent.event.ctrlKey).toBe(true);
+		expect(variables).toEqual({x: 1002, y: 1007/*, xView: 2, yView: 7*/});
+	});
+	// Emulating the sort of data vis sends us. We have the ctrl button held.
+	var mousemove = {type: "mousemove", ctrlKey: true};
+	var visEventData = {
+		event: mousemove,
+		edge: "AB",
+		pointer: { DOM: {x: 2, y: 7}, canvas: {x: 1002, y: 1007} } };
+	adapter.output.testEvent("hoverEdge", visEventData);
+	expect(onevent).toHaveBeenCalledTimes(1);
+});
+
 it("can process a node 'blur' event", function() {
-	adapter.init(element(), {nodes: {A: {hover: true}}});
+	adapter.init(element(), {nodes: {A: {blur: true}}});
 	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
 		expect(graphEvent.type).toBe("blur");
 		expect(graphEvent.objectType).toBe("nodes");
@@ -130,6 +149,25 @@ it("can process a node 'blur' event", function() {
 		node: "A",
 		pointer: { DOM: {x: 2, y: 7}, canvas: {x: 1002, y: 1007} } };
 	adapter.output.testEvent("blurNode", visEventData);
+	expect(onevent).toHaveBeenCalledTimes(1);
+});
+
+it("can process an edge 'blur' event", function() {
+	adapter.init(element(), {nodes: {A: {}, B: {}}, edges: {AB: {from: "A", to: "B", blur: true}}});
+	var onevent = $tw.test.spyOnevent(adapter, function(graphEvent, variables) {
+		expect(graphEvent.type).toBe("blur");
+		expect(graphEvent.objectType).toBe("edges");
+		expect(graphEvent.id).toBe("AB");
+		expect(graphEvent.event.ctrlKey).toBe(true);
+		expect(variables).toEqual({});
+	});
+	// Emulating the sort of data vis sends us. We have the ctrl button held.
+	var mousemove = {type: "mousemove", ctrlKey: true};
+	var visEventData = {
+		event: mousemove,
+		edge: "AB",
+		pointer: { DOM: {x: 2, y: 7}, canvas: {x: 1002, y: 1007} } };
+	adapter.output.testEvent("blurEdge", visEventData);
 	expect(onevent).toHaveBeenCalledTimes(1);
 });
 
