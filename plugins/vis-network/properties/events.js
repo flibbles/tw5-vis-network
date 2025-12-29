@@ -14,14 +14,14 @@ exports.properties = {
 	},
 	nodes: {
 		actions: {type: "actions"},
-		hover: {type: "actions", variables: ["x", "y"]},
+		hover: {type: "actions"},
 		blur: {type: "actions"},
-		drag: {type: "actions", variables: ["x", "y"]},
+		drag: {type: "actions"},
 		free: {type: "actions", variables: ["x", "y"]}
 	},
 	edges: {
 		actions: {type: "actions"},
-		hover: {type: "actions", variables: ["x", "y"]},
+		hover: {type: "actions"},
 		blur: {type: "actions"}
 	}
 };
@@ -57,10 +57,7 @@ exports.init = function(visNetwork) {
 				id: params.nodes[0],
 				event: params.event
 			};
-			var nodePosition = this.getPosition(params.nodes[0]);
-			nodePosition.x = round(nodePosition.x);
-			nodePosition.y = round(nodePosition.y);
-			self.onevent(data, nodePosition);
+			self.onevent(data, {});
 		}
 	});
 	visNetwork.on("dragEnd", function(params) {
@@ -83,7 +80,7 @@ exports.init = function(visNetwork) {
 			objectType: "nodes",
 			id: params.node,
 			event: params.event,
-		}, variablesFromInputParams(params));
+		}, {});
 	});
 	visNetwork.on("blurNode", function(params) {
 		self.onevent({
@@ -99,7 +96,7 @@ exports.init = function(visNetwork) {
 			objectType: "edges",
 			id: params.edge,
 			event: params.event,
-		}, variablesFromInputParams(params));
+		}, {});
 	});
 	visNetwork.on("blurEdge", function(params) {
 		self.onevent({

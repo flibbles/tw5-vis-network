@@ -102,7 +102,7 @@ it("can process a node 'hover' event", function() {
 		expect(graphEvent.objectType).toBe("nodes");
 		expect(graphEvent.id).toBe("A");
 		expect(graphEvent.event.ctrlKey).toBe(true);
-		expect(variables).toEqual({x: 1002, y: 1007/*, xView: 2, yView: 7*/});
+		expect(variables).toEqual({/*x: 1002, y: 1007, xView: 2, yView: 7*/});
 	});
 	// Emulating the sort of data vis sends us. We have the ctrl button held.
 	var mousemove = {type: "mousemove", ctrlKey: true};
@@ -121,7 +121,7 @@ it("can process an edge 'hover' event", function() {
 		expect(graphEvent.objectType).toBe("edges");
 		expect(graphEvent.id).toBe("AB");
 		expect(graphEvent.event.ctrlKey).toBe(true);
-		expect(variables).toEqual({x: 1002, y: 1007/*, xView: 2, yView: 7*/});
+		expect(variables).toEqual({/*x: 1002, y: 1007, xView: 2, yView: 7*/});
 	});
 	// Emulating the sort of data vis sends us. We have the ctrl button held.
 	var mousemove = {type: "mousemove", ctrlKey: true};
@@ -180,7 +180,7 @@ it("can process a node 'drag' event", function() {
 		expect(graphEvent.objectType).toBe("nodes");
 		expect(graphEvent.id).toBe("A");
 		// It rounds it nicely to a tenth
-		expect(variables).toEqual( { x: 1.3, y: 7 } );
+		expect(variables).toEqual( { /*x: 1.3, y: 7*/ } );
 	});
 	var visEventData = {
 		edges: ["AB"], // Attached edges get included for some reason.
