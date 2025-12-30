@@ -23,10 +23,13 @@ it("has arrows on by default, but can turn them off", function() {
 		nodes: {N: {}},
 		edges: {
 			E1: {from: "N", to: "N"},
-			E2: {from: "N", to: "N", arrows: " "}}});
+			// We support the old " " option, but we prefer "no" to disable
+			E2: {from: "N", to: "N", arrows: " "},
+			E3: {from: "N", to: "N", arrows: "no"}}});
 	expect(adapter.output.objects.edges.entries).toEqual({
 		E1: {id: "E1", from: "N", to: "N"},
-		E2: {id: "E2", from: "N", to: "N", arrows: ""}});
+		E2: {id: "E2", from: "N", to: "N", arrows: ""},
+		E3: {id: "E3", from: "N", to: "N", arrows: ""}});
 });
 
 /*** Stroke ***/
