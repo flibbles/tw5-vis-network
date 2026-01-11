@@ -29,5 +29,8 @@
   ],
   "tiddlywiki": {
     "flibbles/vis-network": "./plugins/vis-network/"
+  },
+  "devDependencies": {
+    "tiddlywiki": "^5.3.0"
   }
 }
