@@ -1,0 +1,33 @@
+{
+  "name": "tw5-vis-network",
+  "version": "10.5.0",
+  "description": "TiddlyWiki5 plugin for the vis-network library",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "tiddlywiki --build test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flibbles/tw5-vis-network.git"
+  },
+  "keywords": [
+    "visualization",
+    "graphs",
+    "tiddlywiki5",
+    "tiddlywiki-plugin"
+  ],
+  "author": "Flibbles",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/flibbles/tw5-vis-network/issues"
+  },
+  "homepage": "https://github.com/flibbles/tw5-vis-network#readme",
+  "files": [
+    "plugins/"
+  ],
+  "tiddlywiki": {
+    "flibbles/vis-network": "./plugins/vis-network/"
+  }
+}
