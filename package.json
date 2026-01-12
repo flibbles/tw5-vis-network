@@ -1,6 +1,6 @@
 {
   "name": "tw5-vis-network",
-  "version": "10.5.1",
+  "version": "10.5.4",
   "description": "TiddlyWiki5 plugin for the vis-network library",
   "directories": {
     "doc": "docs"
