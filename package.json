@@ -6,7 +6,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "test": "tiddlywiki --build test"
+    "test": "tiddlywiki --build test",
+    "bundle": "tiddlywiki --build bundle"
   },
   "repository": {
     "type": "git",
