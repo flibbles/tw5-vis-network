@@ -26,7 +26,7 @@ jobs:
         path: output/
   release:
     name: Create Release
-    permission:
+    permissions:
       contents: write
     runs-on: ubuntu-latest
     steps:
