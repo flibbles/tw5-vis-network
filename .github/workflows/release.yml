@@ -38,8 +38,6 @@ jobs:
       with:
         name: bundle
         path: output/
-    - name: List downloaded files
-      run: ls -R
     - name: Create Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
