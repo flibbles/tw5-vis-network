@@ -3,7 +3,7 @@
   "title": "$:/plugins/flibbles/vis-network",
   "description": "TiddlyWiki5 plugin for the vis-network library",
   "author": "Cameron Fischer",
-  "version": "10.5.4",
+  "version": "10.5.5",
   "stability": "STABILITY_2_STABLE",
   "core-version": ">=5.3.0",
   "source": "https://github.com/flibbles/tw5-vis-network",
