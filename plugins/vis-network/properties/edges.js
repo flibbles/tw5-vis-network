@@ -40,7 +40,7 @@ exports.properties = {
 		// For backward compatibility, we accept a hidden " " property,
 		// which used to be the old "no", until I realized what bad design
 		// that was.
-		arrows: {type: "enum", default: "to", values: [" ", "no", "to", "from", "middle"], hidden: [" "]},
+		arrows: {type: "enum", default: "to", values: ["no", "to", "from", "middle"], hidden: ["no"], multiple: true},
 		stroke: {type: "enum", values: ["solid", "dashed", "dotted"], default: "solid"},
 		roundness: {type: "number", default: 0.5, min: 0, max: 1, increment: 0.01},
 		label: {type: "string"},
@@ -72,8 +72,8 @@ exports.process = function(objects, changes) {
 				if (edge.roundness !== undefined) {
 					edge.roundness = undefined;
 				}
-				if (edge.arrows === " " || edge.arrows === "no") {
-					edge.arrows = "";
+				if (edge.arrows) {
+					edge.arrows = edge.arrows.join(",");
 				}
 				if (edge.stroke) {
 					edge.dashes = strokes[edge.stroke] || false;
