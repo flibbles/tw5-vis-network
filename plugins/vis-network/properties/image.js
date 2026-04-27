@@ -11,7 +11,7 @@ exports.name = "image";
 exports.properties = {
 	nodes: {
 		shape: {type: "enum", values: ["box", "circle", /*"circularImage",*/ "diamond", "database", "dot", "ellipse", "hexagon", /*"icon",*/ /*"image",*/ "square", "star", "text", "triangle", "triangleDown"]},
-		image: {type: "image"},
+		image: {type: "image", style: {fill: "color"}},
 			circular: {type: "boolean", parent: "image", default: false},
 	}
 };

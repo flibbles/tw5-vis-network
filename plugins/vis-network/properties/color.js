@@ -16,8 +16,18 @@ var shapesWithInternalText = {
 exports.name = "color";
 
 exports.properties = {
+	graph: {
+		// These are auto-fill properties.
+		// While they can be overridden, they mostly exist as a way to
+		// effectively request information from the TW5-Graph framework
+		// These properties will always be passed to Vis-Network with the
+		// palette values for those given palette keys.
+		graphColor: {type: "color", default: "graph-background", hidden: true},
+		nodeColor: {type: "color", default: "graph-node-color", hidden: true},
+		fontColor: {type: "color", default: "graph-font-color", hidden: true}
+	},
 	nodes: {
-		color: {type: "color", default: "#D2E5FF"},
+		color: {type: "color", default: "graph-node-color"},
 		fontColor: {type: "color", default: "#343434"},
 		borderColor: {type: "color", default: "#2B7CE9"}
 	},
