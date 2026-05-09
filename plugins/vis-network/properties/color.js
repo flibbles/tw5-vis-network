@@ -22,9 +22,9 @@ exports.properties = {
 		// effectively request information from the TW5-Graph framework
 		// These properties will always be passed to Vis-Network with the
 		// palette values for those given palette keys.
-		graphColor: {type: "color", default: "graph-background", hidden: true},
-		nodeColor: {type: "color", default: "graph-node-color", hidden: true},
-		fontColor: {type: "color", default: "graph-font-color", hidden: true}
+		graphColor: {type: "color", default: "graph-background", hidden: true, always: true},
+		nodeColor: {type: "color", default: "graph-node-color", hidden: true, always: true},
+		fontColor: {type: "color", default: "graph-font-color", hidden: true, always: true}
 	},
 	nodes: {
 		color: {type: "color", default: "graph-node-color"},
